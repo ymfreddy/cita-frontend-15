@@ -1,0 +1,67 @@
+<p-blockUI [blocked]="submited"> <app-bloqueo></app-bloqueo></p-blockUI>
+
+<!-- <p-button label="Reset" (click)="reset()"></p-button> -->
+<div class="layout-main-container-chat">
+    <div class="layout-main-chat">
+        <div #sc id="contenedorMensajes" class="div-mensajes">
+            <div class="messages" *ngFor="let item of listaPreguntas">
+                <div class="message">
+                    <b>{{item.fecha  | formatoFechaHora }}</b><br>
+                    <b><span class="sender">Tu: </span>
+                    {{item.pregunta}}</b>
+                </div>
+                <div class="message self">
+                    <b><span class="sender">Juridica:</span></b>
+                    {{item.respuesta}}
+                </div>
+            </div>
+        </div>
+
+        <!-- <p-virtualScroller #vs [value]="listaPreguntas" class="border-1 surface-border border-round" [style]="{ width: '100%', height: '75vh' }" scrollHeight="800px" [itemSize]="50">
+            <ng-template pTemplate="item" let-item>
+                <div class="flex align-items-center p-2 h-full" [ngClass]="{ 'surface-hover': item.index % 2 === 0 }">
+                    <div class="message">
+                        <b>{{item.fecha  | formatoFechaHora }}</b><br>
+                        <b><span class="sender">Tu: </span>
+                        {{item.pregunta}}</b>
+                    </div>
+                    <div class="message self">
+                        <b><span class="sender">Juridica:</span></b>
+                        {{item.respuesta}}
+                    </div>
+                </div>
+            </ng-template>
+        </p-virtualScroller> -->
+
+
+
+        <!-- <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-12">
+                <label>Respuesta</label>
+                <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="respuesta" id="respuesta" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();"></textarea>
+            </div>
+        </div> -->
+    </div>
+    <div class="layout-footer-chat">
+        <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-12">
+                    <p-selectButton [options]="listaRecursos" formControlName="idRecurso" [multiple]="false"
+                        optionLabel="nombre" optionValue="id"></p-selectButton>
+                </div>
+                <div class="field col-12 md:col-12">
+                    <div class="p-inputgroup">
+                        <input pInputText placeholder="Haz tu pregunta" formControlName="pregunta" id="pregunta"
+                            maxlength="100" onfocus="this.select();" />
+                        <button icon="pi pi-send" pButton pRipple [disabled]="!itemForm.valid"></button>
+                    </div>
+                    <!-- <small class="p-error block" *ngIf="itemForm.get('pregunta')?.hasError('required')">Dato requerido.</small> -->
+                </div>
+            </div>
+            <div class="text-center">
+                fuente de las leyes
+                <span><a class="text-negrita" href="http://www.silep.gob.bo/">www.silep.gob.bo</a></span>
+            </div>
+        </form>
+    </div>
+</div>

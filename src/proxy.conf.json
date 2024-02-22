@@ -1,0 +1,8 @@
+{
+    "/adm/api/v1/*": {
+      "target": "http://localhost:9001",
+      "secure": false,
+          "logLevel": "debug",
+          "changeOrigin": true
+    }
+  }
