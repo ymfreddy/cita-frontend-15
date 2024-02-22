@@ -8,6 +8,7 @@ import { MenuPrincipalComponent } from './pages/private/menu/menu-principal/menu
 import { NotfoundComponent } from './pages/public/notfound/notfound.component';
 import { PreguntasComponent } from './pages/private/preguntas/preguntas.component';
 import { CalendarioComponent } from './pages/private/calendario/calendario.component';
+import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/lista-clientes.component';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { CalendarioComponent } from './pages/private/calendario/calendario.compo
                     { path: 'preguntas', component: PreguntasComponent },
                     { path: 'calendario', component: CalendarioComponent },
                     { path: 'menu-principal', component: MenuPrincipalComponent },
+                    { path: 'clientes', component: ListaClientesComponent },
                 ]
             },
            // public

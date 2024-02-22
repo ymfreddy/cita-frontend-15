@@ -28,10 +28,13 @@ import { ProductService } from './shared/services/product.service';
 import { RecursosComponent } from './pages/private/recursos/recursos.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CalendarioComponent } from './pages/private/calendario/calendario.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/lista-clientes.component';
+import { FormularioClienteComponent } from './pages/private/clientes/formulario-cliente/formulario-cliente.component';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, ListaEmpresasComponent, BloqueoComponent, FormatoFechaHoraPipe,
-        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent
+        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent
     ],
     imports: [
         BrowserModule,
@@ -42,6 +45,7 @@ import { CalendarioComponent } from './pages/private/calendario/calendario.compo
         ReactiveFormsModule,
         PrimeNgModule,
         InfiniteScrollModule,
+        FullCalendarModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
           enabled: !isDevMode(),
           // Register the ServiceWorker as soon as the application is stable

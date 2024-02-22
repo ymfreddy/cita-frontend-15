@@ -6,6 +6,7 @@ export interface BusquedaUsuario {
 }
 
 export interface BusquedaPaginada {
+    idEmpresa?: number;
     username?: string;
     pagina?: number;
     cantidadItems?: number;
@@ -14,3 +15,13 @@ export interface BusquedaPaginada {
     filtro?: string ;
     campoEspecifico?: string ;
 }
+
+export interface BusquedaCliente {
+    idEmpresa?: number;
+    codigoTipoDocumento?: number;
+    codigoCliente?: string;
+    resumen?: boolean;
+    termino?: string;
+    cantidadRegistros?: number;
+}
+
