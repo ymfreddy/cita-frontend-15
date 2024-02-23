@@ -1,0 +1,61 @@
+<p-blockUI [blocked]="submited"> <app-bloqueo></app-bloqueo></p-blockUI>
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="card">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-3">
+                <label>Titulo</label>
+                <input formControlName="titulo" type="text" pInputText id="titulo" tabindex="-1" />
+            </div>
+            <div class="field col-12 md:col-3">
+                <label>Cliente</label>
+                    <input formControlName="idCliente" type="text" pInputText id="idCliente" maxlength="20" #idCliente
+                    oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"
+                    />
+                <small class="p-error block" *ngIf="itemForm.get('idCliente')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <div class="field col-12 md:col-3">
+                <label>Tipo Cita</label>
+                <p-dropdown appendTo="body" formControlName="tipo" id="tipo" [autofocus]="true"
+                [options]="listaTipos" optionLabel="nombre" optionValue="codigo"
+                 placeholder="Seleccione una opción"
+                ></p-dropdown>
+                <small class="p-error block" *ngIf="itemForm.get('tipo')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <div class="field col-12 md:col-3">
+                <label>Estado Cita</label>
+                <p-dropdown appendTo="body" formControlName="estado" id="estado" [autofocus]="true"
+                [options]="listaEstados" optionLabel="nombre" optionValue="codigo"
+                 placeholder="Seleccione una opción"
+                ></p-dropdown>
+                <small class="p-error block" *ngIf="itemForm.get('estado')?.hasError('required')">Dato requerido.</small>
+            </div>
+
+
+            <!-- <div class="field col-12 md:col-3">
+                <label>fecha</label>
+                <input formControlName="fecha" type="text"  pInputText id="fecha" maxlength="4" #fecha
+                />
+            </div> -->
+            <div class="field col-12 md:col-3">
+                <label>Inicio</label>
+                <input formControlName="inicio" type="text" pInputText id="inicio" maxlength="255" onfocus="this.select();"/>
+                <small class="p-error block" *ngIf="itemForm.get('inicio')?.hasError('required')">Dato requerido.</small>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <label>Fin</label>
+                <input formControlName="fin" type="text" pInputText id="fin" maxlength="255" onfocus="this.select();"/>
+                <small class="p-error block" *ngIf="itemForm.get('fin')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <!-- <div class="field col-12 md:col-3">
+                <label>Color</label>
+                <p-colorPicker formControlName="color"></p-colorPicker>
+            </div> -->
+        </div>
+    </div>
+    <div class="flex justify-content-end flex-wrap">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary p-button-text"
+            (click)="onClose()"></button>
+        <button pButton pRipple label="Aceptar" icon="pi pi-check" class="p-button-text" (click)="onSave()"></button>
+    </div>
+</form>

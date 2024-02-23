@@ -25,3 +25,8 @@ export interface BusquedaCliente {
     cantidadRegistros?: number;
 }
 
+export interface BusquedaCita {
+    idEmpresa?: number;
+    termino?: string;
+    cantidadRegistros?: number;
+}

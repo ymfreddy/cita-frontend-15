@@ -111,6 +111,11 @@ export class HelperService {
         return fecha;
     }
 
+    getDateTimeString(): String {
+        let fecha = new Date();
+        return this.datepipe.transform(fecha,'yyyy-MM-dd')??'';
+    }
+
     getDateTimeFromPeriodo(fechaCadena?: string): Date {
         let fecha = new Date();
         if (fechaCadena) {

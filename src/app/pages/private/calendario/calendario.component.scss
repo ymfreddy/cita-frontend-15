@@ -1,0 +1,9 @@
+.fc { /* the calendar root */
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgb(168, 170, 192);
+  }
+
+.fc-sat, .fc-sun {
+    background-color: red !important;
+}

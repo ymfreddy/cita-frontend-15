@@ -31,10 +31,12 @@ import { CalendarioComponent } from './pages/private/calendario/calendario.compo
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/lista-clientes.component';
 import { FormularioClienteComponent } from './pages/private/clientes/formulario-cliente/formulario-cliente.component';
+import { ListaCitasComponent } from './pages/private/citas/lista-citas/lista-citas.component';
+import { FormularioCitaComponent } from './pages/private/citas/formulario-cita/formulario-cita.component';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, ListaEmpresasComponent, BloqueoComponent, FormatoFechaHoraPipe,
-        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent
+        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent, ListaCitasComponent, FormularioCitaComponent
     ],
     imports: [
         BrowserModule,
