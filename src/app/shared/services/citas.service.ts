@@ -9,9 +9,14 @@ import { Cita } from '../models/cita.model';
 @Injectable({
   providedIn: 'root'
 })
-export class citasService {
+export class CitasService {
 
   constructor(private httpClient: HttpClient, private helperService: HelperService) { }
+
+  getEstados(): Observable<any> {
+    const apiUrl = `${environment.api.adm}/citas/estados`;
+    return this.httpClient.get<any>(apiUrl);
+  }
 
   get(criteriosSearch:BusquedaCita): Observable<any> {
     const queryString = this.helperService.jsonToQueryStringSinfiltro(criteriosSearch);
@@ -20,7 +25,7 @@ export class citasService {
     return this.httpClient.get<any>(apiUrl);
   }
 
-  getById(id:number): Observable<any> {
+  getById(id:string): Observable<any> {
     const apiUrl = `${environment.api.adm}/citas/${id}`;
     return this.httpClient.get<any>(apiUrl);
   }
@@ -40,8 +45,8 @@ export class citasService {
     return this.httpClient.put<any>(apiUrl, cita);
   }
 
-  delete(cita: Cita): Observable<any> {
-    const apiUrl = `${environment.api.adm}/citas/${cita.id}`;
+  delete(id: string): Observable<any> {
+    const apiUrl = `${environment.api.adm}/citas/${id}`;
     return this.httpClient.delete<any>(apiUrl);
   }
 }

@@ -21,11 +21,11 @@ export class SessionService {
     }
 
     isSuperAdmin():boolean{
-        return this.getSessionUserData().idTipoUsuario===adm.TIPO_USUARIO_SUPERADMIN;
+        return this.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_SUPERADMIN;
     }
 
     isAdmin():boolean{
-        return this.getSessionUserData().idTipoUsuario===adm.TIPO_USUARIO_ADMIN;
+        return this.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_ADMIN;
     }
 
     getSessionEmpresaNit(): number {

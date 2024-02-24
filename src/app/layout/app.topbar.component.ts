@@ -94,7 +94,7 @@ export class AppTopBarComponent {
     }
 
     verOpcionTurno():Boolean{
-        return this.usuario.idTipoUsuario!=adm.TIPO_USUARIO_FACTURACION && this.usuario.idTipoUsuario!=adm.TIPO_USUARIO_ASESOR;
+        return this.usuario.codigoTipoUsuario!=adm.TIPO_USUARIO_EXTERNO;
     }
 
     ngOnDestroy(): void {

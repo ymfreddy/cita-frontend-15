@@ -2,7 +2,7 @@ export interface SessionUsuario {
     id: number;
     username: string;
     email: string;
-    idTipoUsuario: number;
+    codigoTipoUsuario: string;
     tipoUsuario: string;
     idTurno: number;
     nombreCompleto: string;

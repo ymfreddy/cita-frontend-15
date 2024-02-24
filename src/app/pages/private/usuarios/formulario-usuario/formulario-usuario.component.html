@@ -55,17 +55,17 @@
             </div>
             <div class="field col-12 md:col-4">
                 <label>Tipo Usuario</label>
-                <p-dropdown appendTo="body" formControlName="idTipoUsuario" id="idTipoUsuario"
-                    [options]="listaTiposUsuarios" optionLabel="nombre" optionValue="id"
+                <p-dropdown appendTo="body" formControlName="codigoTipoUsuario" id="codigoTipoUsuario"
+                    [options]="listaTiposUsuarios" optionLabel="nombre" optionValue="codigo"
                     placeholder="Seleccione una opción">
                     <ng-template let-item pTemplate="item">
                         <div class="text-wrap">
-                            <div>{{item.nombre}} - {{item.descripcion}}</div>
+                            <div>{{item.codigo}} - {{item.nombre}}</div>
                         </div>
                     </ng-template>
 
                 </p-dropdown>
-                <small class="p-error block" *ngIf="itemForm.get('idTipoUsuario')?.hasError('required')">Tipo Usuario
+                <small class="p-error block" *ngIf="itemForm.get('codigoTipoUsuario')?.hasError('required')">Tipo Usuario
                     inválido.</small>
             </div>
         </div>

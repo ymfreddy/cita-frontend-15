@@ -101,9 +101,8 @@ export class LoginComponent {
                                         resSession.content.usuario.username,
                                     tipoUsuario:
                                         resSession.content.usuario.tipoUsuario,
-                                    idTipoUsuario:
-                                        resSession.content.usuario
-                                            .idTipoUsuario,
+                                    codigoTipoUsuario:
+                                        resSession.content.usuario.codigoTipoUsuario,
                                     nombreCompleto:
                                         resSession.content.usuario
                                             .nombreCompleto,
@@ -138,7 +137,7 @@ export class LoginComponent {
                                 );
 
                                 console.log(resSession.content);
-                                if(resSession.content.usuario.idTipoUsuario!=adm.TIPO_USUARIO_USUARIO_CLIENTE){
+                                if(resSession.content.usuario.idTipoUsuario!=adm.TIPO_USUARIO_EXTERNO){
                                     // adicionarl el menu principal
                                        const  menu : MenuOpcion ={
                                             id:-1,

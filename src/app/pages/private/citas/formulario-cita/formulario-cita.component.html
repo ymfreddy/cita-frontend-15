@@ -2,33 +2,68 @@
 <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="card">
         <div class="p-fluid p-formgrid grid">
-            <div class="field col-12 md:col-3">
-                <label>Titulo</label>
-                <input formControlName="titulo" type="text" pInputText id="titulo" tabindex="-1" />
-            </div>
-            <div class="field col-12 md:col-3">
+
+            <!-- <div class="field col-12 md:col-3">
                 <label>Cliente</label>
                     <input formControlName="idCliente" type="text" pInputText id="idCliente" maxlength="20" #idCliente
                     oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"
                     />
                 <small class="p-error block" *ngIf="itemForm.get('idCliente')?.hasError('required')">Dato requerido.</small>
+            </div> -->
+            <div class="field col-12 md:col-1">
+                <label>N° CITA</label>
+                <input type="text" formControlName="correlativo" pInputText />
             </div>
+
+            <div class="field col-12 md:col-3">
+                <label>Código Cliente</label>
+                <div class="p-inputgroup">
+                    <p-autoComplete formControlName="cliente" #cliente styleClass="w-full" [suggestions]="listaClientesFiltrados"
+                    (completeMethod)="filtrarCliente($event)" [showEmptyMessage]="true" [maxlength]="25"
+                    emptyMessage="No existe" [forceSelection]="true" (onSelect)="seleccionarCliente($event)"
+                    field="codigoCliente" [delay]=500 [showClear]="true" (onClear)="limpiarCliente()"
+                    placeholder="Introduzca el código del cliente" [autofocus]="true">
+                    <ng-template let-item pTemplate="item">
+                        <div class="row">
+                            <div class="text-wrap">
+                                <b>{{ item.codigoCliente }}</b> - {{ item.nombre }}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-autoComplete>
+                <p-button pTooltip="Crear cliente" tooltipPosition="top" (onClick)="adicionarNuevoCliente()"
+                icon="pi pi-user-plus" styleClass="p-button" tabindex="-1"></p-button>
+            <p-button pTooltip="Actualizar cliente" tooltipPosition="top"
+                (onClick)="actualizarCliente()" icon="pi pi-user-edit" styleClass="p-button"
+                tabindex="-1"></p-button>
+            </div>
+            <small class="p-error block" *ngIf="itemForm.get('cliente')?.hasError('required')">Dato requerido.</small>
+            </div>
+
+            <div class="field col-12 md:col-6">
+                <label>Nombre</label>
+
+                    <input type="text" formControlName="nombreCliente" pInputText maxlength="200" readonly
+                        tabindex="-1" />
+
+
+            </div>
+
+            <div class="field col-12 md:col-2">
+                <label>Celular</label>
+                    <input formControlName="telefonoCliente" type="text" pInputText id="telefonoCliente"
+                        maxlength="50" readonly tabindex="-1" />
+            </div>
+
             <div class="field col-12 md:col-3">
                 <label>Tipo Cita</label>
-                <p-dropdown appendTo="body" formControlName="tipo" id="tipo" [autofocus]="true"
+                <p-dropdown appendTo="body" formControlName="codigoTipo" id="codigoTipo" [autofocus]="true"
                 [options]="listaTipos" optionLabel="nombre" optionValue="codigo"
                  placeholder="Seleccione una opción"
                 ></p-dropdown>
-                <small class="p-error block" *ngIf="itemForm.get('tipo')?.hasError('required')">Dato requerido.</small>
+                <small class="p-error block" *ngIf="itemForm.get('codigoTipo')?.hasError('required')">Dato requerido.</small>
             </div>
-            <div class="field col-12 md:col-3">
-                <label>Estado Cita</label>
-                <p-dropdown appendTo="body" formControlName="estado" id="estado" [autofocus]="true"
-                [options]="listaEstados" optionLabel="nombre" optionValue="codigo"
-                 placeholder="Seleccione una opción"
-                ></p-dropdown>
-                <small class="p-error block" *ngIf="itemForm.get('estado')?.hasError('required')">Dato requerido.</small>
-            </div>
+
 
 
             <!-- <div class="field col-12 md:col-3">
@@ -36,21 +71,63 @@
                 <input formControlName="fecha" type="text"  pInputText id="fecha" maxlength="4" #fecha
                 />
             </div> -->
-            <div class="field col-12 md:col-3">
-                <label>Inicio</label>
-                <input formControlName="inicio" type="text" pInputText id="inicio" maxlength="255" onfocus="this.select();"/>
-                <small class="p-error block" *ngIf="itemForm.get('inicio')?.hasError('required')">Dato requerido.</small>
-            </div>
+            <div class="field col-12 md:col-2">
+                <label>Horario</label>
+                <div class="p-inputgroup">
+                    <p-inputMask formControlName="inicio" id="inicio" styleClass="w-full" mask="99:99" placeholder="HH:mm"></p-inputMask>
+                    <p-inputMask formControlName="fin" id="fin" styleClass="w-full" mask="99:99" placeholder="HH:mm"></p-inputMask>
+                </div>
+                <!-- <input formControlName="inicio" type="text" pInputText id="inicio" maxlength="255" onfocus="this.select();"/> -->
 
-            <div class="field col-12 md:col-3">
-                <label>Fin</label>
-                <input formControlName="fin" type="text" pInputText id="fin" maxlength="255" onfocus="this.select();"/>
+                <small class="p-error block" *ngIf="itemForm.get('inicio')?.hasError('required')">Dato requerido.</small>
                 <small class="p-error block" *ngIf="itemForm.get('fin')?.hasError('required')">Dato requerido.</small>
             </div>
             <!-- <div class="field col-12 md:col-3">
                 <label>Color</label>
                 <p-colorPicker formControlName="color"></p-colorPicker>
             </div> -->
+
+            <div class="field col-12 md:col-3">
+                <label>Nota</label>
+                <input formControlName="nota" type="text" pInputText id="nota" tabindex="-1" />
+            </div>
+            <!-- <div class="field col-12 md:col-3">
+                <label>Estado Cita</label>
+                <p-listbox  [options]="listaEstados" formControlName="codigoEstado" optionLabel="nombre">
+                    <ng-template let-state pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                            <div>{{ state.nombre }}</div>
+                        </div>
+                    </ng-template>
+                </p-listbox>
+
+                <small class="p-error block" *ngIf="itemForm.get('codigoEstado')?.hasError('required')">Dato requerido.</small>
+            </div> -->
+
+            <div class="field col-12 md:col-3">
+                <label>Estado Cita</label>
+                <p-dropdown appendTo="body" formControlName="codigoEstado" id="codigoEstado" [autofocus]="true"
+                [options]="listaEstados" optionLabel="nombre" optionValue="codigo"
+                 placeholder="Seleccione una opción"
+                >
+                <ng-template let-state pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                        <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                        <div>{{ state.nombre }}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-state pTemplate="selectedItem">
+                    <div class="flex align-items-center gap-2" *ngIf="state">
+                        <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                        <div>{{ state.nombre }}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+                <small class="p-error block" *ngIf="itemForm.get('codigoEstado')?.hasError('required')">Dato requerido.</small>
+            </div>
+
+
         </div>
     </div>
     <div class="flex justify-content-end flex-wrap">

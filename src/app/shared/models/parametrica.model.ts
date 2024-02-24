@@ -1,7 +1,6 @@
 export interface Parametrica {
   id: number;
+  codigo?: string;
   nombre: string;
-  descripcion?: string;
-  valor?: number;
   tipo?: string;
 }

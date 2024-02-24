@@ -67,7 +67,7 @@ export class FormularioUsuarioComponent implements OnInit {
             id: [this.item?.id],
             idEmpresa: [this.item?.idEmpresa, Validators.required],
             idSucursal: [this.item?.idSucursal],
-            idTipoUsuario: [this.item?.idTipoUsuario, Validators.required],
+            codigoTipoUsuario: [this.item?.codigoTipoUsuario, Validators.required],
             nombre: [this.item?.nombre ?? '', Validators.required],
             paterno: [this.item?.paterno],
             materno: [this.item?.materno],
@@ -121,9 +121,9 @@ export class FormularioUsuarioComponent implements OnInit {
             }
 
             // obtener valores combo
-            const idTipoUsuario = this.itemForm.controls['idTipoUsuario'].value;
+            const codigoTipoUsuario = this.itemForm.controls['codigoTipoUsuario'].value;
             const tipoUsuario = this.listaTiposUsuarios.find(
-                (x) => x.id === idTipoUsuario
+                (x) => x.codigo === codigoTipoUsuario
             )?.nombre;
 
             const opciones = this.itemForm.controls['opciones'].value.map((x: any) => {return x.id });
@@ -135,7 +135,7 @@ export class FormularioUsuarioComponent implements OnInit {
                 id: this.itemForm.controls['id'].value,
                 idEmpresa: this.itemForm.controls['idEmpresa'].value,
                 idSucursal: this.itemForm.controls['idSucursal'].value,
-                idTipoUsuario: idTipoUsuario,
+                codigoTipoUsuario: codigoTipoUsuario,
                 tipoUsuario: tipoUsuario ?? '',
                 nombre: this.itemForm.controls['nombre'].value.trim(),
                 paterno: this.itemForm.controls['paterno'].value,

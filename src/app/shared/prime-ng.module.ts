@@ -10,7 +10,6 @@ import {MessageModule} from 'primeng/message';
 import {ToastModule} from 'primeng/toast';
 import {RippleModule} from 'primeng/ripple';
 import {ChartModule} from 'primeng/chart';
-
 import {DialogService, DynamicDialogModule} from 'primeng/dynamicdialog';
 import {TableModule} from 'primeng/table';
 import {KnobModule} from 'primeng/knob';
@@ -58,6 +57,7 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import {EditorModule} from 'primeng/editor';
 import {CarouselModule} from 'primeng/carousel';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { ListboxModule } from 'primeng/listbox';
 
 @NgModule({
   declarations: [],
@@ -119,7 +119,8 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
     SelectButtonModule,
     EditorModule,
     CarouselModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    ListboxModule
   ],
   exports: [
     AccordionModule,
@@ -175,7 +176,8 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
     SelectButtonModule,
     EditorModule,
     CarouselModule,
-    VirtualScrollerModule
+    VirtualScrollerModule,
+    ListboxModule
   ],
   providers: [MessageService, DialogService ],
 })

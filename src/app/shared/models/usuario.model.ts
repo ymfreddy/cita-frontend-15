@@ -2,7 +2,7 @@ export interface Usuario {
   id: number;
   idEmpresa: number;
   idSucursal: number;
-  idTipoUsuario: number;
+  codigoTipoUsuario: string;
   tipoUsuario: string;
   nombre: string;
   paterno: string;
