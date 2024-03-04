@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
 import { Router } from '@angular/router';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { BusquedaPaginada } from 'src/app/shared/models/busquedas.model';
 
 @Component({
@@ -103,7 +103,7 @@ export class ListaClientesComponent implements OnInit, OnDestroy {
     newItem() {
         const ref = this.dialogService.open(FormularioClienteComponent, {
             header: 'Nuevo',
-            width: '80%',
+            width: '500px',
             data: { idEmpresa: this.idEmpresa},
         });
         ref.onClose.subscribe((res) => {
@@ -125,7 +125,7 @@ export class ListaClientesComponent implements OnInit, OnDestroy {
 
         const ref = this.dialogService.open(FormularioClienteComponent, {
             header: 'Actualizar',
-            width: '80%',
+            width: '500px',
             data: { idEmpresa: this.idEmpresa, item: item },
         });
         ref.onClose.subscribe((res) => {
@@ -145,7 +145,7 @@ export class ListaClientesComponent implements OnInit, OnDestroy {
             return;
         }
         this.confirmationService.confirm({
-            message: 'Esta seguro de eliminar a '+item.nombre+' ?',
+            message: 'Esta seguro de eliminar a '+item.nombreCompleto+' ?',
             header: 'Confirmación',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

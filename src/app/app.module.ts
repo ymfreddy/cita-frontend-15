@@ -33,10 +33,33 @@ import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/
 import { FormularioClienteComponent } from './pages/private/clientes/formulario-cliente/formulario-cliente.component';
 import { ListaCitasComponent } from './pages/private/citas/lista-citas/lista-citas.component';
 import { FormularioCitaComponent } from './pages/private/citas/formulario-cita/formulario-cita.component';
+import { FormularioCategoriaComponent } from './pages/private/categorias/formulario-categoria/formulario-categoria.component';
+import { ListaCategoriasComponent } from './pages/private/categorias/lista-categorias/lista-categorias.component';
+import { FormularioServicioComponent } from './pages/private/servicios/formulario-servicio/formulario-servicio.component';
+import { ListaServiciosComponent } from './pages/private/servicios/lista-servicio/lista-servicios.component';
+import { ReservasComponent } from './pages/private/citas/reservas/reservas.component';
+import { AsignarAsistenciaComponent } from './components/asignar-asistencia/asignar-asistencia.component';
+import { AllowNumbersOnlyDirective } from './shared/directives/allow-numbers-only.directive';
+import { UpperCaseInputDirective } from './shared/directives/upper-case-input.directive';
+import { FormularioConsultaComponent } from './pages/private/consultas/formulario-consulta/formulario-consulta.component';
+import { ListaConsultasComponent } from './pages/private/consultas/lista-consultas/lista-consultas.component';
+import { AtencionConsultaComponent } from './pages/private/consultas/atencion-consulta/atencion-consulta.component';
+import { FormularioPuntoComponent } from './pages/private/puntos/formulario-punto/formulario-punto.component';
+import { ListaPuntosComponent } from './pages/private/puntos/lista-puntos/lista-puntos.component';
+import { FormularioTurnoAperturaComponent } from './pages/private/turnos/formulario-turno-apertura/formulario-turno-apertura.component';
+import { FormularioTurnoCierreComponent } from './pages/private/turnos/formulario-turno-cierre/formulario-turno-cierre.component';
+import { ListaTurnosComponent } from './pages/private/turnos/lista-turnos/lista-turnos.component';
+import { ListaCuentasComponent } from './pages/private/cuentas/lista-cuentas/lista-cuentas.component';
+import { selectorPuntoVentaComponent } from './components/selector-punto-venta/selector-punto-venta.component';
+import { FormularioSucursalComponent } from './pages/private/sucursales/formulario-sucursal/formulario-sucursal.component';
+import { ListaSucursalesComponent } from './pages/private/sucursales/lista-sucursales/lista-sucursales.component';
+import { FormularioCuentaComponent } from './pages/private/cuentas/formulario-cuenta/formulario-cuenta.component';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, ListaEmpresasComponent, BloqueoComponent, FormatoFechaHoraPipe,
-        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent, ListaCitasComponent, FormularioCitaComponent
+        UpperCaseInputDirective, AllowNumbersOnlyDirective, FormatoDecimalPipe,
+        FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent, ListaCitasComponent, FormularioCitaComponent, FormularioCategoriaComponent, FormularioServicioComponent, ListaServiciosComponent, ListaCategoriasComponent, ReservasComponent, AsignarAsistenciaComponent, FormularioConsultaComponent, ListaConsultasComponent, AtencionConsultaComponent,  FormularioPuntoComponent, ListaPuntosComponent, FormularioTurnoAperturaComponent, FormularioTurnoCierreComponent, ListaTurnosComponent, ListaCuentasComponent,
+        selectorPuntoVentaComponent, FormularioSucursalComponent, ListaSucursalesComponent, FormularioCuentaComponent
     ],
     imports: [
         BrowserModule,
@@ -48,6 +71,7 @@ import { FormularioCitaComponent } from './pages/private/citas/formulario-cita/f
         PrimeNgModule,
         InfiniteScrollModule,
         FullCalendarModule,
+
         ServiceWorkerModule.register('ngsw-worker.js', {
           enabled: !isDevMode(),
           // Register the ServiceWorker as soon as the application is stable

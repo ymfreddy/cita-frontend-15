@@ -1,12 +1,15 @@
 export interface Cita {
-  id?: string;
+  id?: number;
   correlativo?: number;
   idEmpresa?: number;
-  cliente?: any;
+  clienteTemporal?: any;
   idCliente?: number;
   codigoCliente?: string;
-  nombreCliente?: string;
+  cliente?: string;
   telefonoCliente?: string;
+
+  idUsuarioProfesional?: number;
+  profesional?: string;
 
   descripcion?: string;
   nota?: string;
@@ -17,6 +20,22 @@ export interface Cita {
   codigoEstado?: string;
   tipo?: string;
   estado?: string;
+  detalle?: CitaDetalle[]
+  itemsEliminados?:    number[]|null;
+
+  edadCliente?:number;
+  generoCliente?:string;
+}
+
+export interface CitaDetalle {
+    idServicio:       number;
+    codigoServicio: string;
+    servicio?:      string;
+    cantidad:       number;
+    precio: number;
+    subtotal:       number;
+    descuento: number;
+    total:       number;
 }
 
 export interface CitaEstado {

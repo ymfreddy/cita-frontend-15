@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { Table } from 'primeng/table';
 import { ConfirmationService } from 'primeng/api';
 import { Usuario } from 'src/app/shared/models/usuario.model';
@@ -12,6 +12,8 @@ import { EmpresasService } from 'src/app/shared/services/empresas.service';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { BusquedaUsuario } from '../../../../shared/models/busquedas.model';
 import { Router } from '@angular/router';
+import { AsignarAsistenciaComponent } from 'src/app/components/asignar-asistencia/asignar-asistencia.component';
+import { adm } from 'src/app/shared/constants/adm';
 
 @Component({
     selector: 'app-lista-usuarios',
@@ -31,7 +33,7 @@ export class ListaUsuariosComponent implements OnInit, OnDestroy {
     constructor(
         private usuariosService: UsuariosService,
         private sessionService: SessionService,
-        private MensajeService: MensajeService,
+        private mensajeService: MensajeService,
         public dialogService: DialogService,
         private confirmationService: ConfirmationService,
         private empresasService: EmpresasService,
@@ -52,7 +54,7 @@ export class ListaUsuariosComponent implements OnInit, OnDestroy {
                 this.loadData();
             },
             error: (err) => {
-                this.MensajeService.showError(err.error.message);
+                this.mensajeService.showError(err.error.message);
             },
         });
     }
@@ -74,7 +76,7 @@ export class ListaUsuariosComponent implements OnInit, OnDestroy {
                 this.items = res.content;
             },
             error: (err) => {
-                this.MensajeService.showError(err.error.message);
+                this.mensajeService.showError(err.error.message);
             },
         });
     }
@@ -110,6 +112,21 @@ export class ListaUsuariosComponent implements OnInit, OnDestroy {
     resetPasswordItem(item: Usuario) {
     }
 
+    gestionarAsistencia(item: Usuario) {
+        /*if (item.codigoTipoUsuario !==adm.TIPO_USUARIO_ASISTENTE){
+            this.mensajeService.showWarning('Tipo de usuario incorrecto');
+            return;
+        }*/
+
+
+        const ref = this.dialogService.open(AsignarAsistenciaComponent, {
+            header: 'Asistencia',
+            width: '50%',
+            data: { idEmpresa: this.idEmpresa, item: item },
+        });
+        ref.onClose.subscribe((res) => {});
+    }
+
     deleteItem(item: Usuario) {
         this.confirmationService.confirm({
             message: 'Esta seguro de eliminar el usuario ' + item.username + ' ?',
@@ -119,10 +136,10 @@ export class ListaUsuariosComponent implements OnInit, OnDestroy {
                 this.usuariosService.delete(item).subscribe({
                     next: (res) => {
                         this.items = this.items.filter((x) => x.id !== item.id);
-                        this.MensajeService.showSuccess(res.message);
+                        this.mensajeService.showSuccess(res.message);
                     },
                     error: (err) => {
-                        this.MensajeService.showError(err.error.message);
+                        this.mensajeService.showError(err.error.message);
                     },
                 });
             },

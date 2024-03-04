@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { Table } from 'primeng/table';
 import { ConfirmationService } from 'primeng/api';
 import { Empresa } from 'src/app/shared/models/empresa.model';
@@ -120,7 +120,7 @@ export class ListaEmpresasComponent implements OnInit, OnDestroy {
         this.fileImagen = event.files[0];
         const formData = new FormData();
         formData.append('file', this.fileImagen);
-        this.fileService.uploadLogo(formData, item.nit).subscribe({
+        this.fileService.uploadLogo(formData, item.sfeNit).subscribe({
             next: (resp) => {
                 if (resp.success) {
                     this.MensajeService.showSuccess("Logo Actualizado!");

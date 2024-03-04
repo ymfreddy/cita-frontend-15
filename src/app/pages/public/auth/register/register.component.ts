@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { UsuarioClienteRegistro } from 'src/app/shared/models/usuario.model';
 import { UsuariosService } from 'src/app/shared/services/usuarios.service';
 

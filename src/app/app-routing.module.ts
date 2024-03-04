@@ -9,6 +9,16 @@ import { NotfoundComponent } from './pages/public/notfound/notfound.component';
 import { PreguntasComponent } from './pages/private/preguntas/preguntas.component';
 import { CalendarioComponent } from './pages/private/calendario/calendario.component';
 import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/lista-clientes.component';
+import { ListaCategoriasComponent } from './pages/private/categorias/lista-categorias/lista-categorias.component';
+import { ListaServiciosComponent } from './pages/private/servicios/lista-servicio/lista-servicios.component';
+import { ReservasComponent } from './pages/private/citas/reservas/reservas.component';
+import { ListaCitasComponent } from './pages/private/citas/lista-citas/lista-citas.component';
+import { ListaConsultasComponent } from './pages/private/consultas/lista-consultas/lista-consultas.component';
+import { AtencionConsultaComponent } from './pages/private/consultas/atencion-consulta/atencion-consulta.component';
+import { ListaPuntosComponent } from './pages/private/puntos/lista-puntos/lista-puntos.component';
+import { ListaTurnosComponent } from './pages/private/turnos/lista-turnos/lista-turnos.component';
+import { ListaCuentasComponent } from './pages/private/cuentas/lista-cuentas/lista-cuentas.component';
+import { ListaSucursalesComponent } from './pages/private/sucursales/lista-sucursales/lista-sucursales.component';
 
 @NgModule({
     imports: [
@@ -24,6 +34,17 @@ import { ListaClientesComponent } from './pages/private/clientes/lista-clientes/
                     { path: 'calendario', component: CalendarioComponent },
                     { path: 'menu-principal', component: MenuPrincipalComponent },
                     { path: 'clientes', component: ListaClientesComponent },
+                    { path: 'categorias', component: ListaCategoriasComponent },
+                    { path: 'servicios', component: ListaServiciosComponent },
+                    { path: 'citas', component: ListaCitasComponent },
+                    { path: 'reservas', component: ReservasComponent },
+                    { path: 'consultas', component: ListaConsultasComponent },
+                    { path: 'atencion', component: AtencionConsultaComponent },
+
+                    { path: 'sucursales', component: ListaSucursalesComponent },
+                    { path: 'puntos', component: ListaPuntosComponent },
+                    { path: 'turnos', component: ListaTurnosComponent },
+                    { path: 'cuentas', component: ListaCuentasComponent },
                 ]
             },
            // public

@@ -1,20 +1,18 @@
-import { User } from 'src/app/shared/models/user.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Route, Router } from '@angular/router';
-import { BehaviorSubject,  Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UsuarioAuth } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public user!: User;
+  public user!: UsuarioAuth;
   //public loggedIn$ = new BehaviorSubject<boolean>(false); // {1}
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private httpClient: HttpClient
   ) { }
 
@@ -23,20 +21,10 @@ export class AuthService {
     return this.http.get<any>(`${apiUrl}`);
   }
 
-  login(user: User): Observable<any> {
+  login(user: UsuarioAuth): Observable<any> {
     const apiUrl = `${environment.api.adm}/login`;
     console.log(apiUrl);
     return this.httpClient.post<any>(apiUrl, { username: user.username, password: user.password });
-  }
-
-  logout(): void {
-    this.router.navigate(['']);
-    this.removeSessionData();
-    //window.location.reload();
-    setTimeout(()=>{
-        window.location.reload();
-      }, 500)
-    //this.loggedIn$.next(false);
   }
 
   isAuthenticated(){

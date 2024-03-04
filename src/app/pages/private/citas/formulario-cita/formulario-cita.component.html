@@ -1,24 +1,18 @@
 <p-blockUI [blocked]="submited"> <app-bloqueo></app-bloqueo></p-blockUI>
 <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
-    <div class="card">
+    <div>
+        <p-divider align="left">
+            <div class="inline-flex align-items-center"><i class="pi pi-user mr-2"></i><b>Datos Cliente</b></div>
+        </p-divider>
         <div class="p-fluid p-formgrid grid">
-
-            <!-- <div class="field col-12 md:col-3">
-                <label>Cliente</label>
-                    <input formControlName="idCliente" type="text" pInputText id="idCliente" maxlength="20" #idCliente
-                    oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"
-                    />
-                <small class="p-error block" *ngIf="itemForm.get('idCliente')?.hasError('required')">Dato requerido.</small>
-            </div> -->
             <div class="field col-12 md:col-1">
-                <label>N° CITA</label>
+                <label>N°</label>
                 <input type="text" formControlName="correlativo" pInputText />
             </div>
-
-            <div class="field col-12 md:col-3">
+            <div class="field col-12 md:col-4">
                 <label>Código Cliente</label>
                 <div class="p-inputgroup">
-                    <p-autoComplete formControlName="cliente" #cliente styleClass="w-full" [suggestions]="listaClientesFiltrados"
+                    <p-autoComplete formControlName="clienteTemporal" #clienteTemporal styleClass="w-full" [suggestions]="listaClientesFiltrados"
                     (completeMethod)="filtrarCliente($event)" [showEmptyMessage]="true" [maxlength]="25"
                     emptyMessage="No existe" [forceSelection]="true" (onSelect)="seleccionarCliente($event)"
                     field="codigoCliente" [delay]=500 [showClear]="true" (onClear)="limpiarCliente()"
@@ -26,7 +20,7 @@
                     <ng-template let-item pTemplate="item">
                         <div class="row">
                             <div class="text-wrap">
-                                <b>{{ item.codigoCliente }}</b> - {{ item.nombre }}
+                                <b>{{ item.codigoCliente }}</b> - {{ item.nombreCompleto }}
                             </div>
                         </div>
                     </ng-template>
@@ -39,39 +33,21 @@
             </div>
             <small class="p-error block" *ngIf="itemForm.get('cliente')?.hasError('required')">Dato requerido.</small>
             </div>
-
-            <div class="field col-12 md:col-6">
+            <div class="field col-12 md:col-5">
                 <label>Nombre</label>
-
-                    <input type="text" formControlName="nombreCliente" pInputText maxlength="200" readonly
-                        tabindex="-1" />
-
-
+                   <input type="text" formControlName="cliente" pInputText maxlength="200" readonly tabindex="-1" />
             </div>
-
             <div class="field col-12 md:col-2">
                 <label>Celular</label>
                     <input formControlName="telefonoCliente" type="text" pInputText id="telefonoCliente"
                         maxlength="50" readonly tabindex="-1" />
             </div>
-
+        </div>
+        <p-divider align="left">
+            <div class="inline-flex align-items-center"><i class="pi pi-user mr-2"></i><b>Datos Cita</b></div>
+        </p-divider>
+        <div class="p-fluid p-formgrid grid">
             <div class="field col-12 md:col-3">
-                <label>Tipo Cita</label>
-                <p-dropdown appendTo="body" formControlName="codigoTipo" id="codigoTipo" [autofocus]="true"
-                [options]="listaTipos" optionLabel="nombre" optionValue="codigo"
-                 placeholder="Seleccione una opción"
-                ></p-dropdown>
-                <small class="p-error block" *ngIf="itemForm.get('codigoTipo')?.hasError('required')">Dato requerido.</small>
-            </div>
-
-
-
-            <!-- <div class="field col-12 md:col-3">
-                <label>fecha</label>
-                <input formControlName="fecha" type="text"  pInputText id="fecha" maxlength="4" #fecha
-                />
-            </div> -->
-            <div class="field col-12 md:col-2">
                 <label>Horario</label>
                 <div class="p-inputgroup">
                     <p-inputMask formControlName="inicio" id="inicio" styleClass="w-full" mask="99:99" placeholder="HH:mm"></p-inputMask>
@@ -82,14 +58,17 @@
                 <small class="p-error block" *ngIf="itemForm.get('inicio')?.hasError('required')">Dato requerido.</small>
                 <small class="p-error block" *ngIf="itemForm.get('fin')?.hasError('required')">Dato requerido.</small>
             </div>
-            <!-- <div class="field col-12 md:col-3">
-                <label>Color</label>
-                <p-colorPicker formControlName="color"></p-colorPicker>
-            </div> -->
-
-            <div class="field col-12 md:col-3">
+            <div class="field col-12 md:col-5">
                 <label>Nota</label>
                 <input formControlName="nota" type="text" pInputText id="nota" tabindex="-1" />
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Tipo Cita</label>
+                <p-dropdown appendTo="body" formControlName="codigoTipo" id="codigoTipo" [autofocus]="true"
+                [options]="listaTipos" optionLabel="nombre" optionValue="codigo"
+                 placeholder="Seleccione una opción"
+                ></p-dropdown>
+                <small class="p-error block" *ngIf="itemForm.get('codigoTipo')?.hasError('required')">Dato requerido.</small>
             </div>
             <!-- <div class="field col-12 md:col-3">
                 <label>Estado Cita</label>
@@ -104,8 +83,7 @@
 
                 <small class="p-error block" *ngIf="itemForm.get('codigoEstado')?.hasError('required')">Dato requerido.</small>
             </div> -->
-
-            <div class="field col-12 md:col-3">
+            <div class="field col-12 md:col-2">
                 <label>Estado Cita</label>
                 <p-dropdown appendTo="body" formControlName="codigoEstado" id="codigoEstado" [autofocus]="true"
                 [options]="listaEstados" optionLabel="nombre" optionValue="codigo"
@@ -126,13 +104,85 @@
             </p-dropdown>
                 <small class="p-error block" *ngIf="itemForm.get('codigoEstado')?.hasError('required')">Dato requerido.</small>
             </div>
-
-
         </div>
+        <!-- <p-divider align="left">
+            <div class="inline-flex align-items-center"><i class="pi pi-user mr-2"></i><b>Datos Servicio</b></div>
+        </p-divider>
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-12">
+                <label>Servicios</label>
+                    <p-autoComplete formControlName="servicio" #servicio styleClass="w-full"
+                        [suggestions]="listaServiciosFiltrados" (completeMethod)="filtrarServicio($event)"
+                        [showEmptyMessage]="true" emptyMessage="No existe" [forceSelection]="true"
+                        [minLength]="1" [maxlength]="50" (onSelect)="seleccionarServicio($event)" field="nombre"
+                        placeholder="Introduzca el código o nombre del servicio/servicio" [delay]=750 [autofocus]="true">
+                        <ng-template let-item pTemplate="item">
+                            <div class="p-fluid p-formgrid grid text-wrap">
+                                <div class="field col-12 md:col-2">
+                                    <div class="text-center">
+                                        <img [ngSrc]="item.imagenRuta  ? item.imagenRuta : 'assets/layout/images/sin-imagen.png'" width="50" height="50" priority/>
+                                    </div>
+                                </div>
+                                <div class="field col-12 md:col-10">
+                                    <div class="field">
+                                        <b>{{ item.codigoServicio }}</b> - {{ item.nombre }}
+                                    </div>
+                                    <div class="field">
+                                        <b>Precio Bs.</b> {{ item.precio | formatoDecimal}}
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-autoComplete>
+            </div>
+        </div>
+        <p-table #dt styleClass="p-datatable-sm" [value]="detalle" responsiveLayout="scroll" [rows]="10"
+        [paginator]="false" [rowHover]="true" dataKey="id" >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>N°</th>
+                <th style="text-align:center; width:10%">Código</th>
+                <th style="text-align:center; width:30%">Servicio/Servicio</th>
+                <th style="text-align:center; width:10%">Cantidad</th>
+                <th style="text-align:center; width:10%">Precio</th>
+                <th style="text-align:center; width:10%">Subtotal</th>
+                <th style="text-align:center; width:10%">Descuento</th>
+                <th style="text-align:center; width:10%">Total</th>
+                <th style="text-align:center; width:5%"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-i="rowIndex" let-item>
+            <tr [pContextMenuRow]="item">
+                <td><b>{{ i + 1 }}</b></td>
+                <td>{{item.codigoServicio}}</td>
+                <td>{{item.servicio}}</td>
+                <td>{{item.cantidad}}</td>
+                <td class="text-right">{{item.precio | formatoDecimal}}</td>
+                <td class="text-right">{{item.subtotal | formatoDecimal}}</td>
+                <td class="text-right">{{item.descuento | formatoDecimal}}</td>
+                <td class="text-right">{{item.total | formatoDecimal}}</td>
+                <td style="width:5rem; min-width:2rem;">
+                    <div class="flex">
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (click)="deleteItem(item)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="5" class="text-right">TOTALES</td>
+                <td class="text-right">{{getDetalleSubtotal() | formatoDecimal}}</td>
+                <td class="text-right">{{getDetalleDescuento() | formatoDecimal}}</td>
+                <td class="text-right">{{getDetalleTotal() | formatoDecimal}}</td>
+            </tr>
+        </ng-template>
+        </p-table> -->
     </div>
+    <br>
     <div class="flex justify-content-end flex-wrap">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary p-button-text"
+        <button pButton pRipple label="Salir" icon="pi pi-times" class="p-button-secondary p-button-text"
             (click)="onClose()"></button>
-        <button pButton pRipple label="Aceptar" icon="pi pi-check" class="p-button-text" (click)="onSave()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-text" (click)="onSave()"></button>
     </div>
 </form>

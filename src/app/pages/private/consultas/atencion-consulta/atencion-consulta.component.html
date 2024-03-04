@@ -1,0 +1,106 @@
+<p-blockUI [blocked]="submited">
+    <app-bloqueo></app-bloqueo>
+</p-blockUI>
+
+<div class="p-fluid p-formgrid grid">
+    <div class="field col-12 md:col-4">
+        <p-panel header="CITAS" [toggleable]="true">
+            <full-calendar [options]="calendarOptions" locale="es" [deepChangeDetection]="true"></full-calendar>
+        </p-panel>
+    </div>
+    <div class="field col-12 md:col-8">
+        <p-panel header="CITA" [toggleable]="true">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <b>N° Consulta:</b> {{citaSeleccionada?.correlativo}}<br>
+                    <b>Tipo Consulta:</b> {{citaSeleccionada?.tipo}}<br>
+                    <b>Hora:</b> {{citaSeleccionada?.inicio| date : "HH:mm"}} - {{citaSeleccionada?.fin| date : "HH:mm"}}<br>
+                    <b>Estado:</b> {{citaSeleccionada?.estado}}
+                </div>
+                <div class="field col-12 md:col-6">
+                    <b>Cliente:</b> {{citaSeleccionada?.cliente}}<br>
+                    <b>Celular:</b> {{citaSeleccionada?.telefonoCliente}}<br>
+                    <b>Genero:</b> {{citaSeleccionada?.generoCliente ? (citaSeleccionada?.generoCliente==='M' ? 'MASCULINO ':'FEMENINO ') :''}}<br>
+                    <b>Edad:</b> {{citaSeleccionada?.edadCliente? (citaSeleccionada?.edadCliente+ ' AÑOS'): ''}}
+                </div>
+            </div>
+        </p-panel>
+        <p-panel header="CONSULTAS" [toggleable]="true">
+            <div>
+                <div class="flex justify-content-end">
+                    <button pButton pRipple label="Nueva Consulta" icon="pi pi-plus" class="p-button-success" style="width: 150px;"  (click)="nuevaConsulta()"
+                    [disabled]="!citaSeleccionada"
+                    ></button>
+                </div>
+
+            </div>
+            <br>
+            <p-dataView #dv [value]="listaConsulta">
+                <!-- <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
+                        <div class="flex">
+                            <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"  (click)="nuevaConsulta()"></button>
+                        </div>
+                    </div>
+                </ng-template> -->
+
+                <ng-template let-consulta pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="p-fluid p-formgrid grid borde-bajo">
+                                <div class="field col-12 md:col-3">
+                                    <b>N° Consulta : </b>{{ consulta.correlativo}}
+                                </div>
+                                <div class="field col-12 md:col-9">
+                                    <b>Tipo Consulta : </b>{{ consulta.tipo}}
+                                </div>
+                            </div>
+                            <div class="p-fluid p-formgrid grid">
+                                <div class="field col-12 md:col-3">
+                                    <b>Fecha : </b>{{ consulta.fecha | date : "dd/MM/yyyy"}}
+                                </div>
+                                <div class="field col-12 md:col-9">
+                                    <b>Hora : </b>{{ consulta.fecha | date : "HH:mm"}}
+                                </div>
+                                <!-- <div class="field col-12 md:col-2">
+                                    <button pButton label="Receta" icon="pi pi-trash" class="p-button-outlined p-button-warning" ></button>
+                                </div> -->
+                            </div>
+                            <div class="p-fluid p-formgrid grid">
+                                <div class="field col-12 md:col-12">
+                                    <div class="p-fluid">
+                                        <div class="field grid">
+                                            <label class="col-12 md:col-3"><b>Motivo de Cosulta:</b></label>
+                                            <label class="col-12 md:col-9">{{consulta.motivo}}</label>
+                                        </div>
+                                        <div class="field grid">
+                                            <label class="col-12 md:col-3"><b>Sintomas:</b></label>
+                                            <label class="col-12 md:col-9">{{consulta.sintomas}}</label>
+                                        </div>
+                                        <div class="field grid">
+                                            <label class="col-12 md:col-3"><b>Diagnostico:</b></label>
+                                            <label class="col-12 md:col-9">{{consulta.diagnostico}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-fluid p-formgrid grid">
+                                <div class="field col-12 md:col-8">
+                                </div>
+                                <div class="field col-12 md:col-2">
+                                    <button pButton (click)="editarConsulta(consulta)" label="Editar" icon="pi pi-trash" class="p-button-outlined p-button-primary" ></button>
+                                </div>
+                                <div class="field col-12 md:col-2">
+                                    <button pButton (click)="eliminarConsulta(consulta)" label="Eliminar" icon="pi pi-trash" class="p-button-outlined p-button-danger" ></button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </p-panel>
+    </div>
+
+</div>

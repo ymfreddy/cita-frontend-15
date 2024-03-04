@@ -1,0 +1,29 @@
+
+    <div class="card">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-12">
+                <label>Asistente: {{item?.nombreCompleto}}</label>
+            </div>
+        </div>
+
+        <p-table [value]="listaUsuario" [selection]="listaUsuariosSeleccionados" selectionMode="multiple" styleClass="p-datatable-sm" dataKey="id"
+        (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>N° Documento</th>
+                <th>Profesinal</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr [pSelectableRow]="item" [pSelectableRowIndex]="rowIndex">
+                <td>{{item.numeroDocumento}}</td>
+                <td>{{item.nombreCompleto}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    </div>
+    <div class="flex justify-content-end flex-wrap">
+        <button pButton pRipple label="Cerrar" icon="pi pi-times" class="p-button-secondary p-button-text" (click)="onClose()"></button>
+    </div>
+

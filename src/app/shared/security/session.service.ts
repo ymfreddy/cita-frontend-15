@@ -1,12 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MenuOpcion } from '../models/menu-opcion';
 import { Router } from '@angular/router';
 import { adm } from 'src/app/shared/constants/adm';
-import {
-    SessionUsuario,
-    Asociacion,
-} from '../models/session-usuario.model';
+import { SessionUsuario } from '../models/usuario.model';
 
 @Injectable({
     providedIn: 'root',
@@ -28,7 +24,7 @@ export class SessionService {
         return this.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_ADMIN;
     }
 
-    getSessionEmpresaNit(): number {
+    getSessionEmpresaSfeNit(): number {
         if (sessionStorage.getItem('wx-user-data') == null) {
             this.router.navigateByUrl('');
             return 0;
@@ -52,18 +48,6 @@ export class SessionService {
         return parseInt(idEmpresa ?? '0');
     }
 
-    getSessionAsociaciones(): Asociacion[] {
-        if (sessionStorage.getItem('wx-user-data') == null) {
-            this.router.navigateByUrl('');
-            return [];
-        }
-
-        const asociaciones = JSON.parse(
-            sessionStorage.getItem('wx-user-data') ?? ''
-        ).asociaciones;
-        return asociaciones ?? [];
-    }
-
     setSessionMenu(value: any) {
         sessionStorage.setItem('wx-menu', JSON.stringify(value));
     }
@@ -82,54 +66,6 @@ export class SessionService {
         }
 
         return JSON.parse(sessionStorage.getItem('wx-user-data') ?? '{}');
-    }
-
-    // FACTURA
-    setRegistroFacturaRecepcion(data: any): void {
-        sessionStorage.setItem('wx-fcv-data', JSON.stringify(data));
-    }
-
-    getRegistroFacturaRecepcion(): any {
-        return JSON.parse(sessionStorage.getItem('wx-fcv-data') ?? '{}');
-    }
-
-    setBusquedaFactura(data: any): void {
-        sessionStorage.setItem('wx-fcv-list', JSON.stringify(data));
-    }
-
-    getBusquedaFactura(): any {
-        const valor = sessionStorage.getItem('wx-fcv-list');
-        if (!valor) return null;
-        return JSON.parse(sessionStorage.getItem('wx-fcv-list') ?? '{}');
-    }
-
-    // VENTA
-    setRegistroVenta(data: any): void {
-        sessionStorage.setItem('wx-venta-data', JSON.stringify(data));
-    }
-
-    getRegistroVenta(): any {
-        return JSON.parse(sessionStorage.getItem('wx-venta-data') ?? '{}');
-    }
-
-    setBusquedaVenta(data: any): void {
-        sessionStorage.setItem('wx-venta-list', JSON.stringify(data));
-    }
-
-    getBusquedaVenta(): any {
-        const valor = sessionStorage.getItem('wx-venta-list');
-        if (!valor) return null;
-        return JSON.parse(sessionStorage.getItem('wx-venta-list') ?? '{}');
-    }
-
-    setBusquedaVentaCredito(data: any): void {
-        sessionStorage.setItem('wx-venta-cred-list', JSON.stringify(data));
-    }
-
-    getBusquedaVentaCredito(): any {
-        const valor = sessionStorage.getItem('wx-venta-cred-list');
-        if (!valor) return null;
-        return JSON.parse(sessionStorage.getItem('wx-venta-cred-list') ?? '{}');
     }
 
     // DESCUENTO
@@ -151,24 +87,6 @@ export class SessionService {
         return JSON.parse(sessionStorage.getItem('wx-descuento-list') ?? '{}');
     }
 
-    // COMPRA
-    setRegistroCompra(data: any): void {
-        sessionStorage.setItem('wx-compra-data', JSON.stringify(data));
-    }
-
-    getRegistroCompra(): any {
-        return JSON.parse(sessionStorage.getItem('wx-compra-data') ?? '{}');
-    }
-
-    setBusquedaCompra(data: any): void {
-        sessionStorage.setItem('wx-compra-list', JSON.stringify(data));
-    }
-
-    getBusquedaCompra(): any {
-        const valor = sessionStorage.getItem('wx-compra-list');
-        if (!valor) return null;
-        return JSON.parse(sessionStorage.getItem('wx-compra-list') ?? '{}');
-    }
     // TURNO
     setTurno(idTurno: number): void {
         const datos = JSON.parse(sessionStorage.getItem('wx-user-data') ?? '');
@@ -187,46 +105,24 @@ export class SessionService {
         return parseInt(idTurno ?? '0');
     }
 
-    //
-    setGps(activo: boolean): void {
-        const datos = JSON.parse(sessionStorage.getItem('wx-user-data') ?? '');
-        datos.gps = activo;
-        sessionStorage.setItem('wx-user-data', JSON.stringify(datos));
+    // citas
+    setBusquedaCita(data: any): void {
+        sessionStorage.setItem('wx-cts-list', JSON.stringify(data));
     }
 
-    getGps(): boolean {
-        if (sessionStorage.getItem('wx-user-data') == null) {
-            return false;
-        }
-        const data = JSON.parse(sessionStorage.getItem('wx-user-data') ?? '');
-        if (data) {
-            return data.gps ?? false;
-        }
-        return false;
-    }
-
-    // venta
-    setBusquedaVisita(data: any): void {
-        sessionStorage.setItem('wx-visita-list', JSON.stringify(data));
-    }
-
-    getBusquedaVisita(): any {
-        const valor = sessionStorage.getItem('wx-visita-list');
+    getBusquedaCita(): any {
+        const valor = sessionStorage.getItem('wx-cts-list');
         if (!valor) return null;
-        return JSON.parse(sessionStorage.getItem('wx-visita-list') ?? '{}');
+        return JSON.parse(sessionStorage.getItem('wx-cts-list') ?? '{}');
+    }
+    // cuentas
+    setBusquedaCuenta(data: any): void {
+        sessionStorage.setItem('wx-cuenta-list', JSON.stringify(data));
     }
 
-    // INTERESADO
-    setRegistroInteresado(data: any): void {
-            sessionStorage.setItem('wx-interesado-data', JSON.stringify(data));
+    getBusquedaCuenta(): any {
+        const valor = sessionStorage.getItem('wx-cuenta-list');
+        if (!valor) return null;
+        return JSON.parse(sessionStorage.getItem('wx-cuenta-list') ?? '{}');
     }
-
-    getRegistroInteresado(): any {
-            return JSON.parse(sessionStorage.getItem('wx-interesado-data') ?? '{}');
-    }
-
-    getFacturaIceAsignada():boolean{
-        return this.getSessionUserData().facturaIce??false;
-    }
-
 }

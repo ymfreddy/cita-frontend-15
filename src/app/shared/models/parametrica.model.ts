@@ -4,3 +4,4 @@ export interface Parametrica {
   nombre: string;
   tipo?: string;
 }
+

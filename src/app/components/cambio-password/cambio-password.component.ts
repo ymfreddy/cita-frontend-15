@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { UsuariosService } from 'src/app/shared/services/usuarios.service';
 import { SessionService } from '../../shared/security/session.service';
 

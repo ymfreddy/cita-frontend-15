@@ -3,31 +3,41 @@
     <div class="card">
         <div class="p-fluid p-formgrid grid">
             <div class="field col-12 md:col-4">
-                <label>Nit</label>
-                <p-inputNumber formControlName="nit" id="nit" [maxlength]="15"
-                    [inputStyle]="{'text-align': 'right'}" [minFractionDigits]="0"
-                    [maxFractionDigits]="0"></p-inputNumber>
-                <small class="p-error block" *ngIf="itemForm.get('nit')?.hasError('required')">Dato requerido.</small>
-            </div>
-
-            <div class="field col-12 md:col-8">
                 <label>Nombre</label>
                 <input formControlName="nombre" type="text" pInputText id="nombre" maxlength="255" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();" />
                 <small class="p-error block" *ngIf="itemForm.get('nombre')?.hasError('required')">Dato requerido.</small>
             </div>
             <div class="field col-12 md:col-4">
-                <label>Sigla</label>
-                <input formControlName="sigla" type="text" pInputText id="sigla" maxlength="4" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();" />
-                <small class="p-error block" *ngIf="itemForm.get('sigla')?.hasError('required')">Dato requerido.</small>
-            </div>
-            <div class="field col-12 md:col-4">
                 <label>Representante Legal</label>
                 <input formControlName="representanteLegal" type="text" pInputText id="representanteLegal" maxlength="100" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();" />
             </div>
-            <div class="field col-12 md:col-4">
+            <div class="field col-12 md:col-2">
+                <label>Código Pais</label>
+                <input formControlName="codigoPais" type="text" pInputText id="codigoPais" maxlength="3" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();" />
+                <small class="p-error block" *ngIf="itemForm.get('codigoPais')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <div class="field col-12 md:col-2">
+                Unipersonal
+                <div class="field">
+                    <input type="checkbox" formControlName="unipersonal">
+                </div>
+            </div>
+            <div class="field col-12 md:col-2">
                 <label>Email</label>
-                <input formControlName="email" type="text" pInputText id="email" maxlength="30" onfocus="this.select();" />
+                <input formControlName="email" type="text" pInputText id="email" maxlength="50" onfocus="this.select();" />
                 <small class="p-error block" *ngIf="itemForm.get('email')?.hasError('email')">Email no válido.</small>
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Nit</label>
+                <p-inputNumber formControlName="sfeNit" id="sfeNit" [maxlength]="15" mode="decimal" [useGrouping]="false"
+                    [inputStyle]="{'text-align': 'right'}" [minFractionDigits]="0"
+                    [maxFractionDigits]="0"></p-inputNumber>
+                <small class="p-error block" *ngIf="itemForm.get('sfeNit')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <div class="field col-12 md:col-8">
+                <label>Token Sfe</label>
+                <input formControlName="sfeToken" type="text" pInputText id="sfeToken" maxlength="500" />
+                <small class="p-error block" *ngIf="itemForm.get('sfeToken')?.hasError('required')">Dato requerido.</small>
             </div>
         </div>
     </div>

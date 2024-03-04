@@ -3,8 +3,8 @@
         <!--<img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo" (click)="cambiarPuntoVenta(true)">-->
         <img src="assets/informacion/logos/logo.png" alt="logo" >
         <div style="FONT-SIZE:  small;">
-            <!-- Empresa: {{usuario.empresaNombre}}<br/> -->
-            Juridica.Tech
+            {{usuario.empresaNombre}}<br/>
+            Sucursal: {{usuario.numeroSucursal}}&nbsp; Pto. Venta: {{usuario.numeroPuntoVenta}}<br/>
         </div>
     </div>
     <button class="p-link layout-menu-button layout-topbar-button p-trigger" (click)="layoutService.onMenuToggle()">
@@ -15,7 +15,7 @@
     </button>
     <div class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <div style="FONT-SIZE: small; text-align: center;">
-            USUARIO<br>{{usuario.email}}
+            {{usuario.tipoUsuario}}<br>{{usuario.nombreCompleto}}
         </div>
 
 

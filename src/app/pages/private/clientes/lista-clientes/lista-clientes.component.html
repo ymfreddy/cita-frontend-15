@@ -36,12 +36,12 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>N°</th>
-                <th pSortableColumn="codigoCliente">Código Cliente</th>
-                <th pSortableColumn="codigoTipoDocumentoIdentidad">Tipo Documento</th>
-                <th pSortableColumn="numeroDocumento">Número Documento</th>
+                <th pSortableColumn="codigoCliente">Código</th>
+                <th pSortableColumn="codigoTipoDocumentoIdentidad">Tipo Doc.</th>
+                <th pSortableColumn="numeroDocumento">N° Documento</th>
                 <th pSortableColumn="complemento">Comp.</th>
-                <th pSortableColumn="nombre">Nombre</th>
-                <!-- <th pSortableColumn="direccion">Dirección<p-sortIcon field="direccion"></p-sortIcon></th> -->
+                <th pSortableColumn="nombreCompleto">Nombre</th>
+                <th pSortableColumn="codigoGenero">Genero</th>
                 <th pSortableColumn="telefono">Celular</th>
                 <th pSortableColumn="email">Email</th>
                 <th>Operación</th>
@@ -54,8 +54,8 @@
                 <td>{{item.codigoTipoDocumentoIdentidad}}</td>
                 <td>{{item.numeroDocumento}}</td>
                 <td>{{item.complemento}}</td>
-                <td>{{item.nombre}}</td>
-                <!-- <td>{{item.direccion}}</td> -->
+                <td>{{item.nombreCompleto}}</td>
+                <td>{{item.codigoGenero}}</td>
                 <td>{{item.telefono}}</td>
                 <td>{{item.email}}</td>
                  <td style="width:5rem; min-width:5rem;">

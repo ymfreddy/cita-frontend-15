@@ -10,8 +10,8 @@ export interface ResumenEmpresa {
 
 export interface ListaPoductosMasVendido {
     categoria:      string;
-    codigoProducto: string;
-    producto:       string;
+    codigoServicio: string;
+    servicio:       string;
     cantidad:       number;
     porcentaje:     number;
 }

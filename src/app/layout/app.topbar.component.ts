@@ -5,12 +5,16 @@ import { AuthService } from '../shared/security/auth.service';
 import { SessionService } from '../shared/security/session.service';
 import { LayoutService } from './service/app.layout.service';
 import { DialogService } from 'primeng/dynamicdialog';
-import { SessionUsuario } from '../shared/models/session-usuario.model';
-import { MensajeService } from '../shared/helpers/information.service';
+import { MensajeService } from '../shared/helpers/mensaje.service';
 import { Subscription, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { adm } from 'src/app/shared/constants/adm';
 import { CambioPasswordComponent } from '../components/cambio-password/cambio-password.component';
+import { SessionUsuario } from '../shared/models/usuario.model';
+import { FormularioTurnoCierreComponent } from '../pages/private/turnos/formulario-turno-cierre/formulario-turno-cierre.component';
+import { TurnosService } from '../shared/services/turnos.service';
+import { FormularioTurnoAperturaComponent } from '../pages/private/turnos/formulario-turno-apertura/formulario-turno-apertura.component';
+import { Turno } from '../shared/models/turno.model';
+import { selectorPuntoVentaComponent } from '../components/selector-punto-venta/selector-punto-venta.component';
 
 @Component({
     selector: 'app-topbar',
@@ -30,12 +34,21 @@ export class AppTopBarComponent {
         private authService: AuthService,
         private sessionService: SessionService,
         public dialogService: DialogService,
-        private MensajeService: MensajeService
+        private MensajeService: MensajeService,
+        private router: Router,
+        private mensajeService:MensajeService,
+        private turnoService: TurnosService,
     ) {}
 
     ngOnInit(): void {
         if (this.sessionService.getSessionUserData()) {
             this.usuario = this.sessionService.getSessionUserData();
+        }
+
+        // verificar punto de venta
+        if (this.usuario.idSucursal == 0 || this.usuario.idPuntoVenta == 0) {
+            // verificar si solo tiene una sucursal en ese caso se carga la sucursal t el primer punto de venta
+            this.cambiarPuntoVenta(this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_SUPERADMIN);
         }
 
         if (this.usuario.cambiarClave) {
@@ -69,6 +82,18 @@ export class AppTopBarComponent {
     //     ref.onClose.subscribe((res) => { });
     // }
 
+    cambiarPuntoVenta(closeable: boolean): void {
+        const ref = this.dialogService.open(selectorPuntoVentaComponent, {
+            header: 'Seleccionar Punto de Venta',
+            width: '350px',
+            data: {},
+            closable: closeable,
+        });
+        ref.onClose.subscribe((res) => {
+            this.usuario = this.sessionService.getSessionUserData();
+        });
+    }
+
     cambiarPasword(): void {
         const ref = this.dialogService.open(CambioPasswordComponent, {
             header: 'Cambiar Password',
@@ -84,7 +109,57 @@ export class AppTopBarComponent {
             header: 'Confirmación',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.authService.logout();
+                this.logout();
+            },
+        });
+    }
+
+    logout(): void {
+        console.log('paso 0 logout');
+        this.router.navigate(['/']);
+        console.log('paso 1 logout');
+        this.authService.removeSessionData();
+        console.log('paso 2 logout');
+        //window.location.reload();
+        setTimeout(()=>{
+            window.location.reload();
+          }, 500)
+        //this.loggedIn$.next(false);
+      }
+
+
+      abrirTurno(): void {
+        const ref = this.dialogService.open(FormularioTurnoAperturaComponent, {
+            header: 'Abrir Turno',
+            width: '350px',
+            data: {},
+        });
+    }
+
+    cerrarTurno(): void {
+        // verificar si existe turno
+        if (this.sessionService.getTurno() == 0) {
+            this.mensajeService.showWarning('No exise un turno abierto');
+            return;
+        }
+
+        this.turnoService.getById(this.sessionService.getTurno()).subscribe({
+            next: (res) => {
+                const itemTurno: Turno = res.content;
+                if (itemTurno.codigoEstadoTurno == adm.ESTADO_TURNO_CERRADO) {
+                    this.mensajeService.showWarning(
+                        'El turno ya se encuentra cerrado!'
+                    );
+                    return;
+                }
+                this.dialogService.open(FormularioTurnoCierreComponent, {
+                    header: 'Cerrar Turno',
+                    width: '550px',
+                    data: itemTurno,
+                });
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
             },
         });
     }

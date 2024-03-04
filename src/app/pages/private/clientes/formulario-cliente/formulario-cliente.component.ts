@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -9,9 +9,13 @@ import {
     DynamicDialogConfig,
     DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { adm } from 'src/app/shared/constants/adm';
+import { TipoParametrica } from 'src/app/shared/enums/tipo-parametrica.model';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { Cliente } from 'src/app/shared/models/cliente.model';
+import { Parametrica } from 'src/app/shared/models/parametrica.model';
 import { ClientesService } from 'src/app/shared/services/clientes.service';
+import { ParametricasService } from 'src/app/shared/services/parametricas.service';
 
 @Component({
     selector: 'app-formulario-cliente',
@@ -20,6 +24,8 @@ import { ClientesService } from 'src/app/shared/services/clientes.service';
     providers: [DialogService],
 })
 export class FormularioClienteComponent implements OnInit {
+    @ViewChild('numeroDocumento') elmDocumento?: ElementRef;
+    @ViewChild('nombre') elmNombre?: ElementRef;
     item?: Cliente;
     itemForm!: FormGroup;
     closeClicked = false;
@@ -32,6 +38,7 @@ export class FormularioClienteComponent implements OnInit {
         public config: DynamicDialogConfig,
         private dialogRef: DynamicDialogRef,
         private mensajeService: MensajeService,
+        private parametricasService: ParametricasService,
         private clienteservice: ClientesService,
     ) {}
 
@@ -39,27 +46,41 @@ export class FormularioClienteComponent implements OnInit {
         this.idEmpresa = this.config.data.idEmpresa;
         this.item = this.config.data.item;
 
-        this.listaDocumentos = [
-            { codigo: 'CI', nombre: 'CI' },
-            { codigo: 'NIT', nombre: 'NIT' },
-            { codigo: 'CEX', nombre: 'CI EXTRANJERO' },
-            { codigo: 'PAS', nombre: 'PASAPORTE' },
-            { codigo: 'OD', nombre: 'OTRO DOCUMENTO' },
+        console.log(this.item);
 
-        ];
+        this.parametricasService
+            .getParametricasByTipo(TipoParametrica.TIPO_DOCUMENTO)
+            .subscribe((data) => {
+                this.listaDocumentos = data as unknown as Parametrica[];
+            });
 
+        const tipoDoc = this.item?.codigoTipoDocumentoIdentidad??adm.TIPO_DOC_CI;
         this.itemForm = this.fb.group({
             id: [this.item?.id],
             codigoCliente: [this.item?.codigoCliente],
-            codigoTipoDocumentoIdentidad: [this.item?.codigoTipoDocumentoIdentidad, Validators.required,],
+            codigoTipoDocumentoIdentidad: [tipoDoc, Validators.required,],
             numeroDocumento: [this.item?.numeroDocumento, [Validators.required]],
-            complemento: [{ value: this.item?.complemento, disabled: this.item?.codigoTipoDocumentoIdentidad!='CI' }],
-            nombre: [this.item?.nombre , Validators.required],
+            complemento: [{ value: this.item?.complemento, disabled: tipoDoc!=adm.TIPO_DOC_CI }],
+            nombres: [this.item?.nombres , Validators.required],
+            apellidos: [this.item?.apellidos , Validators.required],
             direccion: [this.item?.direccion],
+            codigoGenero: [this.item?.codigoGenero??'M'],
+            fechaNacimiento: [this.item?.fechaNacimiento ? new Date(this.item?.fechaNacimiento) : null],
+            ocupacion: [this.item?.ocupacion],
+            tipoSangre: [this.item?.tipoSangre],
             telefono: [this.item?.telefono],
             email: [this.item?.email, Validators.email],
             idEmpresa: [this.item?.idEmpresa],
         });
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            if (this.item?.id)
+                this.elmNombre?.nativeElement.focus();
+            else
+                this.elmDocumento?.nativeElement.focus();
+        }, 500);
     }
 
     public onSubmit(): void {
@@ -71,12 +92,6 @@ export class FormularioClienteComponent implements OnInit {
                 return;
             }
 
-            // obtener valores combo
-            const codigoTipoDocumento =
-                this.itemForm.controls['codigoTipoDocumentoIdentidad'].value;
-            const tipoDocumento = this.listaDocumentos.find(
-                (x) => x.codigo === codigoTipoDocumento
-            )?.descripcion;
             const numeroDocumento =
                 this.itemForm.controls['numeroDocumento'].value;
             const complemento = this.itemForm.controls['complemento'].value
@@ -84,31 +99,35 @@ export class FormularioClienteComponent implements OnInit {
                 : '';
             const cliente: Cliente = {
                 id: this.itemForm.controls['id'].value,
-                idEmpresa:
-                    this.itemForm.controls['idEmpresa'].value ??
+                idEmpresa: this.itemForm.controls['idEmpresa'].value ??
                     this.idEmpresa,
                 codigoCliente: this.getCodigoCliente(
                     numeroDocumento,
                     complemento
                 ),
-                codigoTipoDocumentoIdentidad:
-                    this.itemForm.controls['codigoTipoDocumentoIdentidad']
-                        .value,
+                codigoTipoDocumentoIdentidad: this.itemForm.controls['codigoTipoDocumentoIdentidad']
+                    .value,
                 numeroDocumento: numeroDocumento,
                 complemento: complemento,
-                nombre: this.itemForm.controls['nombre'].value.trim(),
+                nombres: this.itemForm.controls['nombres'].value.trim(),
+                apellidos: this.itemForm.controls['apellidos'].value.trim(),
+                codigoGenero: this.itemForm.controls['codigoGenero'].value,
+                fechaNacimiento: this.itemForm.controls['fechaNacimiento'].value,
+                ocupacion: this.itemForm.controls['ocupacion'].value,
+                tipoSangre: this.itemForm.controls['tipoSangre'].value,
                 direccion: this.itemForm.controls['direccion'].value,
                 telefono: this.itemForm.controls['telefono'].value,
                 email: this.itemForm.controls['email'].value,
             };
 
             this.submited = true;
+            console.log(cliente);
             // modificar cliente 0
             if (cliente.id > 0) {
                 this.clienteservice.edit(cliente).subscribe({
                     next: (res) => {
                         this.mensajeService.showSuccess(res.message);
-                        this.dialogRef.close(cliente);
+                        this.dialogRef.close(res.content);
                     },
                     error: (err) => {
                         this.mensajeService.showError(err.error.message);
@@ -118,9 +137,8 @@ export class FormularioClienteComponent implements OnInit {
             } else {
                 this.clienteservice.add(cliente).subscribe({
                     next: (res) => {
-                        cliente.id = res.content;
                         this.mensajeService.showSuccess(res.message);
-                        this.dialogRef.close(cliente);
+                        this.dialogRef.close(res.content);
                     },
                     error: (err) => {
                         this.mensajeService.showError(err.error.message);

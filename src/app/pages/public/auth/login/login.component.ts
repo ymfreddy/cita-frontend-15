@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { adm } from 'src/app/shared/constants/adm';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { MenuOpcion } from 'src/app/shared/models/menu-opcion';
-import { Asociacion, SessionUsuario } from 'src/app/shared/models/session-usuario.model';
-import { User } from 'src/app/shared/models/user.model';
+import { Asociacion, SessionUsuario, UsuarioAuth } from 'src/app/shared/models/usuario.model';
 import { AuthService } from 'src/app/shared/security/auth.service';
 import { SessionService } from 'src/app/shared/security/session.service';
 
@@ -37,7 +36,7 @@ export class LoginComponent {
     valCheck: string[] = ['remember'];
     password!: string;
     userForm!: FormGroup;
-    user!: User;
+    user!: UsuarioAuth;
     habilitado: Boolean = true;
     submited = false;
     cancelClicked = false;
@@ -71,7 +70,7 @@ export class LoginComponent {
 
     public onSubmit(): void {
         if (this.cancelClicked) {
-            this.router.navigate(['']);
+            this.router.navigate(['/']);
         } else {
             if (!this.userForm.valid) {
                 this.MensajeService.showWarning('Verifique los datos');
@@ -97,41 +96,30 @@ export class LoginComponent {
                                 // se coloca los datos de session
                                 let usuarioSession: SessionUsuario = {
                                     id: resSession.content.usuario.id,
-                                    username:
-                                        resSession.content.usuario.username,
-                                    tipoUsuario:
-                                        resSession.content.usuario.tipoUsuario,
-                                    codigoTipoUsuario:
-                                        resSession.content.usuario.codigoTipoUsuario,
-                                    nombreCompleto:
-                                        resSession.content.usuario
-                                            .nombreCompleto,
-                                    idEmpresa:
-                                        resSession.content.usuario.idEmpresa,
-                                    idSucursal:
-                                        resSession.content.usuario.idSucursal ??
+                                    username: resSession.content.usuario.username,
+                                    tipoUsuario: resSession.content.usuario.tipoUsuario,
+                                    codigoTipoUsuario: resSession.content.usuario.codigoTipoUsuario,
+                                    nombreCompleto: resSession.content.usuario
+                                        .nombreCompleto,
+                                    idEmpresa: resSession.content.usuario.idEmpresa,
+                                    idSucursal: resSession.content.usuario.idSucursal ??
                                         0,
                                     idPuntoVenta: 0,
-                                    empresaNombre:
-                                        resSession.content.usuario
-                                            .empresaNombre,
-                                    empresaNit:
-                                        resSession.content.usuario.empresaNit,
+                                    empresaNombre: resSession.content.usuario
+                                        .empresaNombre,
+                                    empresaSfeNit: resSession.content.usuario.empresaSfeNit,
                                     numeroSucursal: 0,
                                     numeroPuntoVenta: 0,
-                                    asociaciones:asociaciones,
-                                    cambiarClave:
-                                        resSession.content.usuario.cambiarClave,
+                                    cambiarClave: resSession.content.usuario.cambiarClave,
                                     idTurno: 0,
-                                    categorias:
-                                        resSession.content.usuario.categorias,
-                                    ci: resSession.content.usuario.ci,
-                                    restaurante: resSession.content.usuario.restaurante,
-                                    impresionDirecta: resSession.content.usuario.impresionDirecta,
-                                    descripcionAdicionalProducto: resSession.content.usuario.descripcionAdicionalProducto,
-                                    facturaIce: false,
-                                    email: resSession.content.usuario.email
+                                    numeroDocumento: resSession.content.usuario.numeroDocumento,
+                                    categorias: resSession.content.usuario.categorias,
+                                    email: resSession.content.usuario.email,
+                                    telefono: resSession.content.usuario.telefono,
+                                    codigoGenero: resSession.content.usuario.codigoGenero,
+                                    codigoCiudad: resSession.content.usuario.codigoCiudad
                                 };
+
                                 this.sessionService.setSessionUserData(
                                     usuarioSession
                                 );
@@ -153,7 +141,6 @@ export class LoginComponent {
                                         this.sessionService.setSessionMenu(opciones);
                                     }
                                     else{
-                                        this.sessionService.setRegistroVenta(null);
                                         let opciones: MenuOpcion[] =resSession.content.opciones;
                                         this.sessionService.setSessionMenu(opciones);
                                     }

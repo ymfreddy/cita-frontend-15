@@ -9,7 +9,7 @@ import {
     DynamicDialogConfig,
     DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
 
@@ -37,15 +37,16 @@ export class FormularioEmpresaComponent implements OnInit {
         this.item = this.config.data;
         this.itemForm = this.fb.group({
             id: [this.item?.id],
-            nit: [
-                this.item?.nit,
+            sfeNit: [
+                this.item?.sfeNit,
                 Validators.required,
             ],
+            unipersonal: [this.item?.unipersonal ?? false],
             nombre: [this.item?.nombre ?? '', Validators.required],
             representanteLegal: [this.item?.representanteLegal],
             email: [this.item?.email],
-            //sigla: [{value:this.item?.sigla, disabled: this.item?.id }, [Validators.required]],
-            sigla: [this.item?.sigla, Validators.required],
+            codigoPais: [this.item?.codigoPais?? 'BO', Validators.required],
+            sfeToken: [this.item?.sfeToken],
         });
     }
 
@@ -60,11 +61,13 @@ export class FormularioEmpresaComponent implements OnInit {
 
             const empresa: Empresa = {
                 id: this.itemForm.controls['id'].value,
-                nit: this.itemForm.controls['nit'].value,
                 nombre: this.itemForm.controls['nombre'].value.trim(),
                 representanteLegal: this.itemForm.controls['representanteLegal'].value,
                 email: this.itemForm.controls['email'].value,
-                sigla: this.itemForm.controls['sigla'].value,
+                codigoPais: this.itemForm.controls['codigoPais'].value,
+                sfeNit: this.itemForm.controls['sfeNit'].value,
+                sfeToken: this.itemForm.controls['sfeToken'].value,
+                unipersonal: this.itemForm.controls['unipersonal'].value,
             };
             console.log(empresa);
 

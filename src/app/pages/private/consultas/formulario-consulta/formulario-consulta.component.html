@@ -1,0 +1,200 @@
+<p-blockUI [blocked]="submited"> <app-bloqueo></app-bloqueo></p-blockUI>
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <p-divider align="left">
+            <div class="inline-flex align-items-center"><i class="pi pi-user mr-2"></i><b>Consulta</b></div>
+        </p-divider>
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-2">
+                <label>N° Consulta</label>
+                    <input type="text" class="text-disabled" formControlName="correlativo" pInputText readonly tabindex="-1" >
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Fecha</label>
+                    <input type="text" class="text-disabled" formControlName="fecha" pInputText readonly tabindex="-1" >
+            </div>
+            <div class="field col-12 md:col-4">
+                <label>Tipo Consulta</label>
+                <p-dropdown appendTo="body" formControlName="codigoTipo" id="codigoTipo" [autofocus]="true"
+                [options]="listaTipos" optionLabel="nombre" optionValue="codigo"
+                 placeholder="Seleccione una opción"
+                ></p-dropdown>
+                <small class="p-error block" *ngIf="itemForm.get('codigoTipo')?.hasError('required')">Dato requerido.</small>
+            </div>
+            <div class="field col-12 md:col-2" *ngIf="cita">
+                <label>N° Cita</label>
+                <input type="text" class="text-disabled" [value]="cita!.correlativo" pInputText readonly tabindex="-1" >
+            </div>
+        </div>
+
+        <p-divider align="left">
+            <div class="inline-flex align-items-center"><i class="pi pi-user mr-2"></i><b>Paciente</b></div>
+        </p-divider>
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-2">
+                <label>Codigo Cliente</label>
+                    <input type="text" class="text-disabled" [value]="cliente?.codigoCliente" pInputText readonly tabindex="-1" >
+            </div>
+            <div class="field col-12 md:col-4">
+                <label>Cliente</label>
+                   <input type="text" class="text-disabled" [value]="cliente?.nombreCompleto" pInputText readonly tabindex="-1" />
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Edad</label>
+                    <input type="text" class="text-disabled" [value]="cliente?.edad" pInputText readonly tabindex="-1" />
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Genero</label>
+                    <input type="text" class="text-disabled" [value]="cliente?.codigoGenero" pInputText readonly tabindex="-1" />
+            </div>
+            <div class="field col-12 md:col-2">
+                <label>Celular</label>
+                <div class="p-inputgroup">
+                    <input type="text" class="text-disabled" [value]="cliente?.telefono" pInputText maxlength="200" readonly tabindex="-1" />
+                    <p-button pTooltip="Actualizar cliente" tooltipPosition="top"
+                        (onClick)="actualizarCliente()" icon="pi pi-user-edit" styleClass="p-button"
+                        tabindex="-1"></p-button>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <p-tabView styleClass="tabview-custom">
+            <p-tabPanel header="Header II">
+                <ng-template pTemplate="header">
+                    <i class="pi pi-user"></i>
+                    <span>&nbsp;Datos Generales/Examen Físico</span>
+                </ng-template>
+
+
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-6">
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-12">
+                                <div class="p-fluid p-formgrid grid">
+                                    <div class="field col-12 md:col-3">
+                                        <label>Peso</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="peso" #peso locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon">Klg.</span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Presion Arterial</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="presionArterial" #presionArterial locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon">mmHg</span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Respiracion</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="respiracion" #respiracion locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon"></span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Talla</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="talla" #talla locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon"> cm</span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Pulso</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="pulso" #pulso locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon">lpm</span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Temperatura</label>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <div class="p-inputgroup w-full">
+                                            <p-inputNumber formControlName="temperatura" #temperatura locale="en-US" [maxlength]="10"
+                                            [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                            [maxFractionDigits]="2"></p-inputNumber>
+                                            <span class="p-inputgroup-addon"> °C</span>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-3">
+                                        <label>Inspección General</label>
+                                    </div>
+                                    <div class="field col-12 md:col-9">
+                                        <textarea rows="3" formControlName="inspeccionGeneral" pInputTextarea id="inspeccionGeneral" maxlength="500" uppercase onfocus="this.select();" ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <div class="p-fluid p-formgrid grid">
+                                <div class="field col-12 md:col-3">
+                                    <label><b>Motivo</b></label>
+                                </div>
+                                <div class="field col-12 md:col-9">
+                                    <textarea rows="3" formControlName="motivo"  pInputTextarea id="motivo" maxlength="500" uppercase onfocus="this.select();" ></textarea>
+                                </div>
+
+                                <div class="field col-12 md:col-3">
+                                    <label><b>Sintomas</b></label>
+                                </div>
+                                <div class="field col-12 md:col-9">
+                                    <p-chips formControlName="sintomas" separator="," placeholder="AYUDA: SINTOMA1, SINTOMA2" maxlength="500" uppercase></p-chips>
+                                </div>
+
+                                <div class="field col-12 md:col-3">
+                                    <label><b>Diagnostico</b></label>
+                                </div>
+                                <div class="field col-12 md:col-9">
+                                    <textarea rows="3" formControlName="diagnostico"  pInputTextarea id="diagnostico" maxlength="500" uppercase onfocus="this.select();" ></textarea>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </p-tabPanel>
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    <i class="pi pi-calendar"></i>
+                    <span>&nbsp;Recetas</span>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+
+
+
+
+        <div class="flex justify-content-end flex-wrap">
+            <button pButton pRipple label="Salir" icon="pi pi-times" class="p-button-secondary p-button-text"
+                (click)="onClose()"></button>
+            <button pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-text" (click)="onSave()"></button>
+        </div>
+
+</form>

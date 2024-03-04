@@ -1,0 +1,17 @@
+<div class="p-fluid p-formgrid grid">
+    <div class="field col-12 md:col-2">
+        <!-- <div class="field" *ngIf="esSuperAdm()">
+            <label>EMPRESA</label>
+            <p-dropdown appendTo="body" [(ngModel)]="idEmpresa" [ngModelOptions]="{standalone: true}" id="idEmpresa"
+                [autofocus]="true" [options]="listaEmpresas" optionLabel="nombre" optionValue="id"
+                (onChange)="cambioEmpresa($event)" placeholder="Seleccione una empresa"></p-dropdown>
+        </div> -->
+        <div class="field">
+            <label>PROFESIONALES</label>
+            <p-listbox [options]="listaProfesionales" (onChange)="listboxChange($event)"  [(ngModel)]="usuarioProfesional" optionLabel="profesional" ></p-listbox>
+        </div>
+    </div>
+    <div class="field col-12 md:col-10">
+        <full-calendar [options]="calendarOptions" locale="es" [deepChangeDetection]="true"></full-calendar>
+    </div>
+</div>

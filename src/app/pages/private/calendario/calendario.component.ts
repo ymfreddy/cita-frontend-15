@@ -14,7 +14,7 @@ import listPlugin from '@fullcalendar/list';
 import { BusquedaCita } from 'src/app/shared/models/busquedas.model';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { CitasService } from 'src/app/shared/services/citas.service';
-import { MensajeService } from 'src/app/shared/helpers/information.service';
+import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { Cita } from 'src/app/shared/models/cita.model';
 import { DatePipe } from '@angular/common';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -99,7 +99,7 @@ export class CalendarioComponent implements OnInit {
     handleChangeEvent(changeInfo: EventChangeArg) {
         console.log(changeInfo);
         const cita: Cita = {
-            id: changeInfo.event.id,
+            id:  +changeInfo.event.id,
             inicio: changeInfo.event.startStr,
             fin: changeInfo.event.endStr,
         };
@@ -228,7 +228,7 @@ export class CalendarioComponent implements OnInit {
         }*/
         // modificar
 
-        this.citasService.getById(clickInfo.event.id).subscribe({
+        this.citasService.getById(+clickInfo.event.id).subscribe({
             next: (res) => {
                 const item: Cita = res.content;
                 const ref = this.dialogService.open(FormularioCitaComponent, {

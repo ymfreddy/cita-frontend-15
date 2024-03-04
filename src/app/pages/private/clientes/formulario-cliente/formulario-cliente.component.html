@@ -1,60 +1,120 @@
 <p-blockUI [blocked]="submited"> <app-bloqueo></app-bloqueo></p-blockUI>
 <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
-    <div class="card">
-        <div class="p-fluid p-formgrid grid">
-            <div class="field col-12 md:col-3">
-                <label>Código Cliente</label>
-                <input formControlName="codigoCliente" type="text" pInputText id="codigoCliente" [readonly]="true"  tabindex="-1" [value]="getCodigoCliente(numeroDocumento.value, complemento.value)"  />
-            </div>
-            <div class="field col-12 md:col-3">
-                <label>Tipo Documento</label>
-                <p-dropdown appendTo="body" formControlName="codigoTipoDocumentoIdentidad" id="codigoTipoDocumentoIdentidad" [autofocus]="true"
-                [options]="listaDocumentos" optionLabel="nombre" optionValue="codigo"
-                (onChange)="canbioTipoDocumento($event)"
-                placeholder="Seleccione una opción"
-                ></p-dropdown>
-                <small class="p-error block" *ngIf="itemForm.get('codigoTipoDocumentoIdentidad')?.hasError('required')">Dato requerido.</small>
-            </div>
-            <div class="field col-12 md:col-3">
-                <label>Número Documento</label>
-                <div class="p-inputgroup">
-                    <input formControlName="numeroDocumento" type="text" pInputText id="numeroDocumento" maxlength="20" #numeroDocumento
-                    oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"
-                    />
+    <p-tabView styleClass="tabview-custom">
+        <p-tabPanel header="Header II">
+            <ng-template pTemplate="header">
+                <i class="pi pi-user"></i>
+                <span>&nbsp;Datos Generales</span>
+            </ng-template>
 
+            <div class="p-fluid">
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Código</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="codigoCliente" type="text" pInputText id="codigoCliente" [readonly]="true"  tabindex="-1" [value]="getCodigoCliente(numeroDocumento.value, complemento.value)"  />
+                    </div>
                 </div>
-                <small class="p-error block" *ngIf="itemForm.get('numeroDocumento')?.hasError('required')">Dato requerido.</small>
-            </div>
-            <div class="field col-12 md:col-3">
-                <label>Complemento</label>
-                <input formControlName="complemento" type="text"  pInputText id="complemento" maxlength="4" #complemento oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"
-                />
-            </div>
-            <div class="field col-12 md:col-6">
-                <label>Nombre</label>
-                <input formControlName="nombre" type="text" pInputText id="nombre" maxlength="255" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();"/>
-                <small class="p-error block" *ngIf="itemForm.get('nombre')?.hasError('required')">Dato requerido.</small>
-            </div>
-            <div class="field col-12 md:col-3">
-                <label>Celular</label>
-                <input formControlName="telefono" type="text" pInputText id="telefono" maxlength="8" onfocus="this.select();"
-                pKeyFilter="int"/>
-            </div>
-            <div class="field col-12 md:col-3">
-                <label>Email</label>
-                <input formControlName="email" type="text" pInputText id="email" maxlength="50" onfocus="this.select();" />
-                <small class="p-error block" *ngIf="itemForm.get('email')?.hasError('email')">Email no válido.</small>
-            </div>
-            <!-- <div class="field col-12 md:col-6">
-                <label>Dirección</label>
-                <input formControlName="direccion" type="text" pInputText id="direccion" maxlength="255" oninput="this.value = this.value.toUpperCase()" onfocus="this.select();" />
-            </div> -->
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Tipo Doc.</label>
+                    <div class="col-12 md:col-10">
+                        <p-selectButton [options]="listaDocumentos" formControlName="codigoTipoDocumentoIdentidad" optionLabel="codigo" optionValue="codigo" styleClass="w-full"
+                    optionIcon="icon" (onChange)="canbioTipoDocumento($event)" >
+                    </p-selectButton>
+                    <small class="p-error block" *ngIf="itemForm.get('codigoTipoDocumentoIdentidad')?.hasError('required')">Dato requerido.</small>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label class="col-12 md:col-2">N° Doc.</label>
+                    <div class="col-12 md:col-10">
+                        <div class="p-inputgroup">
+                            <input formControlName="numeroDocumento" style="width: 50%" type="text" pInputText id="numeroDocumento" maxlength="20" #numeroDocumento
+                            uppercase onfocus="this.select();" />
+                            <input formControlName="complemento"   placeholder="Comp." type="text" pInputText id="complemento" maxlength="4" #complemento oninput="this.value = this.value.trim().toUpperCase()" onfocus="this.select();"/>
+                        </div>
+                        <small class="p-error block" *ngIf="itemForm.get('numeroDocumento')?.hasError('required')">Dato requerido.</small>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Nombres</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="nombres" type="text" pInputText id="nombres" #nombres maxlength="100" uppercase onfocus="this.select();"/>
+                    <small class="p-error block" *ngIf="itemForm.get('nombres')?.hasError('required')">Dato requerido.</small>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Apellidos</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="apellidos" type="text" pInputText id="apellidos" #apellidos maxlength="100" uppercase onfocus="this.select();"/>
+                    <small class="p-error block" *ngIf="itemForm.get('apellidos')?.hasError('required')">Dato requerido.</small>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Genero</label>
+                    <div class="col-12 md:col-10">
+                        <div class="flex flex-wrap gap-3">
+                            <div class="flex align-items-center">
+                                <p-radioButton formControlName="codigoGenero" name="codigoGenero" value="M"  inputId="masculino"></p-radioButton>
+                                <label for="masculino" class="ml-2">Masculino</label>
+                            </div>
 
-        </div>
-    </div>
+                            <div class="flex align-items-center">
+                                <p-radioButton formControlName="codigoGenero" name="codigoGenero" value="F"  inputId="femenino"></p-radioButton>
+                                <label for="femenino" class="ml-2">Femenino</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label class="col-12 md:col-2">Celular</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="telefono" type="text" pInputText id="telefono" maxlength="8" onfocus="this.select();" pKeyFilter="int"/>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 md:col-2">Email</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="email" type="text" pInputText id="email" maxlength="50" onfocus="this.select();" />
+                        <small class="p-error block" *ngIf="itemForm.get('email')?.hasError('email')">Email no válido.</small>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel>
+            <ng-template pTemplate="header">
+                <i class="pi pi-calendar"></i>
+                <span>&nbsp;Otros Datos</span>
+            </ng-template>
+            <div class="p-fluid">
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 md:col-2">Fecha Nacimiento</label>
+                    <div class="col-12 md:col-10">
+                        <p-calendar appendTo="body" formControlName="fechaNacimiento" dateFormat="dd/mm/yy" [showTime]="false"></p-calendar>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 md:col-2">Direccion</label>
+                    <div class="col-12 md:col-10">
+                        <textarea rows="4" formControlName="direccion"  pInputTextarea id="direccion" maxlength="500" uppercase onfocus="this.select();" ></textarea>
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 md:col-2">Ocupacion</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="ocupacion" type="text" pInputText id="ocupacion" maxlength="100" uppercase onfocus="this.select();" />
+                    </div>
+                </div>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 md:col-2">Tipo Sangre</label>
+                    <div class="col-12 md:col-10">
+                        <input formControlName="tipoSangre" type="text" pInputText id="tipoSangre" maxlength="4" uppercase onfocus="this.select();" />
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+    </p-tabView>
     <div class="flex justify-content-end flex-wrap">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary p-button-text"
+        <button pButton pRipple label="Salir" icon="pi pi-times" class="p-button-secondary p-button-text"
             (click)="onClose()"></button>
-        <button pButton pRipple label="Aceptar" icon="pi pi-check" class="p-button-text" (click)="onSave()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-save" class="p-button-text" (click)="onSave()"></button>
     </div>
 </form>

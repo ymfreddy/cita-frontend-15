@@ -25,7 +25,7 @@ export class CitasService {
     return this.httpClient.get<any>(apiUrl);
   }
 
-  getById(id:string): Observable<any> {
+  getById(id:number): Observable<any> {
     const apiUrl = `${environment.api.adm}/citas/${id}`;
     return this.httpClient.get<any>(apiUrl);
   }
@@ -45,7 +45,7 @@ export class CitasService {
     return this.httpClient.put<any>(apiUrl, cita);
   }
 
-  delete(id: string): Observable<any> {
+  delete(id: number): Observable<any> {
     const apiUrl = `${environment.api.adm}/citas/${id}`;
     return this.httpClient.delete<any>(apiUrl);
   }

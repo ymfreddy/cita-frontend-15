@@ -5,6 +5,9 @@ $gutter: 0.5rem; //for primeflex grid system
     margin-bottom: 0rem !important;
 }
 
+.text-disabled{
+    background-color:#d3cdcf52
+}
 .text-wrap{
     white-space:pre-wrap !important;
 }
@@ -83,6 +86,22 @@ $gutter: 0.5rem; //for primeflex grid system
 
 
 .layout-topbar .layout-topbar-logo {
-    width: 150px !important;
+    width: 250px !important;
  }
 
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    padding: 0.5rem;
+}
+
+.p-dialog .p-dialog-header {
+    padding: 1rem;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0.5em;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1em;
+    margin: 0px;
+}

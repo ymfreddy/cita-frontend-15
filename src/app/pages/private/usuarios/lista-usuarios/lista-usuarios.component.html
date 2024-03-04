@@ -30,33 +30,39 @@
         <ng-template pTemplate="header">
             <tr>
                 <th>N°</th>
-                <th pSortableColumn="empresaNit">Empresa</th>
+                <th pSortableColumn="empresaSfeNit">Nit Empresa</th>
                 <th pSortableColumn="tipoUsuario">Tipo Usuario</th>
-                <th pSortableColumn="ci">Ci</th>
+                <th pSortableColumn="numeroDocumento">N° Doc.</th>
                 <th pSortableColumn="nombreCompleto">Nombre Completo</th>
-                <th pSortableColumn="celular">Celular</th>
-                <th pSortableColumn="username">username</th>
+                <th pSortableColumn="telefono">Telefono</th>
+                <th pSortableColumn="username">Username</th>
                 <th pSortableColumn="cambiarClave">Cambiar Clave</th>
                 <th pSortableColumn="enabled">Habilitado</th>
+                <th pSortableColumn="codigoGenero">Genero</th>
+                <th pSortableColumn="codigoCiudad">Ciudad</th>
                 <th>Operación</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-i="rowIndex" let-item>
             <tr>
                 <td><b>{{ i + 1 }}</b></td>
-                <td>{{item.empresaNit}}</td>
+                <td>{{item.empresaSfeNit}}</td>
                 <td>{{item.tipoUsuario}}</td>
-                <td>{{item.ci}}</td>
+                <td>{{item.numeroDocumento}}</td>
                 <td>{{item.nombreCompleto}}</td>
-                <td>{{item.celular}}</td>
+                <td>{{item.telefono}}</td>
                 <td>{{item.username}}</td>
                 <td>{{item.cambiarClave ? 'SI':'NO'}}</td>
                 <td>{{item.enabled ? 'SI':'NO'}}</td>
+                <td>{{item.codigoGenero}}</td>
+                <td>{{item.codigoCiudad}}</td>
                  <td style="width:5rem; min-width:5rem;">
                     <div class="flex">
                         <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                             (click)="editItem(item)"></button>
-                            <button pButton pRipple icon="pi pi-send" class="p-button-rounded p-button-success mr-2"
+                        <button pButton pRipple icon="pi pi-users" class="p-button-rounded p-button-success mr-2"
+                            (click)="gestionarAsistencia(item)"></button>
+                        <button pButton pRipple icon="pi pi-send" class="p-button-rounded p-button-success mr-2"
                             (click)="resetPasswordItem(item)"></button>
                         <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
                             (click)="deleteItem(item)"></button>

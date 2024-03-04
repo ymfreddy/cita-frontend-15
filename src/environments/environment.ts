@@ -3,7 +3,7 @@ export const environment = {
     celular: 72368246,
     email: 'adm@mifacturabolivia.com',
     production: false,
-    app: 'Juridica Tech',
+    app: 'Citas.Com',
     autor: 'MFB',
     plataforma: 'web',
     version: '1.0.0',

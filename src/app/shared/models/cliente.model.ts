@@ -4,9 +4,16 @@ export interface Cliente {
   codigoCliente: string;
   codigoTipoDocumentoIdentidad: string;
   numeroDocumento: string;
-  complemento: string;
-  nombre: string;
-  direccion: string;
-  telefono: string;
-  email: string;
+  complemento?: string;
+  codigoGenero: string;
+  nombres: string;
+  apellidos: string;
+  nombreCompleto?: string;
+  fechaNacimiento?: string|null;
+  ocupacion?: string;
+  tipoSangre?: string;
+  direccion?: string;
+  telefono?: string;
+  email?: string;
+  edad?: number;
 }

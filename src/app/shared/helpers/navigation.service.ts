@@ -13,18 +13,7 @@ export class NavigationService {
   public activeRoute$ = new Subject<MenuItem>();
 
   private item!: MenuItem;
-  private items: MenuItem[] = [
-    { id: 1, displayName: 'Inicio', icon: 'home', route: '/admin/dashboard'},
-    { id: 2, displayName: 'Sucursales', icon: 'apartment', route: '/admin/sucursales'},
-    { id: 3, displayName: 'Clientes', icon: 'family_restroom', route: '/admin/clientes'},
-    { id: 4, displayName: 'Proveedores', icon: 'villa', route: '/admin/proveedores'},
-    { id: 5, displayName: 'Usuarios', icon: 'person', route: '/admin/usuarios'},
-    { id: 6, displayName: 'Categorías', icon: 'category', route: '/admin/categorias'},
-    { id: 7, displayName: 'Productos', icon: 'inventory', route: '/admin/productos'},
-    { id: 8, displayName: 'Empresas', icon: 'business_center', route: '/admin/empresas'},
-    { id: 9, displayName: 'Asociaciones', icon: 'apartment', route: '/admin/asociaciones'},
-    { id: 10, displayName: 'Facturación', icon: 'receipt', route: '/admin/facturas'},
-  ];;
+  private items: MenuItem[] = [];
 
   constructor() { }
 

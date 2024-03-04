@@ -27,7 +27,7 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {BlockUIModule} from 'primeng/blockui';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { RatingModule } from 'primeng/rating';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'primeng/fileupload';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -58,6 +58,7 @@ import {EditorModule} from 'primeng/editor';
 import {CarouselModule} from 'primeng/carousel';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { ListboxModule } from 'primeng/listbox';
+import { ChipsModule } from 'primeng/chips';
 
 @NgModule({
   declarations: [],
@@ -120,7 +121,10 @@ import { ListboxModule } from 'primeng/listbox';
     EditorModule,
     CarouselModule,
     VirtualScrollerModule,
-    ListboxModule
+    ListboxModule,
+    NgOptimizedImage,
+    RadioButtonModule,
+    ChipsModule,
   ],
   exports: [
     AccordionModule,
@@ -177,7 +181,10 @@ import { ListboxModule } from 'primeng/listbox';
     EditorModule,
     CarouselModule,
     VirtualScrollerModule,
-    ListboxModule
+    ListboxModule,
+    NgOptimizedImage,
+    RadioButtonModule,
+    ChipsModule
   ],
   providers: [MessageService, DialogService ],
 })

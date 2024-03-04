@@ -19,10 +19,11 @@
             <tr>
                 <th>N°</th>
                 <th pSortableColumn="id">Id<p-sortIcon field="id"></p-sortIcon></th>
-                <th pSortableColumn="nit">Nit<p-sortIcon field="nit"></p-sortIcon></th>
-                <th pSortableColumn="sigla">Sigla<p-sortIcon field="sigla"></p-sortIcon></th>
                 <th pSortableColumn="nombre">Nombre<p-sortIcon field="nombre"></p-sortIcon></th>
+                <th pSortableColumn="codigoPais">CodigoPais<p-sortIcon field="codigoPais"></p-sortIcon></th>
+                <th pSortableColumn="unipersonal">Unipersonal<p-sortIcon field="unipersonal"></p-sortIcon></th>
                 <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="sfeNit">Nit<p-sortIcon field="sfeNit"></p-sortIcon></th>
                 <th>Operación</th>
             </tr>
         </ng-template>
@@ -30,10 +31,11 @@
             <tr>
                 <td><b>{{ i + 1 }}</b></td>
                 <td>{{item.id}}</td>
-                <td>{{item.nit}}</td>
-                <td>{{item.sigla}}</td>
                 <td>{{item.nombre}}</td>
+                <td>{{item.codigoPais}}</td>
+                <td>{{item.unipersonal ? 'SI':'NO'}}</td>
                 <td>{{item.email}}</td>
+                <td>{{item.sfeNit}}</td>
                  <td style="width:5rem; min-width:5rem;">
                     <div class="flex">
                         <p-fileUpload

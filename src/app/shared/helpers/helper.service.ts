@@ -116,6 +116,11 @@ export class HelperService {
         return this.datepipe.transform(fecha,'yyyy-MM-dd')??'';
     }
 
+    getYearOld(){
+        var d = new Date(2012, 7, 25);
+        return d.setFullYear(d.getFullYear() - 1);
+    }
+
     getDateTimeFromPeriodo(fechaCadena?: string): Date {
         let fecha = new Date();
         if (fechaCadena) {
