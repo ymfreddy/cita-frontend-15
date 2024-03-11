@@ -60,6 +60,7 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.idEmpresa = this.busqueda.idEmpresa!;
         this.nitEmpresa = this.sessionService.getSessionEmpresaSfeNit();
+        console.log(this.sessionService.getSessionUserData())
 
         if (this.esSuperAdm()){
             this.empresasService

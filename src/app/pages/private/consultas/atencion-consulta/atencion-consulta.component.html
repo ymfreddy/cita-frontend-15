@@ -2,14 +2,31 @@
     <app-bloqueo></app-bloqueo>
 </p-blockUI>
 
+<!-- <p-splitter [style]="{ height: 'auto' }" styleClass="mb-5">
+    <ng-template pTemplate>
+        <div class="p-fluid" style="width: 100%;">
+
+        </div>
+    </ng-template>
+    <ng-template pTemplate >
+        <div class="p-fluid" style="width: 100%;">
+        </div>
+    </ng-template>
+</p-splitter> -->
+
 <div class="p-fluid p-formgrid grid">
     <div class="field col-12 md:col-4">
-        <p-panel header="CITAS" [toggleable]="true">
+        <div class="card">
+            <b>Reservas</b> <br>
             <full-calendar [options]="calendarOptions" locale="es" [deepChangeDetection]="true"></full-calendar>
-        </p-panel>
+
+        </div>
+        <!-- <p-panel header="RESERVAS" [toggleable]="true">
+        </p-panel> -->
     </div>
     <div class="field col-12 md:col-8">
-        <p-panel header="CITA" [toggleable]="true">
+        <div class="card">
+            <b>Cita</b> <br>
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md:col-6">
                     <b>N° Consulta:</b> {{citaSeleccionada?.correlativo}}<br>
@@ -24,83 +41,220 @@
                     <b>Edad:</b> {{citaSeleccionada?.edadCliente? (citaSeleccionada?.edadCliente+ ' AÑOS'): ''}}
                 </div>
             </div>
-        </p-panel>
-        <p-panel header="CONSULTAS" [toggleable]="true">
-            <div>
-                <div class="flex justify-content-end">
-                    <button pButton pRipple label="Nueva Consulta" icon="pi pi-plus" class="p-button-success" style="width: 150px;"  (click)="nuevaConsulta()"
-                    [disabled]="!citaSeleccionada"
-                    ></button>
-                </div>
+        </div>
+        <!-- <p-panel header="RESERVA SELECCIONADA" [toggleable]="true">
 
-            </div>
-            <br>
-            <p-dataView #dv [value]="listaConsulta">
-                <!-- <ng-template pTemplate="header">
-                    <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
-                        <div class="flex">
-                            <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success mr-2"  (click)="nuevaConsulta()"></button>
+        </p-panel> -->
+
+        <div class="card">
+            <p-tabView styleClass="tabview-custom">
+                <p-tabPanel>
+                    <ng-template pTemplate="header">
+                        <i class="pi pi-calendar"></i>
+                        <span>&nbsp; Consultas</span>
+                    </ng-template>
+
+                    <p-table #dt styleClass="p-datatable-sm" [value]="listaConsulta" responsiveLayout="scroll" [rows]="10" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
+                    dataKey="id">
+                    <ng-template pTemplate="caption">
+                        <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-center">
+                            <div class="flex">
+                                <button pButton pRipple label="Nueva Consulta" icon="pi pi-plus" class="p-button-success mr-2" (click)="nuevaConsulta()"
+                                [disabled]="!citaSeleccionada"></button>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>N°</th>
+                            <th>N° Consulta</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <!-- <th>Código Cliente
+                            </th>
+                            <th>Cliente
+                            </th> -->
+                            <th>Detalle</th>
+                            <th>Operación</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-i="rowIndex" let-item>
+                        <tr>
+                            <td><b>{{ i + 1 }}</b></td>
+                            <td>{{item.correlativo }}</td>
+                            <td>{{item.tipo }}</td>
+                             <td>
+                                <div>
+                                    <label class="text-negrita">Fecha: </label>{{ item.fecha | date : "dd/MM/yyyy"}} <br/>
+                                    <label class="text-negrita">Hora: </label> {{ item.fecha | date : "HH:mm"}} <br/>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <label class="text-negrita">Motivo: </label>{{ item.motivo }} <br/>
+                                    <label class="text-negrita">Sintomas: </label> {{ item.sintomas }} <br/>
+                                    <label class="text-negrita">Diagnostico: </label>{{ item.diagnostico }} <br/>
+                                </div>
+                            </td>
+                            <td style="width:5rem; min-width:5rem;">
+                                <div class="flex">
+                                    <button appendTo="body" pButton pRipple pTooltip="Editar consulta"  tooltipPosition="top"  icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                                        (click)="editarConsulta(item)" ></button>
+                                    <button appendTo="body" pButton pRipple pTooltip="Eliminar consulta"  tooltipPosition="top"  icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                                        (click)="eliminarConsulta(item)" ></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+
+
+                    <!-- <div>
+                        <div class="flex justify-content-end">
+                            <button pButton pRipple label="Nueva Consulta" icon="pi pi-plus" class="p-button-success" style="width: 150px;"  (click)="nuevaConsulta()"
+                            [disabled]="!citaSeleccionada"
+                            ></button>
                         </div>
                     </div>
-                </ng-template> -->
-
-                <ng-template let-consulta pTemplate="listItem">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="p-fluid p-formgrid grid borde-bajo">
-                                <div class="field col-12 md:col-3">
-                                    <b>N° Consulta : </b>{{ consulta.correlativo}}
-                                </div>
-                                <div class="field col-12 md:col-9">
-                                    <b>Tipo Consulta : </b>{{ consulta.tipo}}
-                                </div>
-                            </div>
-                            <div class="p-fluid p-formgrid grid">
-                                <div class="field col-12 md:col-3">
-                                    <b>Fecha : </b>{{ consulta.fecha | date : "dd/MM/yyyy"}}
-                                </div>
-                                <div class="field col-12 md:col-9">
-                                    <b>Hora : </b>{{ consulta.fecha | date : "HH:mm"}}
-                                </div>
-                                <!-- <div class="field col-12 md:col-2">
-                                    <button pButton label="Receta" icon="pi pi-trash" class="p-button-outlined p-button-warning" ></button>
-                                </div> -->
-                            </div>
-                            <div class="p-fluid p-formgrid grid">
-                                <div class="field col-12 md:col-12">
-                                    <div class="p-fluid">
-                                        <div class="field grid">
-                                            <label class="col-12 md:col-3"><b>Motivo de Cosulta:</b></label>
-                                            <label class="col-12 md:col-9">{{consulta.motivo}}</label>
+                    <br>
+                    <p-dataView #dv [value]="listaConsulta">
+                        <ng-template let-consulta pTemplate="listItem">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="p-fluid p-formgrid grid borde-bajo">
+                                        <div class="field col-12 md:col-3">
+                                            <b>N° Consulta : </b>{{ consulta.correlativo}}
                                         </div>
-                                        <div class="field grid">
-                                            <label class="col-12 md:col-3"><b>Sintomas:</b></label>
-                                            <label class="col-12 md:col-9">{{consulta.sintomas}}</label>
-                                        </div>
-                                        <div class="field grid">
-                                            <label class="col-12 md:col-3"><b>Diagnostico:</b></label>
-                                            <label class="col-12 md:col-9">{{consulta.diagnostico}}</label>
+                                        <div class="field col-12 md:col-9">
+                                            <b>Tipo Consulta : </b>{{ consulta.tipo}}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="p-fluid p-formgrid grid">
-                                <div class="field col-12 md:col-8">
-                                </div>
-                                <div class="field col-12 md:col-2">
-                                    <button pButton (click)="editarConsulta(consulta)" label="Editar" icon="pi pi-trash" class="p-button-outlined p-button-primary" ></button>
-                                </div>
-                                <div class="field col-12 md:col-2">
-                                    <button pButton (click)="eliminarConsulta(consulta)" label="Eliminar" icon="pi pi-trash" class="p-button-outlined p-button-danger" ></button>
-                                </div>
-                            </div>
+                                    <div class="p-fluid p-formgrid grid">
+                                        <div class="field col-12 md:col-3">
+                                            <b>Fecha : </b>{{ consulta.fecha | date : "dd/MM/yyyy"}}
+                                        </div>
+                                        <div class="field col-12 md:col-9">
+                                            <b>Hora : </b>{{ consulta.fecha | date : "HH:mm"}}
+                                        </div>
+                                    </div>
+                                    <div class="p-fluid p-formgrid grid">
+                                        <div class="field col-12 md:col-12">
+                                            <div class="p-fluid">
+                                                <div class="field grid">
+                                                    <label class="col-12 md:col-3"><b>Motivo de Cosulta:</b></label>
+                                                    <label class="col-12 md:col-9">{{consulta.motivo}}</label>
+                                                </div>
+                                                <div class="field grid">
+                                                    <label class="col-12 md:col-3"><b>Sintomas:</b></label>
+                                                    <label class="col-12 md:col-9">{{consulta.sintomas}}</label>
+                                                </div>
+                                                <div class="field grid">
+                                                    <label class="col-12 md:col-3"><b>Diagnostico:</b></label>
+                                                    <label class="col-12 md:col-9">{{consulta.diagnostico}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-fluid p-formgrid grid">
+                                        <div class="field col-12 md:col-8">
+                                        </div>
+                                        <div class="field col-12 md:col-2">
+                                            <button pButton (click)="editarConsulta(consulta)" label="Editar" icon="pi pi-trash" class="p-button-outlined p-button-primary" ></button>
+                                        </div>
+                                        <div class="field col-12 md:col-2">
+                                            <button pButton (click)="eliminarConsulta(consulta)" label="Eliminar" icon="pi pi-trash" class="p-button-outlined p-button-danger" ></button>
+                                        </div>
+                                    </div>
 
+                                </div>
+
+                            </div>
+                        </ng-template>
+                    </p-dataView> -->
+                </p-tabPanel>
+                <p-tabPanel>
+                    <ng-template pTemplate="header">
+                        <i class="pi pi-user"></i>
+                        <span>&nbsp; Cuentas Pendientes</span>
+                    </ng-template>
+
+                    <p-table #dt styleClass="p-datatable-sm" [value]="listaCuenta" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['correlativo','numeroSucursal','fecha','codigoCliente','cliente','descuento','subtotal','total','estadoCuenta','tipoCuenta','saldo']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
+                    dataKey="id">
+                    <ng-template pTemplate="caption">
+                        <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-center">
+                            <div class="flex">
+                                <button pButton pRipple label="Nueva Cuenta" icon="pi pi-plus" class="p-button-success mr-2"  (click)="newItem()" [disabled]="!citaSeleccionada"></button>
+                            </div>
                         </div>
+                    </ng-template>
 
-                    </div>
-                </ng-template>
-            </p-dataView>
-        </p-panel>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>N°</th>
+                            <th>N° Cuenta</th>
+                            <th>Sucursal
+                            </th>
+                            <th>Fecha
+                            </th>
+                            <!-- <th>Código Cliente
+                            </th>
+                            <th>Cliente
+                            </th> -->
+                            <th>Subtotal
+                            </th>
+                            <th>Descuento
+                            </th>
+                            <th>Total
+                        </th>
+                        <th>Saldo
+                        </th>
+                        <th>Tipo     </th>
+                        <th>Estado</th>
+                        <th>Usuario</th>
+                        <th>Operación</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-i="rowIndex" let-item>
+                        <tr>
+                            <td><b>{{ i + 1 }}</b></td>
+                            <td>{{item.correlativo }}</td>
+                            <td>{{item.numeroSucursal }}</td>
+                            <td>{{item.fecha  | formatoFechaHora }}</td>
+                            <!-- <td>{{item.codigoCliente}}</td>
+                            <td>{{item.cliente}}</td> -->
+                            <td class="text-right">{{item.subtotal | formatoDecimal }}</td>
+                            <td class="text-right">{{item.descuentoAdicional | formatoDecimal}}</td>
+                            <td class="text-right">{{item.total | formatoDecimal}}</td>
+                            <td class="text-right">{{item.saldo | formatoDecimal}}</td>
+                            <td>{{item.tipoCuenta}}</td>
+                            <td>{{item.estadoCuenta}}</td>
+                            <td>{{item.usuario}}</td>
+                            <td style="width:5rem; min-width:5rem;">
+                                <div class="flex">
+                                    <button appendTo="body" pButton pRipple pTooltip="Más opciones"  tooltipPosition="top"   icon="pi pi-cog" class="p-button-rounded p-button-primary mr-2"
+                                        (click)="opcionesCuenta(menuCuenta, $event, item)"></button>
+                                    <button appendTo="body" pButton pRipple pTooltip="Editar cuenta"  tooltipPosition="top"  icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                                        (click)="editItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
+                                    <button appendTo="body" pButton pRipple pTooltip="Eliminar cuenta"  tooltipPosition="top"  icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                                        (click)="deleteItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+        <!-- <p-panel header="CONSULTAS" [toggleable]="true">
+
+        </p-panel> -->
     </div>
-
 </div>
+<p-menu [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" #menuCuenta [popup]="true" [model]="itemsMenuCuenta"></p-menu>

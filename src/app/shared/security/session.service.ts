@@ -32,7 +32,7 @@ export class SessionService {
 
         const nitEmpresa = JSON.parse(
             sessionStorage.getItem('wx-user-data') ?? ''
-        ).empresaNit;
+        ).empresaSfeNit;
         return parseInt(nitEmpresa ?? '0');
     }
 

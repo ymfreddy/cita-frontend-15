@@ -64,16 +64,6 @@ export interface UsuarioClienteRegistro {
     codigoCiudad: string;
 }
 
-export interface Asociacion {
-    id: number;
-    codigoAsociacion: string;
-    nombreSistema: string;
-    ambiente: string;
-    codigoDocumentoSector: number;
-    modalidad: string;
-    documentoSector: string;
-    conexionAutomatica: boolean;
-}
 
 export interface UsuarioAsignacionAsistencia {
     id: number;

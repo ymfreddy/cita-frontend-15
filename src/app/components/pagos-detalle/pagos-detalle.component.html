@@ -1,0 +1,37 @@
+<p-table [value]="listaPagos" styleClass="mt-5" dataKey="id">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Codigo Pago</th>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Codigo Cliente</th>
+            <th>Cliente</th>
+            <th>Tipo Pago</th>
+            <th>Monto Pagado</th>
+            <th>Operación</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+        <tr [pSelectableRow]="item" [pSelectableRowIndex]="rowIndex">
+            <td>{{item.correlativo}}</td>
+            <td>{{item.fechaPago | formatoFechaHora}}</td>
+            <td>{{item.descripcion}}</td>
+            <td>{{item.codigoCliente}}</td>
+            <td>{{item.cliente}}</td>
+            <td>{{item.tipoPago}}</td>
+            <td>{{item.montoPagado}}</td>
+            <td style="width:5rem; min-width:5rem;">
+                <div class="flex">
+                    <button pButton pRipple icon="pi pi-cloud-download" class="p-button-rounded p-button-success mr-2"
+                        (click)="descargarComprobante(item)" pTooltip="Descargar Comprobante de Pago"  tooltipPosition="top" ></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger  mr-2"
+                        (click)="anularPago(item)" pTooltip="Anular pago"  tooltipPosition="top" ></button>
+                </div>
+            </td>
+
+        </tr>
+    </ng-template>
+</p-table>
+<ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="cerrar()" label="Salir" styleClass="p-button-text"></p-button>
+</ng-template>

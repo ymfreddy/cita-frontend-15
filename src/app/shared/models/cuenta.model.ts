@@ -25,6 +25,11 @@ export interface Cuenta {
     itemsEliminados?:    number[]|null;
     detalle?:            CuentaDetalle[];
     usuario?:              string;
+
+    codigoEstadoFactura?:              number;
+    estadoFactura?:              string;
+    cufFactura?:              string;
+    numeroFactura?:              number;
 }
 
 export interface CuentaDetalle {

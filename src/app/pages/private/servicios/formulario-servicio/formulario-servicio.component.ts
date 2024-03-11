@@ -16,6 +16,8 @@ import { CategoriasService } from 'src/app/shared/services/categorias.service';
 import { TipoParametrica } from 'src/app/shared/enums/tipo-parametrica.model';
 import { adm } from 'src/app/shared/constants/adm';
 import { ServiciosService } from 'src/app/shared/services/productos.service';
+import { ActividadSfe, ParametricaSfe, ProductoSfe } from 'src/app/shared/models/sfe.model';
+import { SfeService } from 'src/app/shared/services/sfe.service';
 
 @Component({
     selector: 'app-formulario-servicio',
@@ -30,8 +32,15 @@ export class FormularioServicioComponent implements OnInit {
     submited = false;
     fileImagen: any;
     listaCategorias: Categoria[] = [];
+
+    listaTiposUnidad: ParametricaSfe[] = [];
+    listaActividades: ActividadSfe[] = [];
+
+    listaTiposServicioSinSeleccionado: ProductoSfe[] = [];
+    listaTiposProductoSin: ProductoSfe[] = [];
     idEmpresa!:number;
     nitEmpresa!:number;
+
     constructor(
         private fb: FormBuilder,
         public config: DynamicDialogConfig,
@@ -41,7 +50,8 @@ export class FormularioServicioComponent implements OnInit {
         private servicioservice: ServiciosService,
         private sessionService: SessionService,
         private parametricasService: ParametricasService,
-        private categoriasService: CategoriasService
+        private categoriasService: CategoriasService,
+        private sfeService: SfeService
     ) {}
 
     ngOnInit(): void {
@@ -65,6 +75,22 @@ export class FormularioServicioComponent implements OnInit {
                 },
             });
 
+            this.sfeService.getTipoUnidad().subscribe((data) => {
+                this.listaTiposUnidad = data as unknown as ParametricaSfe[];
+            });
+
+
+            this.sfeService.getActividades(this.nitEmpresa).subscribe((data) => {
+                this.listaActividades = data as unknown as ActividadSfe[];
+            });
+
+            this.sfeService.getProductosSin(this.nitEmpresa).subscribe((data) => {
+                this.listaTiposProductoSin = data as unknown as ProductoSfe[];
+                if (this.item?.id){
+                    this.listaTiposServicioSinSeleccionado = this.listaTiposProductoSin.filter(x=>x.codigoActividad==this.item?.codigoActividadSin);
+                }
+            });
+
             console.log(this.item);
         // cargar data
         this.itemForm = this.fb.group({
@@ -73,7 +99,7 @@ export class FormularioServicioComponent implements OnInit {
             idCategoria: [this.item?.idCategoria, Validators.required],
             codigoServicio: [this.item?.codigoServicio, Validators.required],
             codigoActividadSin: [this.item?.codigoActividadSin],
-            codigoServicioSin: [this.item?.codigoServicioSin],
+            codigoProductoSin: [this.item?.codigoProductoSin],
             codigoTipoUnidadSin: [this.item?.codigoTipoUnidadSin],
             nombre: [this.item?.nombre, Validators.required],
             descripcion: [this.item?.descripcion],
@@ -115,8 +141,8 @@ export class FormularioServicioComponent implements OnInit {
                     this.itemForm.controls['codigoServicio'].value.trim(),
                 codigoActividadSin:
                     this.itemForm.controls['codigoActividadSin'].value,
-                codigoServicioSin:
-                    this.itemForm.controls['codigoServicioSin'].value,
+                codigoProductoSin:
+                    this.itemForm.controls['codigoProductoSin'].value,
                 codigoTipoUnidadSin:
                     this.itemForm.controls['codigoTipoUnidadSin'].value,
                 nombre: this.itemForm.controls['nombre'].value.trim(),
@@ -184,5 +210,15 @@ export class FormularioServicioComponent implements OnInit {
             },
         });
         fileUpload.clear();
+    }
+
+    cambioActividad(event: any) {
+        if (!event.value) {
+            this.listaTiposServicioSinSeleccionado = [];
+            return;
+        }
+
+        this.listaTiposServicioSinSeleccionado = this.listaTiposProductoSin.filter((x) => x.codigoActividad == event.value);
+        this.itemForm.updateValueAndValidity();
     }
 }

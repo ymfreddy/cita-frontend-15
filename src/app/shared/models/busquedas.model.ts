@@ -103,8 +103,8 @@ export interface BusquedaCuenta {
     idSucursal: number;
     fechaInicio?: string;
     fechaFin?: string;
-    codigosTiposCuenta: string;
-    codigosEstadosCuenta: string;
+    codigosTiposCuenta?: string;
+    codigosEstadosCuenta?: string;
     usuario?: string;
     codigoCliente?: string;
     correlativo?: string;

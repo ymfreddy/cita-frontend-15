@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BrowserDetectorService } from '../services/browser-detector.service';
+import * as printJS from 'print-js';
 //import * as printJS from "print-js";
 //import * as FileSaver from 'file-saver';
 
@@ -39,7 +40,7 @@ export class FilesService {
                 }, 500);
             }
             else{
-                //printJS(fileURL);
+                printJS(fileURL);
             }
         }else{
             const link = document.createElement('a');

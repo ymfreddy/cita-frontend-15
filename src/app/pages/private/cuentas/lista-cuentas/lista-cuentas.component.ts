@@ -21,8 +21,17 @@ import { UsuariosService } from 'src/app/shared/services/usuarios.service';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
 import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
-import { BusquedaCuenta, BusquedaUsuario } from 'src/app/shared/models/busquedas.model';
+import { BusquedaCuenta, BusquedaPago, BusquedaUsuario } from 'src/app/shared/models/busquedas.model';
 import { FormularioCuentaComponent } from '../formulario-cuenta/formulario-cuenta.component';
+import { CuentaDetalleComponent } from 'src/app/components/cuenta-detalle/cuenta-detalle.component';
+import { FormularioPagoComponent } from '../formulario-pago/formulario-pago.component';
+import { PagosService } from 'src/app/shared/services/pagos.service';
+import { Pago } from 'src/app/shared/models/pago.model';
+import { PagosDetalleComponent } from 'src/app/components/pagos-detalle/pagos-detalle.component';
+import { GenerarFacturaComponent } from 'src/app/components/generar-factura/generar-factura.component';
+import { AnularFacturaComponent } from 'src/app/components/anular-factura/anular-factura.component';
+import { WhatsappFacturaComponent } from 'src/app/components/whatsapp-factura/whatsapp-factura.component';
+import { SfeService } from '../../../../shared/services/sfe.service';
 
 
 @Component({
@@ -66,9 +75,11 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         private router: Router,
         private datepipe: DatePipe,
         private helperService: HelperService,
-        private fileService:FilesService,
         private usuarioService: UsuariosService,
         private empresasService: EmpresasService,
+        private pagosService:PagosService,
+        private fileService:FilesService,
+        private sfeService :SfeService
     ) {}
 
     ngOnInit(): void {
@@ -89,7 +100,6 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         this.cargarSucursales();
         this.cargarUsuarios();
         this.cargarParametricas();
-
 
         // fn cargar usuarios
         let fechaInicio = this.helperService.getDate(this.busquedaMemoria?.fechaInicio);
@@ -112,7 +122,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         }
 
         if (this.busquedaMemoria) {
-            this.loadData(0);
+            this.loadData();
         }
     }
 
@@ -122,25 +132,24 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
                 label: 'Reporte',
                 icon: 'pi pi-file-pdf',
                 command: () => {
-                    this.reporteCuentas();
+                    //this.reporteCuentas();
                 },
             }
         ];
 
         const itemsCuenta : any[]=[];
-
         itemsCuenta.push({
-            label: 'Descargar Recibo',
-            icon: 'pi pi-cloud-download',
+            label: 'Pagar Saldo',
+            icon: 'pi pi-directions-alt',
             command: () => {
-                this.opcionCuentaDescargar(false);
+                this.opcionPagarSaldo();
             },
         });
         itemsCuenta.push({
-            label: 'Imprimir Recibo',
-            icon: 'pi pi-print',
+            label: 'Ver Pagos Realizados',
+            icon: 'pi pi-directions-alt',
             command: () => {
-                this.opcionCuentaDescargar(true);
+                this.opcionVerPagosRealizados();
             },
         });
         itemsCuenta.push({
@@ -162,6 +171,50 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             {
                 label: 'Opciones Cuenta',
                 items: itemsCuenta,
+            },
+        ];
+
+        // facturacion
+        this.itemsMenuFactura = [
+            {
+                label: 'Opciones Factura',
+                items: [
+                    {
+                        label: 'Descargar',
+                        icon: 'pi pi-cloud-download',
+                        command: () => {
+                            this.opcionFacturaDescargar(false);
+                        },
+                    },
+                    {
+                        label: 'Imprimir',
+                        icon: 'pi pi-print',
+                        command: () => {
+                            this.opcionFacturaDescargar(true);
+                        },
+                    },
+                    {
+                        label: 'Emitir',
+                        icon: 'pi pi-cloud-upload',
+                        command: () => {
+                            this.opcionFacturaEmitir();
+                        },
+                    },
+                    {
+                        label: 'Anular',
+                        icon: 'pi pi-times',
+                        command: () => {
+                            this.opcionFacturaAnular();
+                        },
+                    },
+                    {
+                        label: 'Enviar WhatsApp',
+                        icon: 'pi pi-whatsapp',
+                        command: () => {
+                            this.opcionFacturaWhatsapp();
+                        },
+                    },
+                ],
             },
         ];
     }
@@ -229,7 +282,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         return this.sessionService.isSuperAdmin();
     }
 
-    loadData(reporte:number): void {
+    loadData(): void {
         if (!this.criteriosBusquedaForm.valid) {
             this.mensajeService.showWarning('Verifique los datos');
             return;
@@ -270,17 +323,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         this.blockedPanel = true;
         const criterios = this.getBusquedaCriterios();
 
-        if (reporte>0) {
-            /*if (reporte==1){
-                const fileName = `cuentas-${this.nitEmpresa}.pdf`;
-                this.utilidadesService.getReporteCuentas(criterios).pipe(delay(1000)).subscribe((blob: Blob): void => {
-                        this.fileService.printFile(blob, fileName, false);
-                        this.blockedPanel = false;
-                    });
-            }*/
-        }
-        else {
-            this.cuentasService.get(criterios)
+        this.cuentasService.get(criterios)
             .subscribe({
                 next: (res) => {
                     this.sessionService.setBusquedaCuenta(criterios);
@@ -293,11 +336,6 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
                     this.blockedPanel = false;
                 },
             });
-        }
-    }
-
-    reporteCuentas() {
-        this.loadData(1);
     }
 
     getBusquedaCriterios() {
@@ -333,8 +371,9 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
 
         ref.onClose.subscribe((res) => {
             if (res) {
-                this.items.unshift(res);
-                this.items=this.items.slice();
+                this.loadData();
+                //this.items.unshift(res);
+                //this.items=this.items.slice();
             }
         });
     }
@@ -355,8 +394,9 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
                 ref.onClose.subscribe((res) => {
                     if (res) {
                         console.log(res);
-                        let objIndex = this.items.findIndex((obj => obj.id == res!.id));
-                        this.items[objIndex]=res;
+                        //let objIndex = this.items.findIndex((obj => obj.id == res!.id));
+                        //this.items[objIndex]=res;
+                        this.loadData();
                     }
                 });
             },
@@ -413,12 +453,6 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             return;
         }
 
-        /*if (this.cuentaSeleccionada?.factura  && this.cuentaSeleccionada?.factura.codigoEstado!=sfe.ESTADO_FACTURA_ANULADO){
-            this.mensajeService.showWarning('Para realizar la devolución debe anular la factura');
-            return;
-        }*/
-
-
         this.confirmationService.confirm({
             message: 'Esta seguro de realizar la devolución de la cuenta '+this.cuentaSeleccionada?.correlativo+' ?',
             header: 'Confirmación',
@@ -427,7 +461,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
                 this.cuentasService.devolucion(this.cuentaSeleccionada).subscribe({
                     next: (res) => {
                         this.mensajeService.showSuccess(res.message);
-                        this.loadData(0);
+                        this.loadData();
                     },
                     error: (err) => {
                         this.mensajeService.showError(err.error.message);
@@ -438,13 +472,13 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
     }
 
     opcionCuentaDetalle() {
-                /*const ref = this.dialogService.open(CuentaDetalleComponent, {
-                    header: 'Detalle Cuenta '+ this.cuentaSeleccionada.correlativo,
+                const ref = this.dialogService.open(CuentaDetalleComponent, {
+                    header: 'Detalle Cuenta N° '+ this.cuentaSeleccionada.correlativo,
                     width: '80%',
                     data: { item: this.cuentaSeleccionada},
                 });
                 ref.onClose.subscribe((res) => {
-                });*/
+                });
     }
 
     onGlobalFilter(table: Table, event: Event) {
@@ -455,7 +489,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
     }
 
     public onSubmit(): void {
-        this.loadData(0);
+        this.loadData();
     }
 
     ngOnDestroy(): void {
@@ -470,26 +504,6 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         menu.toggle(event);
     }
 
-
-
-
-
-    opcionCuentaImprimirCuenta() {
-        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_ACTIVO){
-            this.mensajeService.showWarning('Solo puede imprimir cuentas con estado activos');
-            return;
-        }
-
-        /*this.utilidadesService.getImpresionCuenta(this.cuentaSeleccionada.id).subscribe({
-            next: (res) => {
-                this.mensajeService.showSuccess(res.message);
-            },
-            error: (err) => {
-                this.mensajeService.showError(err.error.message);
-            },
-        });*/
-    }
-
     cambioEmpresa(event: any) {
         const empresaAux = this.listaEmpresas.find(x=>x.id===event.value)!;
         this.nitEmpresa = empresaAux.sfeNit;
@@ -501,5 +515,162 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         this.criteriosBusquedaForm.controls['usuario'].setValue(null);
         this.cargarSucursales();
         this.cargarUsuarios();
+    }
+
+    opcionPagarSaldo() {
+        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_POR_PAGAR){
+            this.mensajeService.showWarning('Solo puede realizar el pago de cuentas por pagar');
+            return;
+        }
+
+        const cuentas:Cuenta[]=[this.cuentaSeleccionada];
+        const ref = this.dialogService.open(FormularioPagoComponent, {
+            header: 'Cobrar',
+            width: '80%',
+            data: cuentas,
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.loadData();
+            }
+        });
+    }
+
+    opcionVerPagosRealizados() {
+        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_POR_PAGAR
+            && this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_PAGADO
+            ){
+            this.mensajeService.showWarning('Solo ver pagos de cuentas a credito');
+            return;
+        }
+
+        const ref = this.dialogService.open(PagosDetalleComponent, {
+            header: 'Pagos Realizados',
+            width: '80%',
+            data: this.cuentaSeleccionada,
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.loadData();
+            }
+        });
+    }
+
+    opcionFacturaEmitir() {
+        if (
+            this.cuentaSeleccionada?.codigoEstadoFactura &&
+            this.cuentaSeleccionada?.codigoEstadoFactura != adm.ESTADO_FACTURA_ANULADO &&
+            this.cuentaSeleccionada?.codigoEstadoFactura != adm.ESTADO_FACTURA_OBSERVADO &&
+            this.cuentaSeleccionada?.codigoEstadoFactura != adm.ESTADO_FACTURA_RECHAZADA
+        ) {
+            this.mensajeService.showWarning('Ya existe una factura');
+            return;
+        }
+
+        if (
+            this.cuentaSeleccionada?.codigoEstadoCuenta == adm.ESTADO_CUENTA_ACTIVO ||
+            this.cuentaSeleccionada?.codigoEstadoCuenta == adm.ESTADO_CUENTA_REVERTIDA
+        ) {
+            this.mensajeService.showWarning('La cuenta no esta finalizada');
+            return;
+        }
+
+        console.log(this.cuentaSeleccionada);
+        const ref = this.dialogService.open(GenerarFacturaComponent, {
+            header: 'Emitir Factura',
+            width: '90%',
+            data: {cuenta : this.cuentaSeleccionada},
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.loadData();
+            }
+        });
+    }
+
+    opcionFacturaAnular() {
+        if (!this.cuentaSeleccionada?.cufFactura || this.cuentaSeleccionada?.codigoEstadoFactura == adm.ESTADO_FACTURA_RECHAZADA) {
+            this.mensajeService.showWarning('No existe factura');
+            return;
+        }
+        if (this.cuentaSeleccionada?.codigoEstadoFactura == adm.ESTADO_FACTURA_ANULADO) {
+            this.mensajeService.showWarning('La factura ya está anulada');
+            return;
+        }
+        const ref = this.dialogService.open(AnularFacturaComponent, {
+            header: 'Anular Factura',
+            width: '500px',
+            data: this.cuentaSeleccionada,
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.loadData();
+            }
+        });
+    }
+
+    opcionFacturaWhatsapp() {
+        if (!this.cuentaSeleccionada?.codigoEstadoFactura || this.cuentaSeleccionada?.codigoEstadoFactura == adm.ESTADO_FACTURA_RECHAZADA) {
+            this.mensajeService.showWarning('No existe factura');
+            return;
+        }
+        if (this.cuentaSeleccionada?.codigoEstadoFactura == adm.ESTADO_FACTURA_RECHAZADA) {
+            this.mensajeService.showWarning('La factura está rechazada');
+            return;
+        }
+        if (this.cuentaSeleccionada?.codigoEstadoFactura == adm.ESTADO_FACTURA_ANULADO) {
+            this.mensajeService.showWarning('La factura está anulada');
+            return;
+        }
+
+
+        const factura: any = {
+            ... this.cuentaSeleccionada!,
+            codigoCliente: this.cuentaSeleccionada.codigoCliente,
+            nombreRazonSocial: this.cuentaSeleccionada.cliente
+        }
+        console.log(factura);
+        /*const ref = this.dialogService.open(EnviarWhatsappComponent, {
+            header: 'Enviar Factura por WhatsApp',
+            width: '300px',
+            data: factura,
+        });
+        ref.onClose.subscribe((res) => {});*/
+
+        const ref = this.dialogService.open(WhatsappFacturaComponent, {
+            header: 'Enviar Factura por WhatsApp',
+            width: '500px',
+            data: factura,
+        });
+        ref.onClose.subscribe((res) => {});
+    }
+
+    opcionFacturaDescargar(imprimir:boolean) {
+        if (!this.cuentaSeleccionada?.codigoEstadoFactura) {
+            this.mensajeService.showWarning('No existe factura');
+            return;
+        }
+
+        this.blockedPanel = true;
+        const fileName = `factura-${this.cuentaSeleccionada.cufFactura}.pdf`;
+        this.sfeService.decargar(this.cuentaSeleccionada.cufFactura!)
+            .pipe(delay(1000))
+            .subscribe((blob: Blob): void => {
+                this.fileService.printFile(blob, fileName, imprimir);
+                this.blockedPanel = false;
+            });
+    }
+
+    getSeverity(status: number) {
+        switch (status) {
+            case 908:
+                return 'success';
+            case 904:
+                return 'warning';
+            case 905:
+                return 'danger';
+            default:
+                return '';
+        }
     }
 }

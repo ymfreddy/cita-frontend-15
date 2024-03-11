@@ -65,7 +65,7 @@
             <p-divider type="dashed"></p-divider>
             <div class="flex justify-content-end flex-wrap">
                 <!-- <button pButton pRipple label="Buscar" icon="pi pi-search" class="p-button mr-2"></button> -->
-                <p-splitButton label="Buscar" icon="pi pi-search" (onClick)="loadData(0)" [model]="opciones"></p-splitButton>
+                <p-splitButton label="Buscar" icon="pi pi-search" (onClick)="loadData()" [model]="opciones"></p-splitButton>
             </div>
 
     </form>
@@ -100,14 +100,18 @@
                 </th>
                 <th>Cliente
                 </th>
-                <th>Subtotal
+                <!-- <th>Subtotal
                 </th>
                 <th>Descuento
-                </th>
+                </th> -->
                 <th>Total
+            </th>
+            <th>Saldo
             </th>
             <th>Tipo     </th>
             <th>Estado</th>
+            <th>N° Factura</th>
+            <th>Estado Factura</th>
             <th>Usuario</th>
             <th>Operación</th>
             </tr>
@@ -120,20 +124,25 @@
                 <td>{{item.fecha  | formatoFechaHora }}</td>
                 <td>{{item.codigoCliente}}</td>
                 <td>{{item.cliente}}</td>
-                <td class="text-right">{{item.subtotal | formatoDecimal }}</td>
-                <td class="text-right">{{item.descuentoAdicional | formatoDecimal}}</td>
+                <!-- <td class="text-right">{{item.subtotal | formatoDecimal }}</td>
+                <td class="text-right">{{item.descuentoAdicional | formatoDecimal}}</td> -->
                 <td class="text-right">{{item.total | formatoDecimal}}</td>
+                <td class="text-right">{{item.saldo | formatoDecimal}}</td>
                 <td>{{item.tipoCuenta}}</td>
                 <td>{{item.estadoCuenta}}</td>
+                <td>{{item.numeroFactura}}</td>
+                <td><p-tag [value]="item.estadoFactura" [severity]="getSeverity(item.codigoEstadoFactura)"></p-tag></td>
                 <td>{{item.usuario}}</td>
                 <td style="width:5rem; min-width:5rem;">
                     <div class="flex">
+                        <button appendTo="body" pButton pRipple pTooltip="Facturación"  tooltipPosition="top"  icon="pi pi-file" class="p-button-rounded p-button-primary mr-2 icon-sin"
+                            (click)="opcionesCuenta(menuFactura, $event, item)"></button>
                         <button appendTo="body" pButton pRipple pTooltip="Más opciones"  tooltipPosition="top"   icon="pi pi-cog" class="p-button-rounded p-button-primary mr-2"
                             (click)="opcionesCuenta(menuCuenta, $event, item)"></button>
                         <button appendTo="body" pButton pRipple pTooltip="Editar cuenta"  tooltipPosition="top"  icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
-                            (click)="editItem(item)" [disabled]="esEditable(item.idEstadoCuenta)"></button>
+                            (click)="editItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
                         <button appendTo="body" pButton pRipple pTooltip="Eliminar cuenta"  tooltipPosition="top"  icon="pi pi-trash" class="p-button-rounded p-button-danger"
-                            (click)="deleteItem(item)" [disabled]="esEditable(item.idEstadoCuenta)"></button>
+                            (click)="deleteItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
                     </div>
                 </td>
             </tr>
@@ -143,3 +152,4 @@
 
 <p-menu [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" #menuFactura [popup]="true" [model]="itemsMenuFactura"></p-menu>
 <p-menu [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" #menuCuenta [popup]="true" [model]="itemsMenuCuenta"></p-menu>
+

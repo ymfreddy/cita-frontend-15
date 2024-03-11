@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { adm } from 'src/app/shared/constants/adm';
 import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
 import { MenuOpcion } from 'src/app/shared/models/menu-opcion';
-import { Asociacion, SessionUsuario, UsuarioAuth } from 'src/app/shared/models/usuario.model';
+import { SessionUsuario, UsuarioAuth } from 'src/app/shared/models/usuario.model';
 import { AuthService } from 'src/app/shared/security/auth.service';
 import { SessionService } from 'src/app/shared/security/session.service';
 
@@ -92,7 +92,6 @@ export class LoginComponent {
                     this.authService.getSession().subscribe({
                         next: (resSession) => {
                             if (resSession.success) {
-                                const asociaciones:Asociacion[] = resSession.content.asociaciones
                                 // se coloca los datos de session
                                 let usuarioSession: SessionUsuario = {
                                     id: resSession.content.usuario.id,

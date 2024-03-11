@@ -4,15 +4,13 @@ export interface Pago {
   idTurno: number;
   idCliente: number;
   codigoCliente: string;
-  nombreCliente?: string;
-  emailCliente?: string;
+  cliente?: string;
+  telefonoCliente?: string;
   codigoTipoMoneda: number;
   codigoTipoPago: number;
   numeroTarjeta?: number;
   tipoCambio: number;
-  importe: number;
   montoPagado: number;
-  cambio: number;
   gift: number;
   descripcion?: string;
 }
@@ -26,6 +24,16 @@ export interface PagoResumen {
   }
 
   export interface Liquidacion {
+    pago: Pago;
+    listaIdCuentas: number[];
+  }
+
+  export interface FinalizarCuenta {
+    idCuenta?: number;
+    pago: Pago|null
+}
+
+export interface Liquidacion {
     pago: Pago;
     listaIdCuentas: number[];
   }

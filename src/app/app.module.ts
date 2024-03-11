@@ -54,12 +54,18 @@ import { selectorPuntoVentaComponent } from './components/selector-punto-venta/s
 import { FormularioSucursalComponent } from './pages/private/sucursales/formulario-sucursal/formulario-sucursal.component';
 import { ListaSucursalesComponent } from './pages/private/sucursales/lista-sucursales/lista-sucursales.component';
 import { FormularioCuentaComponent } from './pages/private/cuentas/formulario-cuenta/formulario-cuenta.component';
+import { CuentaDetalleComponent } from './components/cuenta-detalle/cuenta-detalle.component';
+import { FormularioPagoComponent } from './pages/private/cuentas/formulario-pago/formulario-pago.component';
+import { PagosDetalleComponent } from './components/pagos-detalle/pagos-detalle.component';
+import { GenerarFacturaComponent } from './components/generar-factura/generar-factura.component';
+import { AnularFacturaComponent } from './components/anular-factura/anular-factura.component';
+import { WhatsappFacturaComponent } from './components/whatsapp-factura/whatsapp-factura.component';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, ListaEmpresasComponent, BloqueoComponent, FormatoFechaHoraPipe,
         UpperCaseInputDirective, AllowNumbersOnlyDirective, FormatoDecimalPipe,
         FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent, ListaCitasComponent, FormularioCitaComponent, FormularioCategoriaComponent, FormularioServicioComponent, ListaServiciosComponent, ListaCategoriasComponent, ReservasComponent, AsignarAsistenciaComponent, FormularioConsultaComponent, ListaConsultasComponent, AtencionConsultaComponent,  FormularioPuntoComponent, ListaPuntosComponent, FormularioTurnoAperturaComponent, FormularioTurnoCierreComponent, ListaTurnosComponent, ListaCuentasComponent,
-        selectorPuntoVentaComponent, FormularioSucursalComponent, ListaSucursalesComponent, FormularioCuentaComponent
+        selectorPuntoVentaComponent, FormularioSucursalComponent, ListaSucursalesComponent, FormularioCuentaComponent, CuentaDetalleComponent, FormularioPagoComponent, PagosDetalleComponent, GenerarFacturaComponent, AnularFacturaComponent, WhatsappFacturaComponent
     ],
     imports: [
         BrowserModule,

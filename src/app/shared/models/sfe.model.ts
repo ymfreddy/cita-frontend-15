@@ -1,3 +1,14 @@
+export interface AsociacionSfe {
+    id: number;
+    codigoAsociacion: string;
+    nombreSistema: string;
+    ambiente: string;
+    codigoDocumentoSector: number;
+    modalidad: string;
+    documentoSector: string;
+    conexionAutomatica: boolean;
+}
+
 export interface ParametricaSfe {
     codigo: number;
     descripcion: string;
@@ -22,3 +33,17 @@ export interface ParametricaSfe {
       codigoProductoSin: string;
       producto: string;
     }
+
+
+    export interface SolicitudRecepcionFactura {
+        idCuenta: number;
+        codigoAsociacion: string;
+        codigoCliente: string;
+        razonSocial: string;
+        email: string;
+      }
+
+      export interface SolicitudAnulacionFactura {
+        cuf: string;
+        codigoMotivo: string;
+      }

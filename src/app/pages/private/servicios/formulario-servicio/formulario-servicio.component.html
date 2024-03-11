@@ -51,6 +51,8 @@
                         <small class="p-error block" *ngIf="itemForm.get('idCategoria')?.hasError('required')">Dato requerido.</small>
                     </div>
 
+
+
                     <!-- <div class="field col-12 md:col-6">
                         <label>Tipo Unidad</label>
                         <p-dropdown appendTo="body" formControlName="codigoTipoUnidad" id="codigoTipoUnidad"
@@ -85,9 +87,17 @@
                         <small class="p-error block" *ngIf="itemForm.get('precio')?.hasError('required')">Dato requerido.</small>
                     </div>
 
-                    <!-- <div class="field col-12 md:col-6">
+                    <div class="field col-12 md:col-6">
+                        <label>Tipo Unidad</label>
+                        <p-dropdown appendTo="body" formControlName="codigoTipoUnidadSin" id="codigoTipoUnidadSin"
+                            [filter]="true" filterBy="descripcion" [showClear]="true" [options]="listaTiposUnidad"
+                            optionLabel="descripcion" optionValue="codigo" placeholder="Seleccione una opción">
+                        </p-dropdown>
+                        <!-- <small class="p-error block" *ngIf="itemForm.get('codigoTipoUnidadSin')?.hasError('required')">Dato requerido.</small> -->
+                    </div>
+                    <div class="field col-12 md:col-6">
                         <label>Actividad</label>
-                        <p-dropdown appendTo="body" formControlName="codigoActividad" id="codigoActividad"
+                        <p-dropdown appendTo="body" formControlName="codigoActividadSin" id="codigoActividadSin"
                             [options]="listaActividades" optionLabel="descripcion" optionValue="codigoCaeb"
                             (onChange)="cambioActividad($event)" [showClear]="true"
                             placeholder="Seleccione una opción">
@@ -97,25 +107,25 @@
                                 </div>
                             </ng-template>
                         </p-dropdown>
-                        <small class="p-error block"
-                            *ngIf="itemForm.get('codigoActividad')?.hasError('required')">Actividad inválida.</small>
+                        <!-- <small class="p-error block"
+                            *ngIf="itemForm.get('codigoActividad')?.hasError('required')">Actividad inválida.</small> -->
                     </div>
 
                     <div class="field col-12 md:col-6">
-                        <label>Tipo Servicio SIN</label>
-                        <p-dropdown appendTo="body" formControlName="codigoServicioSin" id="codigoServicioSin"
-                            [options]="listaTiposServicioSinSeleccionado" optionLabel="descripcion" optionValue="codigoServicio"
+                        <label>Tipo Producto SIN</label>
+                        <p-dropdown appendTo="body" formControlName="codigoProductoSin" id="codigoProductoSin"
+                            [options]="listaTiposServicioSinSeleccionado" optionLabel="descripcion" optionValue="codigoProducto"
                             placeholder="Seleccione una opción">
                             <ng-template let-i pTemplate="item">
                                 <div class="text-wrap">
-                                    <div>{{i.codigoServicio}} - {{i.descripcion}}</div>
+                                    <div>{{i.codigoProducto}} - {{i.descripcion}}</div>
                                 </div>
                             </ng-template>
                         </p-dropdown>
-                        <small class="p-error block"
-                            *ngIf="itemForm.get('codigoServicioSin')?.hasError('required')">Servicio Sin
-                            inválido.</small>
-                    </div> -->
+                        <!-- <small class="p-error block"
+                            *ngIf="itemForm.get('codigoProductoSin')?.hasError('required')">Servicio Sin
+                            inválido.</small> -->
+                    </div>
                 </div>
             </div>
         </div>

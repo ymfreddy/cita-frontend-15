@@ -1,0 +1,68 @@
+<p-blockUI [blocked]="submited"><app-bloqueo></app-bloqueo></p-blockUI>
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="card">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-12">
+                <label>Sector</label>
+                <p-dropdown appendTo="body" formControlName="codigoAsociacion" id="codigoAsociacion"
+                [options]="listaAsociacion" optionLabel="documentoSector" optionValue="codigoAsociacion"
+                placeholder="SELECCIONE UNA OPCIÓN"  [showClear]="true" >
+                <ng-template let-item pTemplate="item">
+                   {{item.documentoSector}}
+                </ng-template>
+                <ng-template let-item pTemplate="selectedItem">
+                   {{item.documentoSector}}
+                </ng-template>
+            </p-dropdown>
+            <small class="p-error block" *ngIf="itemForm.get('codigoAsociacion')?.hasError('required')">Sector
+                inválido.</small>
+            </div>
+        </div>
+
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-2">
+                <label>Codigo Cliente</label><b class="text-rojo">*</b>
+                <p-autoComplete formControlName="clienteTemporal" #clienteTemporal id="clienteTemporal" [suggestions]="listaClientesFiltrados"
+                    (completeMethod)="filtrarCliente($event)" [showEmptyMessage]="true" [maxlength]="25"
+                    emptyMessage="No existe" [forceSelection]="true" (onSelect)="seleccionarCliente($event)"
+                    field="codigoCliente" [delay]=500 [showClear]="true" (onClear)="limpiarCliente()"
+                    placeholder="Introduzca el código del cliente" [autofocus]="true" appendTo="body"
+                    >
+                    <ng-template let-item pTemplate="item">
+                        <div class="row">
+                            <div class="text-wrap">
+                                <b>{{ item.codigoCliente }}</b> - {{ item.nombreCompleto }}
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-autoComplete>
+                <!-- <small class="p-error block" *ngIf="itemForm.get('clienteTemporal')?.hasError('required')">
+                    Dato requerido.</small> -->
+            </div>
+            <div class="field col-12 md:col-4">
+                <label>Razon Social</label>
+                <div class="p-inputgroup">
+                    <input type="text"  formControlName="razonSocial" pInputText maxlength="500"
+                        tabindex="-1" />
+                        <!-- <p-button pTooltip="Actualizar cliente" tooltipPosition="top"
+                        (onClick)="actualizarCliente()" icon="pi pi-user-edit" styleClass="p-button"
+                        tabindex="-1"></p-button> -->
+                </div>
+            </div>
+            <div class="field col-12 md:col-3">
+                <label>Email</label>
+                <div class="p-inputgroup">
+                    <input formControlName="email" type="text" pInputText id="email" maxlength="50" tabindex="-1" />
+                    <!-- <p-button pTooltip="Actualizar cliente" tooltipPosition="top"
+                        (onClick)="actualizarCliente()" icon="pi pi-user-edit" styleClass="p-button"
+                        tabindex="-1"></p-button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-content-end flex-wrap">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary p-button-text"
+            (click)="onClose()"></button>
+        <button pButton pRipple label="Aceptar" icon="pi pi-check" class="p-button-text" [disabled]="!itemForm.valid"  (click)="onSave()"></button>
+    </div>
+</form>

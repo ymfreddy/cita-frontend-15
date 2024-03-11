@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CalendarOptions, EventApi, EventClickArg, EventInput } from '@fullcalendar/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
-import { BusquedaCita, BusquedaConsultaMedica } from 'src/app/shared/models/busquedas.model';
+import { BusquedaCita, BusquedaConsultaMedica, BusquedaCuenta } from 'src/app/shared/models/busquedas.model';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { AsistenciasService } from 'src/app/shared/services/asistencias.service';
 import { CitasService } from 'src/app/shared/services/citas.service';
@@ -18,8 +18,14 @@ import { FormularioConsultaComponent } from '../formulario-consulta/formulario-c
 import { Cliente } from 'src/app/shared/models/cliente.model';
 import { ConsultaMedicaResumen } from 'src/app/shared/models/consulta-medica.model';
 import { ConsultasMedicasService } from '../../../../shared/services/consultas-medicas.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { adm } from 'src/app/shared/constants/adm';
+import { Cuenta } from 'src/app/shared/models/cuenta.model';
+import { FormularioCuentaComponent } from '../../cuentas/formulario-cuenta/formulario-cuenta.component';
+import { CuentasService } from 'src/app/shared/services/cuentas.service';
+import { PagosDetalleComponent } from 'src/app/components/pagos-detalle/pagos-detalle.component';
+import { FormularioPagoComponent } from '../../cuentas/formulario-pago/formulario-pago.component';
+import { CuentaDetalleComponent } from 'src/app/components/cuenta-detalle/cuenta-detalle.component';
 
 @Component({
   selector: 'app-atencion-consulta',
@@ -28,9 +34,14 @@ import { adm } from 'src/app/shared/constants/adm';
 })
 export class AtencionConsultaComponent {
     citaSeleccionada? : Cita;
+    cuentaSeleccionada? : Cuenta;
     listaConsulta: ConsultaMedicaResumen[]=[];
     listaCita: Cita[]=[];
+    listaCuenta: Cuenta[]=[];
+    itemsMenuCuenta!: MenuItem[];
+
     submited = false;
+    //blockedPanel: boolean = false;
     listaEventos: EventInput[] = [];
     today = this.datepipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss');
     currentEvents: EventApi[] = [];
@@ -104,6 +115,7 @@ export class AtencionConsultaComponent {
         private router: Router,
         private consultasMedicasService:ConsultasMedicasService,
         private confirmationService: ConfirmationService,
+        private cuentasService: CuentasService
     ) {}
 
     ngOnInit(): void {
@@ -111,7 +123,47 @@ export class AtencionConsultaComponent {
             this.router.navigate(['/auth/access']);
         }
 
+        this.cargarOpcionesCuentas();
         this.cargarEventos();
+    }
+
+    cargarOpcionesCuentas(){
+        const itemsCuenta : any[]=[];
+        itemsCuenta.push({
+            label: 'Pagar Saldo',
+            icon: 'pi pi-directions-alt',
+            command: () => {
+                this.opcionPagarSaldo();
+            },
+        });
+        itemsCuenta.push({
+            label: 'Ver Pagos Realizados',
+            icon: 'pi pi-directions-alt',
+            command: () => {
+                this.opcionVerPagosRealizados();
+            },
+        });
+        itemsCuenta.push({
+            label: 'Devolución Cuenta',
+            icon: 'pi pi-directions-alt',
+            command: () => {
+                this.opcionCuentaDevolucion();
+            },
+        });
+        itemsCuenta.push({
+            label: 'Detalle Cuenta',
+            icon: 'pi pi-list',
+            command: () => {
+                this.opcionCuentaDetalle();
+            },
+        });
+
+        this.itemsMenuCuenta = [
+            {
+                label: 'Opciones Cuenta',
+                items: itemsCuenta,
+            },
+        ];
     }
 
     cargarEventos() {
@@ -162,6 +214,7 @@ export class AtencionConsultaComponent {
                 console.log(item);
                 this.citaSeleccionada = item;
                 this.cargarConsultas(this.citaSeleccionada.codigoCliente!);
+                this.cargarCuentas(this.citaSeleccionada.codigoCliente!);
             },
             error: (err) => {
                 this.mensajeService.showError(err.error.message);
@@ -272,6 +325,204 @@ export class AtencionConsultaComponent {
                 });
             },
         });
+    }
+
+    // cuentas
+    cargarCuentas(codigoCliente: string): void {
+        this.submited = true;
+        const criterios: BusquedaCuenta = {
+            idEmpresa: this.sessionService.getSessionEmpresaId(),
+            idSucursal: this.sessionService.getSessionUserData().idSucursal,
+            codigoCliente : codigoCliente,
+            codigosEstadosCuenta: [adm.ESTADO_CUENTA_ACTIVO,adm.ESTADO_CUENTA_REVERTIDA, adm.ESTADO_CUENTA_CREDITO_POR_PAGAR].join(','),
+        };
+
+        console.log(criterios);
+        this.cuentasService.get(criterios)
+            .subscribe({
+                next: (res) => {
+                    this.sessionService.setBusquedaCuenta(criterios);
+                    this.listaCuenta = res.content;
+                    console.log(this.listaCuenta);
+                    this.submited = false;
+                },
+                error: (err) => {
+                    this.mensajeService.showError(err.error.message);
+                    this.submited = false;
+                },
+            });
+    }
+
+    newItem() {
+        const clienteTemporal = {
+            id: this.citaSeleccionada?.idCliente,
+            codigoCliente:this.citaSeleccionada?.codigoCliente,
+            telefonoCliente: this.citaSeleccionada?.telefonoCliente,
+            nombreCompleto: this.citaSeleccionada?.cliente,
+        };
+
+        const ref = this.dialogService.open(FormularioCuentaComponent, {
+            header: 'Nuevo',
+            width: '90%',
+            draggable: true,
+            resizable: false,
+            maximizable: true,
+            data: { cuenta: null, cliente: clienteTemporal},
+        });
+
+        ref.onClose.subscribe((res) => {
+            this.cargarCuentas(this.citaSeleccionada?.codigoCliente!);
+            if (res) {
+                //this.items.unshift(res);
+                //this.items=this.items.slice();
+            }
+        });
+    }
+
+    editItem(item: Cuenta) {
+        this.cuentasService.getDetail(item.id).subscribe({
+            next: (res) => {
+                item.detalle = res.content;
+                const ref = this.dialogService.open(FormularioCuentaComponent, {
+                    header: 'Actualizar',
+                    width: '90%',
+                    draggable: true,
+                    resizable: false,
+                    maximizable: true,
+                    data: { cuenta: item},
+                });
+
+                ref.onClose.subscribe((res) => {
+                    this.cargarCuentas(this.citaSeleccionada?.codigoCliente!);
+                    if (res) {
+                        console.log(res);
+                        //let objIndex = this.items.findIndex((obj => obj.id == res!.id));
+                        //this.items[objIndex]=res;
+                    }
+                });
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
+            },
+        });
+    }
+
+    esEditable(codigoEstado: String) {
+        return codigoEstado === adm.ESTADO_CUENTA_ACTIVO || codigoEstado===adm.ESTADO_CUENTA_REVERTIDA;
+    }
+
+    opcionCuentaDescargar(imprimir:boolean) {
+       /* if (this.esEditable(this.cuentaSeleccionada?.codigoEstadoCuenta)) {
+            this.mensajeService.showWarning('Cuenta no finalizada');
+            return;
+        }
+
+        this.submited = true;
+        const fileName = `recibo-${this.cuentaSeleccionada?.correlativo}.pdf`;
+        this.utilidadesService
+            .getReciboCuenta(this.cuentaSeleccionada?.id)
+            .pipe(delay(1000))
+            .subscribe((blob: Blob): void => {
+                this.fileService.printFile(blob, fileName, imprimir);
+                this.blockedPanel = false;
+            });*/
+    }
+
+    deleteItem(item: Cuenta) {
+        this.confirmationService.confirm({
+            message: 'Esta seguro de eliminar la cuenta ' + item.correlativo + ' ?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.cuentasService.delete(item).subscribe({
+                    next: (res) => {
+                        this.listaCuenta = this.listaCuenta.filter((x) => x.id !== item.id);
+                        this.mensajeService.showSuccess(res.message);
+                    },
+                    error: (err) => {
+                        this.mensajeService.showError(err.error.message);
+                    },
+                });
+            },
+        });
+    }
+
+    opcionesCuenta(menu: any, event: any, item: Cuenta) {
+        this.cuentaSeleccionada = item;
+        menu.toggle(event);
+    }
+
+    opcionPagarSaldo() {
+        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_POR_PAGAR){
+            this.mensajeService.showWarning('Solo puede realizar el pago de cuentas por pagar');
+            return;
+        }
+
+        const cuentas:Cuenta[]=[this.cuentaSeleccionada];
+        const ref = this.dialogService.open(FormularioPagoComponent, {
+            header: 'Cobrar',
+            width: '80%',
+            data: cuentas,
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.cargarCuentas(this.citaSeleccionada?.codigoCliente!);
+            }
+        });
+    }
+
+    opcionVerPagosRealizados() {
+        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_POR_PAGAR
+            && this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_CREDITO_PAGADO
+            ){
+            this.mensajeService.showWarning('Solo ver pagos de cuentas a credito');
+            return;
+        }
+
+        const ref = this.dialogService.open(PagosDetalleComponent, {
+            header: 'Pagos Realizados',
+            width: '80%',
+            data: this.cuentaSeleccionada,
+        });
+        ref.onClose.subscribe((res) => {
+            if (res) {
+                this.cargarCuentas(this.citaSeleccionada?.codigoCliente!);
+            }
+        });
+    }
+
+    opcionCuentaDevolucion() {
+        if (this.cuentaSeleccionada?.codigoEstadoCuenta!=adm.ESTADO_CUENTA_COBRADA){
+            this.mensajeService.showWarning('Solo puede realizar la devolución de cuentas COBRADAS');
+            return;
+        }
+
+        this.confirmationService.confirm({
+            message: 'Esta seguro de realizar la devolución de la cuenta '+this.cuentaSeleccionada?.correlativo+' ?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.cuentasService.devolucion(this.cuentaSeleccionada!).subscribe({
+                    next: (res) => {
+                        this.mensajeService.showSuccess(res.message);
+                        this.cargarCuentas(this.citaSeleccionada?.codigoCliente!);
+                    },
+                    error: (err) => {
+                        this.mensajeService.showError(err.error.message);
+                    },
+                });
+            },
+        });
+    }
+
+    opcionCuentaDetalle() {
+                const ref = this.dialogService.open(CuentaDetalleComponent, {
+                    header: 'Detalle Cuenta N° '+ this.cuentaSeleccionada!.correlativo,
+                    width: '80%',
+                    data: { item: this.cuentaSeleccionada},
+                });
+                ref.onClose.subscribe((res) => {
+                });
     }
 
 }

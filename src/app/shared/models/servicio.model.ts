@@ -13,7 +13,7 @@ export interface Servicio {
   categoria: string;
   descuento?: DescuentoServicio;
   codigoActividadSin: string;
-  codigoServicioSin: number;
+  codigoProductoSin: number;
   codigoTipoUnidadSin: number;
 }
 

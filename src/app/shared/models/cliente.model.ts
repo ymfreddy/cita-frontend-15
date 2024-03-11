@@ -16,4 +16,5 @@ export interface Cliente {
   telefono?: string;
   email?: string;
   edad?: number;
+  razonSocial?: string;
 }

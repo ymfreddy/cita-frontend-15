@@ -3,15 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { ActividadSfe, ParametricaSfe, ProductoSfe } from '../models/sfe.model';
+import { ActividadSfe, AsociacionSfe, ParametricaSfe, ProductoSfe, SolicitudAnulacionFactura, SolicitudRecepcionFactura } from '../models/sfe.model';
 import { adm } from '../constants/adm';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SfeService {
+    httpOptions: any;
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient) {
+        this.httpOptions = {
+            responseType: 'blob' as 'json',
+        };
+    }
 
     private getParametricasByTipo(tipo: string): Observable<ParametricaSfe[]> {
       const apiUrl = `${environment.api.adm}/sfe/parametricas/listar-por-tipo/${tipo}`;
@@ -20,6 +25,22 @@ export class SfeService {
           return res.content;
         })
       );
+    }
+
+    recepcionar(solicitud: SolicitudRecepcionFactura): Observable<any> {
+        const apiUrl = `${environment.api.adm}/sfe/facturasElectronicas/procesar`;
+        return this.httpClient.post<any>(apiUrl, solicitud);
+    }
+
+
+    anular(solicitud: SolicitudAnulacionFactura): Observable<any> {
+        const apiUrl = `${environment.api.adm}/sfe/facturasElectronicas/anular`;
+        return this.httpClient.post<any>(apiUrl, solicitud);
+    }
+
+    decargar(cufFactura: string): Observable<any> {
+        const apiUrl = `${environment.sfeApiUtilsUrl}/api/v1/funciones/representacionGrafica/${cufFactura}`;
+        return this.httpClient.get<any>(apiUrl, this.httpOptions);
     }
 
     getTipoDocumento(): Observable<ParametricaSfe[]> {
@@ -66,10 +87,23 @@ export class SfeService {
       return this.getParametricasByTipo(9);
     }*/
 
+    getAsociaciones(nitEmpresa:number): Observable<AsociacionSfe[]> {
+        const apiUrl = `${environment.api.adm}/sfe/asociaciones/${nitEmpresa}`;
+        console.log(apiUrl);
+        return this.httpClient.get<any>(apiUrl).pipe(
+          map(res => {
+              console.log(res);
+            return res.content;
+          })
+        );
+      }
+
     getActividades(nitEmpresa:number): Observable<ActividadSfe[]> {
       const apiUrl = `${environment.api.adm}/sfe/parametricas/actividades/${nitEmpresa}`;
+      console.log(apiUrl);
       return this.httpClient.get<any>(apiUrl).pipe(
         map(res => {
+            console.log(res);
           return res.content;
         })
       );
@@ -79,6 +113,7 @@ export class SfeService {
       const apiUrl = `${environment.api.adm}/sfe/parametricas/productos/${nitEmpresa}`;
       return this.httpClient.get<any>(apiUrl).pipe(
         map(res => {
+            console.log(res);
           return res.content;
         })
       );

@@ -27,10 +27,10 @@ export class LayoutService {
     config: AppConfig = {
         ripple: false,
         inputStyle: 'outlined',
-        //menuMode: 'overlay',
-        menuMode: 'static',
+        menuMode: 'overlay',
+        //menuMode: 'static',
         colorScheme: 'light',
-        theme: 'lara-light-indigo',
+        theme: 'saga-blue',
         scale: 14,
     };
 
