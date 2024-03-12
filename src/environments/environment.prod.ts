@@ -11,5 +11,6 @@ export const environment = {
       adm: '/adm/api/v1',
     },
     whatsappUrl: 'https://api.whatsapp.com/send?phone=591',
-    sfeApiUtilsUrl: 'http://localhost:8003/utils',
+    //sfeApiUtilsUrl: 'http://localhost:8003/utils',
+    sfeApiUtilsUrl: 'https://mifacturabolivia.com/utils',
   };
