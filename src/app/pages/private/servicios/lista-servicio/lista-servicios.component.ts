@@ -6,13 +6,12 @@ import { Servicio } from 'src/app/shared/models/servicio.model';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subject } from 'rxjs';
-import { FilesService } from 'src/app/shared/helpers/files.service';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
-import { BusquedaPaginadaServicio } from 'src/app/shared/models/busquedas.model';
-import { ServiciosService } from 'src/app/shared/services/productos.service';
+import { BusquedaServicio } from 'src/app/shared/models/busquedas.model';
+import { ServiciosService } from 'src/app/shared/services/servicios.service';
 import { FormularioServicioComponent } from '../formulario-servicio/formulario-servicio.component';
-
+import { cl } from '@fullcalendar/core/internal-common';
 
 @Component({
     selector: 'app-lista-servicios',
@@ -24,17 +23,10 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
     onDestroy$: Subject<boolean> = new Subject();
     items!: Servicio[];
     itemDialog!: boolean;
-
-    totalRecords: number = 0;
     loading!: boolean;
-
     listaEmpresas: Empresa[] = [];
-    idEmpresa!:number;
-    nitEmpresa!:number;
-
-    busqueda: BusquedaPaginadaServicio;
-
-    acceptedFiles: string = ".xls, .xlsx";
+    idEmpresa!: number;
+    nitEmpresa!: number;
     blockedPanel: boolean = false;
     constructor(
         private serviciosService: ServiciosService,
@@ -42,30 +34,14 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
         private mensajeService: MensajeService,
         public dialogService: DialogService,
         private confirmationService: ConfirmationService,
-        private fileService: FilesService,
-        private empresasService: EmpresasService,
-    ) {
-        this.busqueda = {
-            idEmpresa: this.sessionService.getSessionEmpresaId(),
-            pagina:1,
-            cantidadItems:10,
-            tipoOrden: 1,
-            campoOrden: '',
-            filtro:'',
-            idsCategorias: this.sessionService.getSessionUserData().categorias
-        };
-
-    }
+        private empresasService: EmpresasService
+    ) {}
 
     ngOnInit(): void {
-        this.idEmpresa = this.busqueda.idEmpresa!;
+        this.idEmpresa = this.sessionService.getSessionEmpresaId();
         this.nitEmpresa = this.sessionService.getSessionEmpresaSfeNit();
-        console.log(this.sessionService.getSessionUserData())
-
-        if (this.esSuperAdm()){
-            this.empresasService
-            .get()
-            .subscribe({
+        if (this.esSuperAdm()) {
+            this.empresasService.get().subscribe({
                 next: (res) => {
                     this.listaEmpresas = res.content;
                 },
@@ -74,6 +50,7 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
                 },
             });
         }
+        this.loadData();
     }
 
     cambioEmpresa(event: any) {
@@ -81,41 +58,25 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
             this.items = [];
             return;
         }
-        const empresaAux = this.listaEmpresas.find(x=>x.id===event.value)!;
+        const empresaAux = this.listaEmpresas.find(
+            (x) => x.id === event.value
+        )!;
         this.idEmpresa = empresaAux.id;
         this.nitEmpresa = empresaAux.sfeNit;
-        this.busqueda = {
-            ... this.busqueda,
-            idEmpresa: this.idEmpresa,
-            pagina: 1,
-            campoOrden: '',
-            tipoOrden: 1,
-            filtro: event.globalFilter!,
-            idsCategorias: ''
-        }
-        this.loadData();
-    }
-
-    loadPaged(event: LazyLoadEvent) {
-        this.busqueda = {
-            ... this.busqueda,
-            pagina:event.first!/event.rows! + 1,
-            cantidadItems:event.rows ?? 10,
-            campoOrden: event.sortField,
-            tipoOrden: event.sortOrder!,
-            filtro: event.globalFilter!,
-        }
 
         this.loadData();
     }
 
     loadData(): void {
+        const busqueda: BusquedaServicio = {
+            idEmpresa: this.idEmpresa,
+        };
+
         this.loading = true;
-        this.serviciosService.getPaged(this.busqueda).subscribe({
+        this.serviciosService.get(busqueda).subscribe({
             next: (res) => {
-                this.items = res.content.items;
-                this.totalRecords = res.content.totalItems;
-                this.loading = false;
+                this.items = res.content;
+                 this.loading = false;
             },
             error: (err) => {
                 this.mensajeService.showError(err.error.message);
@@ -141,19 +102,23 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
         const ref = this.dialogService.open(FormularioServicioComponent, {
             header: 'Actualizar',
             width: '80%',
-            data: { idEmpresa: this.idEmpresa, nitEmpresa: this.nitEmpresa, item: item },
+            data: {
+                idEmpresa: this.idEmpresa,
+                nitEmpresa: this.nitEmpresa,
+                item: item,
+            },
         });
         ref.onClose.subscribe((res) => {
             if (res) {
-                let objIndex = this.items.findIndex((obj => obj.id == res.id));
-                this.items[objIndex]=res;
+                let objIndex = this.items.findIndex((obj) => obj.id == res.id);
+                this.items[objIndex] = res;
             }
         });
     }
 
     deleteItem(item: Servicio) {
         this.confirmationService.confirm({
-            message: 'Esta seguro de eliminar a '+item.nombre+' ?',
+            message: 'Esta seguro de eliminar a ' + item.nombre + ' ?',
             header: 'Confirmación',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -184,19 +149,7 @@ export class ListaServiciosComponent implements OnInit, OnDestroy {
         });
     }
 
-    esSuperAdm(){
+    esSuperAdm() {
         return this.sessionService.isSuperAdmin();
-    }
-
-    onGlobalFilterClick(table: Table, text: string) {
-        if (text.trim()===''){
-            this.mensajeService.showInfo('Debe introducir un filtro');
-            return;
-        }
-        table.filterGlobal(text, 'contains');
-    }
-
-    onGlobalFilterClear(table: Table) {
-        table.filterGlobal('', 'contains');
     }
 }

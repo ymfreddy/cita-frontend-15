@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ActividadSfe, AsociacionSfe, ParametricaSfe, ProductoSfe, SolicitudAnulacionFactura, SolicitudRecepcionFactura } from '../models/sfe.model';
 import { adm } from '../constants/adm';
+import { HelperService } from '../helpers/helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import { adm } from '../constants/adm';
 export class SfeService {
     httpOptions: any;
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, private helperService: HelperService) {
         this.httpOptions = {
             responseType: 'blob' as 'json',
         };
@@ -38,8 +39,9 @@ export class SfeService {
         return this.httpClient.post<any>(apiUrl, solicitud);
     }
 
-    decargar(cufFactura: string): Observable<any> {
-        const apiUrl = `${environment.sfeApiUtilsUrl}/api/v1/funciones/representacionGrafica/${cufFactura}`;
+    decargar(solicitud: any): Observable<any> {
+        const queryString = this.helperService.jsonToQueryString(solicitud);
+        const apiUrl = `${environment.sfeApiUtilsUrl}/api/v1/funciones/facturaPdf/descargar?${queryString}`;
         return this.httpClient.get<any>(apiUrl, this.httpOptions);
     }
 

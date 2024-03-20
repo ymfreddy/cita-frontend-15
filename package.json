@@ -28,6 +28,7 @@
     "@fullcalendar/list": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.10",
     "chart.js": "^3.3.2",
+    "moment": "^2.30.1",
     "ngx-infinite-scroll": "^15.0.0",
     "primeflex": "^3.2.1",
     "primeicons": "6.0.1",

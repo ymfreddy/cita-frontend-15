@@ -1,0 +1,335 @@
+<p-blockUI [blocked]="submited">
+    <app-bloqueo></app-bloqueo>
+</p-blockUI>
+<div class="card">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-8">
+                <p-steps [model]="items" [readonly]="false" [activeIndex]="activeIndexPago"></p-steps>
+                <br>
+                <p-tabView [(activeIndex)]="activeIndexPago">
+                    <p-tabPanel>
+                        <!-- detalle -->
+                        <div class="field grid margen">
+                            <div class="col-12 md:col-2">
+                                <p-button (click)="activeIndexDetalle = 0" styleClass="p-button-primary"
+                                    label="Citas"></p-button>
+                            </div>
+                            <div class="col-12 md:col-2">
+                                <p-button (click)="activeIndexDetalle = 1" styleClass="p-button-primary"
+                                    label="Servicios"></p-button>
+                            </div>
+                            <div class="col-12 md:col-2">
+                                <p-button (click)="activeIndexDetalle = 2" styleClass="p-button-primary"
+                                    label="Productos"></p-button>
+                            </div>
+                        </div>
+                        <p-tabView [(activeIndex)]="activeIndexDetalle">
+                            <p-tabPanel>
+                                <!-- citas -->
+                                <div class="p-fluid p-formgrid grid">
+                                    <div class="field col-12 md:col-12">
+                                        <div class="p-inputgroup">
+                                            <p-autoComplete formControlName="cita" #cita styleClass="w-full"
+                                        [suggestions]="listaCitasFiltrados" (completeMethod)="filtrarCita($event)"
+                                        [showEmptyMessage]="true" emptyMessage="No existe" [forceSelection]="true"
+                                        [minLength]="1" [maxlength]="50" field="nombre"
+                                        placeholder="Introduzca la descripcion de la cita" [delay]=750 [autofocus]="true">
+                                    </p-autoComplete>
+                                    <p-button pTooltip="Citas del Cliente" tooltipPosition="top"
+                                        (onClick)="filtrarCitaCliente()" icon="pi pi-user" styleClass="p-button"
+                                        tabindex="-1"></p-button>
+                                        </div>
+                                    </div>
+
+                                    <div class="field col-12 md:col-12">
+                                            <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+                                                <p-dataView #lc [value]="listaCitas" [rows]="9" emptyMessage="NO EXISTE CITAS">
+                                                    <ng-template let-product pTemplate="listItem">
+                                                        <div class="col-12">
+                                                            <div pRipple class="product-grid-item card purple" (click)="addCitaItem(product)">
+                                                                <div class="flex flex-column xl:flex-row xl:align-items-start">
+                                                                    <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1">
+                                                                        <div class="flex flex-column align-items-center sm:align-items-start">
+                                                                            <div class="font-bold text-900">{{ product.descripcion }}</div>
+                                                                            <div class="flex align-items-center">
+                                                                                <span class="flex align-items-center">
+                                                                                    <i class="pi pi-calendar"></i>
+                                                                                    <span class="font-semibold">{{ product.inicio | date : "dd/MM/yyyy"  }}</span>
+                                                                                </span>
+                                                                                <!-- <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product)"></p-tag> -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="flex sm:flex-column align-items-center sm:align-items-end">
+                                                                            <span class="font-semibold">{{product.inicio | date : "HH:mm" }}</span>
+                                                                            <span class="font-semibold">{{product.fin | date : "HH:mm" }}</span>
+                                                                            <!-- <button pButton icon="pi pi-shopping-cart" class="md:align-self-end mb-2 p-button-rounded"></button> -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-template>
+                                                </p-dataView>
+                                            </p-scrollPanel>
+                                    </div>
+                                </div>
+                            </p-tabPanel>
+                            <p-tabPanel>
+                                <!-- servicios -->
+                                <div class="p-fluid p-formgrid grid">
+                                    <div class="field col-12 md:col-12">
+                                        <div class="p-inputgroup">
+                                            <p-autoComplete formControlName="servicio" #servicio styleClass="w-full"
+                                        [suggestions]="listaServiciosFiltrados" (completeMethod)="filtrarServicio($event)"
+                                        [showEmptyMessage]="true" emptyMessage="No existe" [forceSelection]="true"
+                                        [minLength]="1" [maxlength]="50" field="nombre"
+                                        placeholder="Introduzca el código o nombre del servicio" [delay]=750 [autofocus]="true">
+                                    </p-autoComplete>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-12">
+                                        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+                                            <p-dataView #dv [value]="listaServicios" [rows]="9" filterBy="name" layout="grid" emptyMessage="NO EXISTE SERVICIOS">
+                                                <ng-template let-product pTemplate="gridItem">
+                                                    <div class="col-12 md:col-3">
+                                                        <div pRipple class="product-grid-item card purple" (click)="addServicioItem(product)">
+                                                            <div class="product-grid-item-top">
+                                                                <div>
+                                                                    <i class="pi pi-tag product-category-icon"></i>
+                                                                    <span class="product-category"> <b>{{ product.codigoProducto }}</b></span>
+                                                                </div>
+                                                                <!-- <div class="product-badge icon-descuento" *ngIf="product.descuento && product.descuento.descuentoEstablecido>0">
+                                                                        <span> <b>{{ product.descuento.descuentoEstablecido}}{{esDescuentoPorcentaje(product.descuento.idTipoDescuento) ?'%':'BS'}}</b></span>
+                                                                </div> -->
+                                                            </div>
+                                                            <div class="product-grid-item-content">
+                                                                <!-- <div class="product-name">{{product.codigoProducto}}</div> -->
+                                                                <div class="field">
+                                                                     {{ product.nombre }}
+                                                                </div>
+                                                                <div class="field">
+                                                                    <b>Bs.</b> {{ product.precio | formatoDecimal}}
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dataView>
+                                        </p-scrollPanel>
+                                    </div>
+                                </div>
+                            </p-tabPanel>
+                            <p-tabPanel>
+                                <!-- productos -->
+                                <div class="p-fluid p-formgrid grid">
+                                    <div class="field col-12 md:col-12">
+                                        <div class="p-inputgroup">
+                                            <p-autoComplete formControlName="producto" #producto styleClass="w-full"
+                                        [suggestions]="listaProductosFiltrados" (completeMethod)="filtrarProducto($event)"
+                                        [showEmptyMessage]="true" emptyMessage="No existe" [forceSelection]="true"
+                                        [minLength]="1" [maxlength]="50" field="nombre"
+                                        placeholder="Introduzca el código o nombre del producto" [delay]=750 [autofocus]="true">
+
+                                    </p-autoComplete>
+                                        </div>
+                                    </div>
+                                    <div class="field col-12 md:col-12">
+                                        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+                                            <p-dataView #dv [value]="listaProductos" [rows]="9" filterBy="name" layout="grid" emptyMessage="NO EXISTE PRODUCTOS">
+                                                <ng-template let-product pTemplate="gridItem">
+                                                    <div class="col-12 md:col-3">
+                                                        <div pRipple class="product-grid-item card purple" (click)="addProductoItem(product)">
+                                                            <div class="product-grid-item-top">
+                                                                <div>
+                                                                    <i class="pi pi-tag product-category-icon"></i>
+                                                                    <span class="product-category"> <b>{{ product.codigoProducto }}</b></span>
+                                                                </div>
+                                                                <!-- <div class="product-badge icon-descuento" *ngIf="product.descuento && product.descuento.descuentoEstablecido>0">
+                                                                        <span> <b>{{ product.descuento.descuentoEstablecido}}{{esDescuentoPorcentaje(product.descuento.idTipoDescuento) ?'%':'BS'}}</b></span>
+                                                                </div> -->
+                                                            </div>
+                                                            <div class="product-grid-item-content">
+                                                                <div class="text-center">
+                                                                    <img [ngSrc]="product.imagenRuta  ? product.imagenRuta : 'assets/layout/images/sin-imagen.png'" width="80" height="80" priority/>
+                                                                </div>
+                                                                <!-- <div class="product-name">{{product.codigoProducto}}</div> -->
+                                                                <div class="field">
+                                                                     {{ product.nombre }}
+                                                                </div>
+                                                                <div class="field" *ngIf="product.codigoTipoProducto==='PROD'">
+                                                                    <b>Bs.</b> {{ product.precio | formatoDecimal}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-grid-item-bottom">
+                                                                <div class="field" *ngIf="product.codigoTipoProducto==='PRODI' && product.saldo">
+                                                                    <b>Bs.</b> {{ product.saldo.precioVenta | formatoDecimal}}
+                                                                    <b>  Saldo: </b>  {{product.saldo.saldo}}
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dataView>
+                                        </p-scrollPanel>
+                                    </div>
+
+                                </div>
+                            </p-tabPanel>
+                        </p-tabView>
+                    </p-tabPanel>
+                    <p-tabPanel>
+                        <!-- pago -->
+                        <div class="p-fluid p-formgrid grid">
+                            <div class="field col-12 md:col-12">
+                                <label>Metodo de Pago</label>
+                                <p-selectButton [options]="listaTipoPago" formControlName="codigoTipoPago" optionLabel="label" optionValue="value" styleClass="w-full"
+                                optionIcon="icon" (onChange)="canbioTipoPago($event)" ></p-selectButton>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label>Numero tarjeta</label>
+                                 <p-inputMask formControlName="numeroTarjeta" pTooltip="Introduzca los primeros y ultimos 4 numeros de la tarjeta" tooltipPosition="top" mask="9999-0000-0000-9999" placeholder="XXXX-0000-0000-XXXX"></p-inputMask>
+                             </div>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
+
+            </div>
+
+            <!--<p-divider layout="vertical" ></p-divider>-->
+            <div class="field col-12 md:col-4">
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-12">
+                        <!-- <label>Cliente</label><b class="text-rojo">*</b> -->
+                        <p-autoComplete formControlName="clienteTemporal" #clienteTemporal id="clienteTemporal"
+                            [suggestions]="listaClientesFiltrados" (completeMethod)="filtrarCliente($event)"
+                            [showEmptyMessage]="true" [maxlength]="25" emptyMessage="No existe" [forceSelection]="true"
+                            (onSelect)="seleccionarCliente($event)" field="codigoCliente" [delay]=500 [showClear]="true"
+                            (onClear)="limpiarCliente()" placeholder="Introduzca el código del cliente"
+                            [autofocus]="true" appendTo="body">
+                            <ng-template let-item pTemplate="item">
+                                <div class="row">
+                                    <div class="text-wrap">
+                                        <b>{{ item.codigoCliente }}</b> - {{ item.nombreCompleto }}
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-autoComplete>
+                        <!-- <small class="p-error block" *ngIf="itemForm.get('clienteTemporal')?.hasError('required')">
+                            Dato requerido.</small> -->
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <!-- <label>Cliente</label> -->
+                        <div class="p-inputgroup">
+                            <input type="text" class="text-disabled" formControlName="cliente" pInputText
+                                maxlength="200" readonly tabindex="-1" />
+                            <p-button pTooltip="Actualizar cliente" tooltipPosition="top"
+                                (onClick)="actualizarCliente()" icon="pi pi-user-edit" styleClass="p-button"
+                                tabindex="-1"></p-button>
+                        </div>
+                    </div>
+
+
+                    <div class="field col-12 md:col-12">
+                        <!-- <p-divider></p-divider> -->
+
+                        <p-scrollPanel [style]="{width: '100%', height: '230px'}">
+                            <p-table #dt styleClass="p-datatable-sm" [value]="detalle" responsiveLayout="scroll"
+                                [rows]="10" [paginator]="false" [rowHover]="true" dataKey="id"
+                                (onEditComplete)="onEditComplete($event)"
+                                [(contextMenuSelection)]="detalleSeleccionado">
+                                <!-- <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align:center; width:45%">Producto/Servicio</th>
+                                    <th style="text-align:center; width:30%">Cantidad</th>
+                                    <th style="text-align:center; width:10%">Sub Total</th>
+                                    <th style="text-align:center; width:5%"></th>
+                                </tr>
+                            </ng-template> -->
+                                <ng-template pTemplate="body" let-i="rowIndex" let-item>
+                                    <tr [pContextMenuRow]="item">
+                                        <td>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="output">
+                                                    <label>{{item.producto }}</label><br />
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="p-inputgroup" style="align-items: center">
+                                                <label style="width: 30px;"><b>
+                                                        {{item.cantidad }}
+                                                    </b></label>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-right">{{item.total | formatoDecimal}}</td>
+                                        <td style="width:2rem; min-width:2rem;">
+                                            <div class="flex">
+                                                <button pButton pRipple icon="pi pi-trash"
+                                                    class="p-button-text"
+                                                    (click)="deleteItem(item)"></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <!-- <ng-template pTemplate="footer">
+                                <tr>
+                                    <td colspan="2" class="text-right">TOTALES</td>
+                                    <td class="text-right">{{getDetalleSubTotal() | formatoDecimal}}</td>
+                                </tr>
+                            </ng-template> -->
+                            </p-table>
+                        </p-scrollPanel>
+
+
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <div class="field grid">
+                            <label for="subtotal" class="col-12 mb-2 md:col-4 md:mb-0">SubTotal</label>
+                            <div class="col-12 md:col-8">
+                                <p-inputNumber inputStyleClass="text-disabled"  [ngModel]="getDetalleTotal()" [ngModelOptions]="{standalone: true}" locale="en-US"
+                                id="total" [maxlength]="17" [inputStyle]="{'text-align': 'right'}" mode="decimal"
+                                [minFractionDigits]="2" [maxFractionDigits]="2" [readonly]="true">
+                            </p-inputNumber>
+                            </div>
+                        </div>
+                        <div class="field grid">
+                            <label for="descuento" class="col-12 mb-2 md:col-4 md:mb-0">Descuento</label>
+                            <div class="col-12 md:col-8">
+                                <p-inputNumber formControlName="descuentoAdicional" #descuentoAdicional locale="en-US"
+                                id="descuentoAdicional" (onInput)="keyInput($event, 'descuentoAdicional')" [maxlength]="17"
+                                [inputStyle]="{'text-align': 'right'}" mode="decimal" [minFractionDigits]="2"
+                                [maxFractionDigits]="2"></p-inputNumber>
+                            <small class="p-error block" *ngIf="itemForm.get('descuentoAdicional')?.hasError('required')">
+                                Dato requerido.</small>
+                            </div>
+                        </div>
+                        <div class="field grid">
+                            <label for="total" class="col-12 mb-2 md:col-4 md:mb-0">Total</label>
+                            <div class="col-12 md:col-8">
+                                <p-inputNumber inputStyleClass="text-disabled" [ngModel]="getTotal()" [ngModelOptions]="{standalone: true}" locale="en-US"
+                                id="total" [maxlength]="17" [inputStyle]="{'text-align': 'right'}" mode="decimal"
+                                [minFractionDigits]="2" [maxFractionDigits]="2" [readonly]="true">
+                            </p-inputNumber>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <p-divider type="dashed"></p-divider>
+
+            <div class="flex justify-content-between flex-wrap card-container purple-container">
+                <div class="flex align-items-center justify-content-center">
+                    <button *ngIf="activeIndexPago===1" pButton pRipple label="Atras" icon="pi pi-angle-left" class="p-button-secondary p-button-text" (click)="atras()"></button>
+                </div>
+                <div class="flex align-items-center justify-content-center">
+                    <button *ngIf="activeIndexPago===0" pButton pRipple label="Siguiente" icon="pi pi-angle-right" iconPos="right" class="p-button-text" (click)="siguiente()"></button>
+                    <button *ngIf="activeIndexPago===1" pButton pRipple label="Finalizar" icon="pi pi-check" iconPos="right" class="p-button-text" (click)="finalizar()"></button>
+                </div>
+            </div>
+
+    </form>
+</div>

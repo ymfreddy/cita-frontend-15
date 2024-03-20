@@ -1,10 +1,10 @@
 export const environment = {
     nit:5556875011,
     celular: 72368246,
-    email: 'adm@mifacturabolivia.com',
+    email: 'adm@agendaprofesional.com',
     production: true,
-    app: 'Ai MFB',
-    autor: 'Fx',
+    app: 'www.agendaprofesional.com',
+    autor: 'MFB',
     plataforma: 'web',
     version: '1.0.0',
     api: {

@@ -30,9 +30,9 @@
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md:col-6">
                     <b>N° Consulta:</b> {{citaSeleccionada?.correlativo}}<br>
-                    <b>Tipo Consulta:</b> {{citaSeleccionada?.tipo}}<br>
+                    <!-- <b>Tipo Consulta:</b> {{citaSeleccionada?.tipo}}<br> -->
                     <b>Hora:</b> {{citaSeleccionada?.inicio| date : "HH:mm"}} - {{citaSeleccionada?.fin| date : "HH:mm"}}<br>
-                    <b>Estado:</b> {{citaSeleccionada?.estado}}
+                    <b>Estado:</b> {{citaSeleccionada?.estadoCita}}
                 </div>
                 <div class="field col-12 md:col-6">
                     <b>Cliente:</b> {{citaSeleccionada?.cliente}}<br>

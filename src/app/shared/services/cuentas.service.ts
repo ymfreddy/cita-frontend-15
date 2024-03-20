@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { HelperService } from '../helpers/helper.service';
 //import { FinalizarCuenta } from '../models/finalizar-cuenta.model';
 import { Cuenta } from '../models/cuenta.model';
-import { FinalizarCuenta } from '../models/pago.model';
+import { FinalizarCuenta, RegistrarFinalizarCuenta } from '../models/pago.model';
 
 
 @Injectable({
@@ -43,6 +43,11 @@ export class CuentasService {
 
   finalize(cuenta: FinalizarCuenta): Observable<any> {
     const apiUrl = `${environment.api.adm}/cuentas/finalizar`;
+    return this.httpClient.post<any>(apiUrl, cuenta);
+  }
+
+  registrarFinalizar(cuenta: RegistrarFinalizarCuenta): Observable<any> {
+    const apiUrl = `${environment.api.adm}/cuentas/registrar-finalizar`;
     return this.httpClient.post<any>(apiUrl, cuenta);
   }
 

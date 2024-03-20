@@ -652,10 +652,14 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         }
 
         this.blockedPanel = true;
-        const fileName = `factura-${this.cuentaSeleccionada.cufFactura}.pdf`;
-        this.sfeService.decargar(this.cuentaSeleccionada.cufFactura!)
+        const solicitud ={
+            cuf:this.cuentaSeleccionada.cufFactura!,
+            nitEmpresa: this.sessionService.getSessionEmpresaSfeNit()
+        }
+        this.sfeService.decargar(solicitud)
             .pipe(delay(1000))
             .subscribe((blob: Blob): void => {
+                const fileName = `factura-${this.cuentaSeleccionada.cufFactura}.pdf`;
                 this.fileService.printFile(blob, fileName, imprimir);
                 this.blockedPanel = false;
             });

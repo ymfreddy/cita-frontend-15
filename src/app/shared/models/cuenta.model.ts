@@ -10,6 +10,7 @@ export interface Cuenta {
     cliente?:      string;
     codigoCliente?:      string;
     telefonoCliente?:      string;
+    emailCliente?:      string;
 
     codigoEstadoCuenta:      string;
     idSucursal:         number;
@@ -34,19 +35,24 @@ export interface Cuenta {
 
 export interface CuentaDetalle {
     cantidad:        number;
-    codigoServicio?:  string;
+    codigoProducto?:  string;
     descuento:       number;
     id?:              number;
-    idServicio?:      number;
+    idProducto?:      number;
     codigoTipoDescuento?: string;
     valorDescuento?:  number;
-    codigoTipoServicio?:  string;
+    codigoTipoProducto?:  string;
     idCuenta?:         number;
     precio:          number;
-    servicio?:        string;
+    producto?:        string;
     subtotal:        number;
     total:           number;
     codigo?:     string;
     descripcionAdicional?:     string;
+
+    codigoStock?: string;
+    reservado?: boolean;
+    idCitaDetalle?:      number;
+    idCita?:      number;
 }
 

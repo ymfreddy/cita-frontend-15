@@ -3,40 +3,45 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HelperService } from '../helpers/helper.service';
-import { BusquedaPaginadaServicio, BusquedaServicio } from '../models/busquedas.model';
-import { Servicio } from '../models/servicio.model';
+import { BusquedaPaginadaProducto, BusquedaProducto } from '../models/busquedas.model';
+import { Producto, SolicitudProductoMasivo } from '../models/producto.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiciosService {
+export class ProductosService {
 
   constructor(private httpClient: HttpClient, private helperService: HelperService) { }
 
-  getPaged(criteriosSearch:BusquedaPaginadaServicio): Observable<any> {
+  getPaged(criteriosSearch:BusquedaPaginadaProducto): Observable<any> {
     const queryString = this.helperService.jsonToQueryStringSinfiltro(criteriosSearch);
-    const apiUrl = `${environment.api.adm}/servicios/listar-paginado?${queryString}`;
+    const apiUrl = `${environment.api.adm}/productos/listar-paginado?${queryString}`;
     return this.httpClient.get<any>(apiUrl);
   }
 
-  get(criteriosSearch:BusquedaServicio): Observable<any> {
+  get(criteriosSearch:BusquedaProducto): Observable<any> {
     const queryString = this.helperService.jsonToQueryString(criteriosSearch);
-    const apiUrl = `${environment.api.adm}/servicios/listar?${queryString}`;
+    const apiUrl = `${environment.api.adm}/productos/listar?${queryString}`;
     return this.httpClient.get<any>(apiUrl);
   }
 
-  add(servicio: Servicio): Observable<any> {
-    const apiUrl = `${environment.api.adm}/servicios`;
-    return this.httpClient.post<any>(apiUrl, servicio);
+  add(producto: Producto): Observable<any> {
+    const apiUrl = `${environment.api.adm}/productos`;
+    return this.httpClient.post<any>(apiUrl, producto);
   }
 
-  edit(servicio: Servicio): Observable<any> {
-    const apiUrl = `${environment.api.adm}/servicios`;
-    return this.httpClient.put<any>(apiUrl, servicio);
+  addMasive(solicitud: SolicitudProductoMasivo): Observable<any> {
+    const apiUrl = `${environment.api.adm}/productos/masivos`;
+    return this.httpClient.post<any>(apiUrl, solicitud);
   }
 
-  delete(servicio: Servicio): Observable<any> {
-    const apiUrl = `${environment.api.adm}/servicios/${servicio.id}`;
+  edit(producto: Producto): Observable<any> {
+    const apiUrl = `${environment.api.adm}/productos`;
+    return this.httpClient.put<any>(apiUrl, producto);
+  }
+
+  delete(producto: Producto): Observable<any> {
+    const apiUrl = `${environment.api.adm}/productos/${producto.id}`;
     return this.httpClient.delete<any>(apiUrl);
   }
 }

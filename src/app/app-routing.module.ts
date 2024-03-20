@@ -19,6 +19,7 @@ import { ListaPuntosComponent } from './pages/private/puntos/lista-puntos/lista-
 import { ListaTurnosComponent } from './pages/private/turnos/lista-turnos/lista-turnos.component';
 import { ListaCuentasComponent } from './pages/private/cuentas/lista-cuentas/lista-cuentas.component';
 import { ListaSucursalesComponent } from './pages/private/sucursales/lista-sucursales/lista-sucursales.component';
+import { ListaProductosComponent } from './pages/private/productos/lista-productos/lista-productos.component';
 
 @NgModule({
     imports: [
@@ -40,7 +41,7 @@ import { ListaSucursalesComponent } from './pages/private/sucursales/lista-sucur
                     { path: 'reservas', component: ReservasComponent },
                     { path: 'consultas', component: ListaConsultasComponent },
                     { path: 'atencion', component: AtencionConsultaComponent },
-
+                    { path: 'productos', component: ListaProductosComponent },
                     { path: 'sucursales', component: ListaSucursalesComponent },
                     { path: 'puntos', component: ListaPuntosComponent },
                     { path: 'turnos', component: ListaTurnosComponent },

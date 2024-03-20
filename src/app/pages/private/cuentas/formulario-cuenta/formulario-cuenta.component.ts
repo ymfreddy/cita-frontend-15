@@ -28,7 +28,7 @@ import {
     BusquedaServicio,
 } from 'src/app/shared/models/busquedas.model';
 import { AutoComplete } from 'primeng/autocomplete';
-import { ServiciosService } from 'src/app/shared/services/productos.service';
+import { ServiciosService } from 'src/app/shared/services/servicios.service';
 import { ParametricaSfe } from 'src/app/shared/models/sfe.model';
 import { SfeService } from 'src/app/shared/services/sfe.service';
 import { FinalizarCuenta, Pago } from 'src/app/shared/models/pago.model';
@@ -195,35 +195,35 @@ export class FormularioCuentaComponent implements OnInit {
             if (element.cantidad <= 0) {
                 existeItemError =
                     'La cantidad del servicio ' +
-                    element.servicio +
+                    element.producto +
                     ', debe ser mayor a 0 ';
                 return;
             }
             if (element.precio <= 0) {
                 existeItemError =
                     'El precio del servicio ' +
-                    element.servicio +
+                    element.producto +
                     ', debe ser mayor a 0 ';
                 return;
             }
             if (element.descuento < 0) {
                 existeItemError =
                     'El descuento del servicio ' +
-                    element.servicio +
+                    element.producto +
                     ', debe ser mayor o igual a 0 ';
                 return;
             }
             if (element.total <= 0) {
                 existeItemError =
                     'El total del servicio ' +
-                    element.servicio +
+                    element.producto +
                     ', debe ser mayor a 0 ';
                 return;
             }
             var lgnDescAdicional = element.descripcionAdicional
                 ? element.descripcionAdicional.length
                 : 0;
-            if (element.servicio!.length + lgnDescAdicional > 500) {
+            if (element.producto!.length + lgnDescAdicional > 500) {
                 existeItemError =
                     'El nombre y la descripción adicional no deben ser más de 500 caracteres';
                 return;
@@ -337,6 +337,7 @@ export class FormularioCuentaComponent implements OnInit {
 
         const pago: Pago = {
             idCuenta: this.itemForm.controls['id'].value,
+            idSucursal: this.itemForm.controls['idSucursal'].value,
             idTurno: this.sessionService.getTurno(),
             gift: this.itemForm.controls['gift'].value,
             idCliente: this.itemForm.controls['idCliente'].value,
@@ -475,7 +476,7 @@ export class FormularioCuentaComponent implements OnInit {
 
     addItem(servicio: Servicio) {
         const existeServicio = this.detalle.find(
-            (x) => x.codigoServicio === servicio.codigoServicio
+            (x) => x.codigoProducto === servicio.codigoProducto
         );
         if (existeServicio) {
             this.itemForm.patchValue({ servicio: null });
@@ -484,15 +485,15 @@ export class FormularioCuentaComponent implements OnInit {
         }
 
         const detalle: CuentaDetalle = {
-            idServicio: servicio.id,
-            codigoServicio: servicio.codigoServicio,
+            idProducto: servicio.id,
+            codigoProducto: servicio.codigoProducto,
             codigoTipoDescuento: servicio.descuento
                 ? servicio.descuento.codigoTipoDescuento
                 : adm.TIPO_DESCUENTO_TOTAL,
             valorDescuento: servicio.descuento
                 ? servicio.descuento.descuentoEstablecido
                 : 0,
-            servicio: servicio.nombre,
+            producto: servicio.nombre,
             cantidad: 1,
             precio: servicio.precio,
             subtotal: servicio.precio,
@@ -509,7 +510,7 @@ export class FormularioCuentaComponent implements OnInit {
 
     deleteItem(item: any) {
         this.detalle = this.detalle.filter(
-            (x) => x.codigoServicio != item.codigoServicio
+            (x) => x.codigoProducto != item.codigoProducto
         );
         // verificar si tiene id
         if (item.id) {

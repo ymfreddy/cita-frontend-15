@@ -1,9 +1,49 @@
-.fc { /* the calendar root */
-    max-width: 1100px;
-    margin: 0 auto;
-    background: rgb(168, 170, 192);
-  }
+// .fc {
+//     max-width: 1100px;
+//     margin: 0 auto;
+//     background: rgb(168, 170, 192);
+//   }
 
-.fc-sat, .fc-sun {
-    background-color: red !important;
+// .fc-sat, .fc-sun {
+//     background-color: red !important;
+// }
+
+.texto-small {
+    font-size: xx-small !important;
+}
+
+.signo  {
+    position: absolute;
+    left:-5px;
+    top: calc(50% - 10px);
+    color: white;
+}
+
+:host ::ng-deep .fc-timegrid-event .fc-event-main {
+    // padding: 1px 1px 0px;
+    font-size: xx-small !important;
+    color: black;
+    overflow: hidden;
+    // border-left: 12px solid rgb(30, 148, 105) !important;
+}
+
+:host ::ng-deep .p-datepicker table td > span {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    transition: box-shadow 0.2s;
+    border: 1px solid transparent;
+}
+:host ::ng-deep .p-datepicker table td {
+    padding: 0rem;
+}
+:host ::ng-deep .p-datepicker .p-datepicker-header {
+    padding: 0rem;
+    color: #495057;
+    background: #ffffff;
+    font-weight: 600;
+    margin: 0;
+    border-bottom: 1px solid #dee2e6;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
 }

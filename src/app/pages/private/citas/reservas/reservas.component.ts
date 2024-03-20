@@ -184,6 +184,7 @@ export class ReservasComponent implements OnInit {
     cargarEventos(idUsuario: number) {
         const criterios: BusquedaCita = {
             idEmpresa: this.idEmpresa,
+            idSucursal: this.sessionService.getSessionUserData().idSucursal,
             idUsuarioProfesional: idUsuario,
             resumen: true,
         };

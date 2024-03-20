@@ -169,10 +169,12 @@ export class AtencionConsultaComponent {
     cargarEventos() {
         const criterios: BusquedaCita = {
             idEmpresa: this.sessionService.getSessionEmpresaId(),
+            idSucursal: this.sessionService.getSessionUserData().idSucursal,
             idUsuarioProfesional: this.sessionService.getSessionUserData().id,
-            estadosCita: adm.CITA_ESTADO_RESERVA+','+adm.CITA_ESTADO_PENDIENTE+','+adm.CITA_ESTADO_ATENDIDA,
+            codigosEstadosCita: adm.CITA_ESTADO_RESERVA+','+adm.CITA_ESTADO_EN_ESPERA+','+adm.CITA_ESTADO_INICIADA,
             resumen: true,
         };
+        console.log(criterios);
         this.citasService.get(criterios).subscribe({
             next: (res) => {
                 this.listaCita = res.content;
@@ -250,7 +252,7 @@ export class AtencionConsultaComponent {
         const consulta:ConsultaMedicaResumen={
             idCliente: this.citaSeleccionada?.idCliente,
             idUsuarioProfesional:this.citaSeleccionada?.idUsuarioProfesional,
-            codigoTipo:this.citaSeleccionada?.codigoTipo,
+            //codigoTipo:this.citaSeleccionada?.codigoTipo,
         }
 
         const ref = this.dialogService.open(FormularioConsultaComponent, {

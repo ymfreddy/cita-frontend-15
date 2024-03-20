@@ -136,6 +136,7 @@ export class FormularioPagoComponent implements OnInit {
 
             const pago: Pago = {
                 idCuenta: this.itemForm.controls['idCuenta'].value,
+                idSucursal: this.itemForm.controls['idSucursal'].value,
                 idTurno: this.sessionService.getTurno(),
                 gift: this.itemForm.controls['gift'].value,
                 idCliente: this.itemForm.controls['idCliente'].value,

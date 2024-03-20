@@ -1,20 +1,17 @@
 export interface Servicio {
   id: number;
-  codigoTipoServicio: string;
   idCategoria: number;
   idEmpresa: number;
-  codigoServicio: string;
+  codigoProducto: string;
   nombre: string;
   descripcion: string;
   precio: number;
-  imagenNombre: string;
-  imagenRuta: string;
-  tipoServicio: string;
   categoria: string;
   descuento?: DescuentoServicio;
   codigoActividadSin: string;
   codigoProductoSin: number;
   codigoTipoUnidadSin: number;
+  tiempo: number;
 }
 
 export interface DescuentoServicio {
@@ -28,16 +25,13 @@ export interface DescuentoServicio {
 
 export interface ServicioResumen {
     id: number;
-    codigoTipoServicio: string;
-    codigoServicio: string;
+    codigoTipoProducto: string;
+    codigoProducto: string;
     nombre: string;
     descripcion: string;
     precio: number;
-    imagenNombre: string;
-    imagenRuta: string;
     descuento?: DescuentoServicio;
-    codigoServicioStock: string;
-    precioIce: number;
+    tiempo: number;
   }
 
 

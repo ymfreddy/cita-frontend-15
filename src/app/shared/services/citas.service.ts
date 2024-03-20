@@ -19,9 +19,14 @@ export class CitasService {
   }
 
   get(criteriosSearch:BusquedaCita): Observable<any> {
+      console.log(criteriosSearch);
     const queryString = this.helperService.jsonToQueryStringSinfiltro(criteriosSearch);
-    console.log(queryString);
     const apiUrl = `${environment.api.adm}/citas/listar?${queryString}`;
+    return this.httpClient.get<any>(apiUrl);
+  }
+
+  getDetail(id:number): Observable<any> {
+    const apiUrl = `${environment.api.adm}/citas/listarDetalle/${id}`;
     return this.httpClient.get<any>(apiUrl);
   }
 

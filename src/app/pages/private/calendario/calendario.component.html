@@ -1,2 +1,96 @@
-<p>calendario works!</p>
-<full-calendar [options]="calendarOptions" locale="es" [deepChangeDetection]="true"></full-calendar>
+<div class="p-fluid p-formgrid grid">
+    <div class="field col-12 md:col-2">
+        <div class="field">
+            <label>PROFESIONALES</label>
+            <p-listbox [options]="listaProfesionales" (onChange)="listboxChange($event)"  [(ngModel)]="usuarioProfesional" optionLabel="profesional" ></p-listbox>
+        </div>
+        <div class="field">
+            <p-button icon="pi pi-check" (click)="nuevaVenta()" label="Nueva Venta" styleClass="p-button-text"></p-button>
+        </div>
+        <div class="field">
+            <p-calendar class="max-w-full" [(ngModel)]="date" [inline]="true" ></p-calendar>
+        </div>
+    </div>
+    <div class="field col-12 md:col-10">
+        <full-calendar [options]="calendarOptions" locale="es" [deepChangeDetection]="true">
+            <ng-template #eventContent let-arg >
+                <!-- <label *ngIf="arg.event.extendedProps.pagado===true" class="signo">$</label> -->
+                <span>
+                    {{ arg.event.title }} - {{ arg.event.pagado }}
+                    <br>{{ arg.timeText }}
+                </span>
+            </ng-template>
+        </full-calendar>
+    </div>
+</div>
+<!-- <p-overlayPanel #cita  appendTo="body" [showCloseIcon]="true">
+    <img src="https://primefaces.org/cdn/primeng/images/demo/product/bamboo-watch.jpg" alt="product" />
+</p-overlayPanel> -->
+<p-dialog header="Header" [(visible)]="verDetalleCita" [style]="{ width: '400px' }">
+    <ng-template pTemplate="header">
+        <span class="text-xl font-bold">Cita</span>
+    </ng-template>
+    <div *ngIf="this.citaSeleccionada">
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>N° Cita:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['correlativo']}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Descripción:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.title}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Hora:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.start| date : "HH:mm"}} - {{this.citaSeleccionada.event.end | date : "HH:mm"}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Estado:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['estadoCita']}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Email:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['emailCliente']}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Celular:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['telefonoCliente']}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Genero:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['generoCliente'] ? (this.citaSeleccionada.event.extendedProps['generoCliente']==='M' ? 'MASCULINO ':'FEMENINO ') :''}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Edad:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['edadCliente']? (this.citaSeleccionada.event.extendedProps['edadCliente']+ ' AÑOS'): ''}}
+                </div>
+            </div>
+    </div>
+    <!-- <div class="flex py-2 justify-content-center">
+        <p-dropdown appendTo="body" [options]="cities" [(ngModel)]="selectedCity" placeholder="Select a City" optionLabel="name"></p-dropdown>
+    </div> -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-between flex-wrap card-container purple-container">
+            <div class="flex align-items-center justify-content-center">
+                <p-button [disabled]="this.citaSeleccionada.event.extendedProps['pagado']" icon="pi pi-money-bill" (onClick)="verDetalleCita = false; pagarCita();" label="Pagar" styleClass="p-button-text"></p-button>
+            </div>
+            <div class="flex align-items-center justify-content-center">
+                <p-button icon="pi pi-eye" (onClick)="verDetalleCita = false; editarCita()" label="Ver" styleClass="p-button-text"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>

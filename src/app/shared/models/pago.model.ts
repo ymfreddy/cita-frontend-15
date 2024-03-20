@@ -1,5 +1,8 @@
+import { Cuenta } from "./cuenta.model";
+
 export interface Pago {
   id?: number;
+  idSucursal: number;
   idCuenta: number;
   idTurno: number;
   idCliente: number;
@@ -30,6 +33,11 @@ export interface PagoResumen {
 
   export interface FinalizarCuenta {
     idCuenta?: number;
+    pago: Pago|null
+}
+
+export interface RegistrarFinalizarCuenta {
+    cuenta: Cuenta;
     pago: Pago|null
 }
 

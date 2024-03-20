@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
     FormBuilder,
     FormControl,
@@ -11,7 +11,7 @@ import {
     DynamicDialogRef,
 } from 'primeng/dynamicdialog';
 import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
-import { BusquedaCliente, BusquedaServicio } from 'src/app/shared/models/busquedas.model';
+import { BusquedaCliente, BusquedaServicio, BusquedaUsuario } from 'src/app/shared/models/busquedas.model';
 import { Cita, CitaDetalle, CitaEstado } from 'src/app/shared/models/cita.model';
 import { CitasService } from 'src/app/shared/services/citas.service';
 import { ClientesService } from 'src/app/shared/services/clientes.service';
@@ -25,7 +25,13 @@ import { adm } from 'src/app/shared/constants/adm';
 import { Servicio } from 'src/app/shared/models/servicio.model';
 import { HelperService } from 'src/app/shared/helpers/helper.service';
 import { SessionService } from 'src/app/shared/security/session.service';
-import { ServiciosService } from 'src/app/shared/services/productos.service';
+import { ServiciosService } from 'src/app/shared/services/servicios.service';
+import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
+import { Usuario } from 'src/app/shared/models/usuario.model';
+import { UsuariosService } from 'src/app/shared/services/usuarios.service';
+import { ConfirmationService } from 'primeng/api';
+moment.locale("es");
 
 @Component({
     selector: 'app-formulario-cita',
@@ -33,7 +39,7 @@ import { ServiciosService } from 'src/app/shared/services/productos.service';
     styleUrls: ['./formulario-cita.component.scss'],
     providers: [DialogService],
 })
-export class FormularioCitaComponent implements OnInit {
+export class FormularioCitaComponent implements OnInit , AfterContentChecked {
     @ViewChild('clienteTemporal') elmC?: AutoComplete;
     @ViewChild('servicio') elmP?: AutoComplete;
     item?: Cita;
@@ -42,14 +48,15 @@ export class FormularioCitaComponent implements OnInit {
     submited = false;
 
     listaEstados: CitaEstado[] = [];
-    listaTipos: Parametrica[] = [];
     idEmpresa!: number;
     listaClientesFiltrados: Cliente[] = [];
+    listaUsuarios: Usuario[] = [];
 
+    listaServicios: Servicio[] = [];
     listaServiciosFiltrados: Servicio[] = [];
     detalle: CitaDetalle[] = [];
     detalleEliminado: number[] = [];
-
+    // multiplesServicios= false;
     constructor(
         private fb: FormBuilder,
         public config: DynamicDialogConfig,
@@ -59,32 +66,31 @@ export class FormularioCitaComponent implements OnInit {
         private clienteService: ClientesService,
         private dialogService: DialogService,
         private parametricasService: ParametricasService,
+        private changeDetector: ChangeDetectorRef,
         private helperService: HelperService,
         private sessionService: SessionService,
-        private servicioService: ServiciosService
-    ) {}
+        private servicioService: ServiciosService,
+        private usuarioService: UsuariosService,
+        private confirmationService:ConfirmationService
+    ) {
+    }
 
     ngOnInit(): void {
         this.idEmpresa = this.config.data.idEmpresa;
         this.item = this.config.data.item;
         this.detalle = this.item?.detalle ?? [];
 
-        this.parametricasService
-            .getParametricasByTipo(TipoParametrica.TIPO_CONSULTA)
-            .subscribe((data) => {
-                this.listaTipos = data as unknown as Parametrica[];
-            });
-        this.citaservice.getEstados().subscribe((data) => {
-            this.listaEstados = data.content as unknown as CitaEstado[];
-            console.log(this.listaEstados);
-        });
+        this.cargarUsuarios();
+        this.cargarParametricas();
+        this.cargarServicios();
 
         let temporalCliente: any;
         if (this.item?.id != null) {
             temporalCliente = {
                 id: this.item?.idCliente,
                 codigoCliente: this.item?.codigoCliente,
-                telfono: this.item?.telefonoCliente,
+                telefono: this.item?.telefonoCliente,
+                email: this.item?.emailCliente,
                 nombreCompleto: this.item?.cliente,
             };
         }
@@ -97,22 +103,68 @@ export class FormularioCitaComponent implements OnInit {
             clienteTemporal: [temporalCliente, Validators.required],
             idCliente: [this.item?.idCliente],
             codigoCliente: [this.item?.codigoCliente],
-            cliente: [this.item?.cliente],
+            cliente: [this.item?.cliente, Validators.required],
             telefonoCliente: [this.item?.telefonoCliente],
-            codigoEstado: [
-                this.item?.codigoEstado ?? adm.CITA_ESTADO_RESERVA,
-                Validators.required,
-            ],
-            codigoTipo: [
-                this.item?.codigoTipo ?? adm.CONSULTA_TIPO_CONSULTA,
+            emailCliente: [this.item?.emailCliente],
+            codigoEstadoCita: [
+                this.item?.codigoEstadoCita ?? adm.CITA_ESTADO_RESERVA,
                 Validators.required,
             ],
             nota: [this.item?.nota],
             inicio: [this.item?.inicio.slice(11, 16), Validators.required],
             fin: [this.item?.fin.slice(11, 16), Validators.required],
-            //fecha: [this.item?.fecha],
+            fecha: [moment(this.item?.inicio).format("dddd, D [de] MMMM [de] YYYY")],
             idEmpresa: [this.item?.idEmpresa],
-            idUsuarioProfesional: [this.item?.idUsuarioProfesional],
+            idSucursal: [this.item?.idSucursal?? this.sessionService.getSessionUserData().idSucursal],
+            idUsuarioProfesional: [this.item?.idUsuarioProfesional, Validators.required],
+            idProducto: [this.item?.idProducto],
+            multiplesServicios: [false]
+        });
+    }
+
+    cargarUsuarios(){
+        const busqueda: BusquedaUsuario = {
+            idEmpresa: this.idEmpresa,
+            codigoTipoUsuario: adm.TIPO_USUARIO_PROFESIONAL,
+            resumen: true,
+        };
+        this.usuarioService.get(busqueda).subscribe({
+            next: (res) => {
+                console.log(res);
+                this.listaUsuarios = res.content;
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
+            },
+        });
+    }
+
+    cargarServicios(){
+        const criteriosBusqueda: BusquedaServicio = {
+            idEmpresa: this.sessionService.getSessionEmpresaId(),
+            //idSucursal: this.sessionService.getSessionUserData().idSucursal,
+            resumen: true
+        };
+
+        this.servicioService.get(criteriosBusqueda).subscribe({
+            next: (res) => {
+                console.log(res);
+                if (res.content.length == 0) {
+                    this.listaServicios = [];
+                    return;
+                }
+                this.listaServicios = res.content;
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
+            },
+        });
+    }
+
+    cargarParametricas(){
+        this.citaservice.getEstados().subscribe((data) => {
+            this.listaEstados = data.content as unknown as CitaEstado[];
+            console.log(this.listaEstados);
         });
     }
 
@@ -125,12 +177,10 @@ export class FormularioCitaComponent implements OnInit {
                 return;
             }
 
-            // if (this.detalle.length == 0) {
-            //     this.mensajeService.showWarning(
-            //         'Debe agregar al menos un servicio a la cita'
-            //     );
-            //     return;
-            // }
+            if (this.detalle.length == 0) {
+                this.mensajeService.showWarning('Debe asignar un servicio a la cita');
+                return;
+            }
 
             // obtener valores combo
             const cita: Cita = {
@@ -138,17 +188,22 @@ export class FormularioCitaComponent implements OnInit {
                 correlativo: this.itemForm.controls['correlativo'].value,
                 idEmpresa:
                     this.itemForm.controls['idEmpresa'].value ?? this.idEmpresa,
+                idSucursal:
+                    this.itemForm.controls['idSucursal'].value,
                 idUsuarioProfesional:
                     this.itemForm.controls['idUsuarioProfesional'].value,
+                idProducto:
+                    this.itemForm.controls['idProducto'].value,
                 clienteTemporal: this.itemForm.controls['clienteTemporal'].value,
                 idCliente: this.itemForm.controls['idCliente'].value,
                 codigoCliente: this.itemForm.controls['codigoCliente'].value,
                 cliente: this.itemForm.controls['cliente'].value,
+                emailCliente:
+                    this.itemForm.controls['emailCliente'].value,
                 telefonoCliente:
                     this.itemForm.controls['telefonoCliente'].value,
                 nota: this.itemForm.controls['nota'].value,
-                codigoTipo: this.itemForm.controls['codigoTipo'].value,
-                codigoEstado: this.itemForm.controls['codigoEstado'].value,
+                codigoEstadoCita: this.itemForm.controls['codigoEstadoCita'].value,
                 inicio:
                     this.item?.inicio.slice(0, 11) +
                     this.itemForm.controls['inicio'].value,
@@ -162,10 +217,9 @@ export class FormularioCitaComponent implements OnInit {
                         : this.detalleEliminado,
             };
 
-            this.submited = true;
-            // modificar cita 0
             console.log(cita);
             if (cita.id != null) {
+                this.submited = true;
                 this.citaservice.edit(cita).subscribe({
                     next: (res) => {
                         this.mensajeService.showSuccess(res.message);
@@ -177,14 +231,22 @@ export class FormularioCitaComponent implements OnInit {
                     },
                 });
             } else {
-                this.citaservice.add(cita).subscribe({
-                    next: (res) => {
-                        this.mensajeService.showSuccess(res.message);
-                        this.dialogRef.close(res.content);
-                    },
-                    error: (err) => {
-                        this.mensajeService.showError(err.error.message);
-                        this.submited = false;
+                this.confirmationService.confirm({
+                    message: this.detalle.length == 1 ? 'Esta seguro de crear la reserva?' : 'Esta seguro de crear las '+this.detalle.length+' reservas?',
+                    header: 'Confirmación',
+                    icon: 'pi pi-exclamation-triangle',
+                    accept: () => {
+                        this.submited = true;
+                        this.citaservice.add(cita).subscribe({
+                            next: (res) => {
+                                this.mensajeService.showSuccess(res.message);
+                                this.dialogRef.close(res.content);
+                            },
+                            error: (err) => {
+                                this.mensajeService.showError(err.error.message);
+                                this.submited = false;
+                            },
+                        });
                     },
                 });
             }
@@ -213,6 +275,7 @@ export class FormularioCitaComponent implements OnInit {
                 this.itemForm.patchValue({ codigoCliente: res.codigoCliente });
                 this.itemForm.patchValue({ cliente: res.nombreCompleto });
                 this.itemForm.patchValue({ telefonoCliente: res.telefono });
+                this.itemForm.patchValue({ emailCliente: res.email });
             }
         });
     }
@@ -246,6 +309,7 @@ export class FormularioCitaComponent implements OnInit {
                             this.itemForm.patchValue({codigoCliente: res2.codigoCliente,});
                             this.itemForm.patchValue({cliente: res2.nombreCompleto, });
                             this.itemForm.patchValue({telefonoCliente: res2.telefono, });
+                            this.itemForm.patchValue({emailCliente: res2.email, });
                         }
                     });
                 },
@@ -284,10 +348,12 @@ export class FormularioCitaComponent implements OnInit {
     }
 
     seleccionarCliente(event: any) {
+        console.log(event);
         this.itemForm.patchValue({ idCliente: event?.id });
         this.itemForm.patchValue({ codigoCliente: event?.codigoCliente });
         this.itemForm.patchValue({ cliente: event?.nombreCompleto });
         this.itemForm.patchValue({ telefonoCliente: event?.telefono });
+        this.itemForm.patchValue({ emailCliente: event?.email });
     }
 
     limpiarCliente() {
@@ -296,6 +362,7 @@ export class FormularioCitaComponent implements OnInit {
         this.itemForm.patchValue({ codigoCliente: '' });
         this.itemForm.patchValue({ cliente: '' });
         this.itemForm.patchValue({ telefonoCliente: '' });
+        this.itemForm.patchValue({ emailCliente: '' });
         this.elmC?.focusInput();
     }
 
@@ -337,6 +404,17 @@ export class FormularioCitaComponent implements OnInit {
         return 0;
     }
 
+    getDetalleTiempo(): number {
+        if (this.detalle) {
+            const sum = this.detalle
+                .map((t) => t.tiempo)
+                .reduce((acc, value) => acc + value, 0);
+            return this.helperService.round(sum, adm.NUMERO_DECIMALES)
+        }
+
+        return 0;
+    }
+
      // servicio
      buscarServicio(termino: string) {
         const criteriosBusqueda: BusquedaServicio = {
@@ -349,6 +427,7 @@ export class FormularioCitaComponent implements OnInit {
 
         this.servicioService.get(criteriosBusqueda).subscribe({
             next: (res) => {
+                console.log(res);
                 if (res.content.length == 0) {
                     this.listaServiciosFiltrados = [];
                     return;
@@ -363,7 +442,7 @@ export class FormularioCitaComponent implements OnInit {
 
     addItem(servicio: Servicio) {
         const existeServicio = this.detalle.find(
-            (x) => x.codigoServicio === servicio.codigoServicio
+            (x) => x.codigoProducto === servicio.codigoProducto
         );
         if (existeServicio) {
             this.mensajeService.showWarning(
@@ -373,14 +452,17 @@ export class FormularioCitaComponent implements OnInit {
         }
 
         const detalle: CitaDetalle = {
-            idServicio: servicio.id,
-            codigoServicio: servicio.codigoServicio,
-            servicio: servicio.nombre,
+            idProducto: servicio.id,
+            codigoProducto: servicio.codigoProducto,
+            producto: servicio.nombre,
             cantidad: 1,
             precio: servicio.precio,
             subtotal: servicio.precio,
             descuento: 0,
             total: servicio.precio,
+            tiempo: servicio.tiempo,
+            id: 0,
+            idCita: 0
         };
 
         this.itemForm.patchValue({ servicio: null });
@@ -391,7 +473,7 @@ export class FormularioCitaComponent implements OnInit {
     }
 
     deleteItem(item: any) {
-        this.detalle = this.detalle.filter((x) => x.codigoServicio != item.codigoServicio);
+        this.detalle = this.detalle.filter((x) => x.codigoProducto != item.codigoProducto);
         // verificar si tiene id
         if (item.id) {
             this.detalleEliminado.push(item.id);
@@ -430,4 +512,39 @@ export class FormularioCitaComponent implements OnInit {
     seleccionarServicio(event: any) {
         this.addItem(event);
     }
+
+    cambioServicio(event: any) {
+        const servicio = this.listaServicios.find((x) => x.id === event.value);
+            const detalle: CitaDetalle = {
+                idProducto: servicio!.id,
+                codigoProducto: servicio!.codigoProducto,
+                producto: servicio!.nombre,
+                cantidad: 1,
+                precio: servicio!.precio,
+                subtotal: servicio!.precio,
+                descuento: 0,
+                total: servicio!.precio,
+                tiempo: servicio!.tiempo,
+                id: 0
+            };
+
+        console.log(servicio);
+        if (this.detalle.length==0){
+            this.detalle.push(detalle);
+        }else{
+            console.log(this.detalle);
+            this.detalle[0].codigoProducto =  servicio?.codigoProducto!;
+            this.detalle[0].idProducto =  servicio?.id!;
+            this.detalle[0].producto =  servicio?.nombre!;
+            this.detalle[0].precio =  servicio?.precio!;
+            this.detalle[0].subtotal =  servicio?.precio!;
+            this.detalle[0].total =  servicio?.precio!;
+            this.detalle[0].tiempo =  servicio?.tiempo!;
+        }
+    }
+
+
+    ngAfterContentChecked(): void {
+        this.changeDetector.detectChanges();
+      }
 }

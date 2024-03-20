@@ -59,6 +59,8 @@ import {CarouselModule} from 'primeng/carousel';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { ListboxModule } from 'primeng/listbox';
 import { ChipsModule } from 'primeng/chips';
+import { TimelineModule } from 'primeng/timeline';
+import { MenubarModule } from 'primeng/menubar';
 
 @NgModule({
   declarations: [],
@@ -125,6 +127,8 @@ import { ChipsModule } from 'primeng/chips';
     NgOptimizedImage,
     RadioButtonModule,
     ChipsModule,
+    TimelineModule,
+    MenubarModule
   ],
   exports: [
     AccordionModule,
@@ -184,7 +188,9 @@ import { ChipsModule } from 'primeng/chips';
     ListboxModule,
     NgOptimizedImage,
     RadioButtonModule,
-    ChipsModule
+    ChipsModule,
+    TimelineModule,
+    MenubarModule
   ],
   providers: [MessageService, DialogService ],
 })

@@ -15,7 +15,7 @@ import { Parametrica } from 'src/app/shared/models/parametrica.model';
 import { CategoriasService } from 'src/app/shared/services/categorias.service';
 import { TipoParametrica } from 'src/app/shared/enums/tipo-parametrica.model';
 import { adm } from 'src/app/shared/constants/adm';
-import { ServiciosService } from 'src/app/shared/services/productos.service';
+import { ServiciosService } from 'src/app/shared/services/servicios.service';
 import { ActividadSfe, ParametricaSfe, ProductoSfe } from 'src/app/shared/models/sfe.model';
 import { SfeService } from 'src/app/shared/services/sfe.service';
 
@@ -36,7 +36,7 @@ export class FormularioServicioComponent implements OnInit {
     listaTiposUnidad: ParametricaSfe[] = [];
     listaActividades: ActividadSfe[] = [];
 
-    listaTiposServicioSinSeleccionado: ProductoSfe[] = [];
+    listaTiposProductoSinSeleccionado: ProductoSfe[] = [];
     listaTiposProductoSin: ProductoSfe[] = [];
     idEmpresa!:number;
     nitEmpresa!:number;
@@ -87,7 +87,7 @@ export class FormularioServicioComponent implements OnInit {
             this.sfeService.getProductosSin(this.nitEmpresa).subscribe((data) => {
                 this.listaTiposProductoSin = data as unknown as ProductoSfe[];
                 if (this.item?.id){
-                    this.listaTiposServicioSinSeleccionado = this.listaTiposProductoSin.filter(x=>x.codigoActividad==this.item?.codigoActividadSin);
+                    this.listaTiposProductoSinSeleccionado = this.listaTiposProductoSin.filter(x=>x.codigoActividad==this.item?.codigoActividadSin);
                 }
             });
 
@@ -95,18 +95,16 @@ export class FormularioServicioComponent implements OnInit {
         // cargar data
         this.itemForm = this.fb.group({
             id: [this.item?.id],
-            codigoTipoServicio: [this.item?.codigoTipoServicio??adm.TIPO_SERVICIO_SERVICIO, Validators.required],
             idCategoria: [this.item?.idCategoria, Validators.required],
-            codigoServicio: [this.item?.codigoServicio, Validators.required],
+            codigoProducto: [this.item?.codigoProducto, Validators.required],
             codigoActividadSin: [this.item?.codigoActividadSin],
             codigoProductoSin: [this.item?.codigoProductoSin],
             codigoTipoUnidadSin: [this.item?.codigoTipoUnidadSin],
             nombre: [this.item?.nombre, Validators.required],
             descripcion: [this.item?.descripcion],
-            imagenNombre: [this.item?.imagenNombre],
-            imagenRuta: [this.item?.imagenRuta],
             idEmpresa: [this.item?.idEmpresa],
-            precio: [this.item?.precio ?? 0],
+            precio: [this.item?.precio ?? 0, Validators.required],
+            tiempo: [this.item?.tiempo ?? 60, Validators.required],
         });
     }
 
@@ -135,10 +133,9 @@ export class FormularioServicioComponent implements OnInit {
                 idEmpresa:
                     this.itemForm.controls['idEmpresa'].value ??
                     this.idEmpresa,
-                codigoTipoServicio: this.itemForm.controls['codigoTipoServicio'].value,
                 idCategoria: this.itemForm.controls['idCategoria'].value,
-                codigoServicio:
-                    this.itemForm.controls['codigoServicio'].value.trim(),
+                codigoProducto:
+                    this.itemForm.controls['codigoProducto'].value.trim(),
                 codigoActividadSin:
                     this.itemForm.controls['codigoActividadSin'].value,
                 codigoProductoSin:
@@ -147,11 +144,9 @@ export class FormularioServicioComponent implements OnInit {
                     this.itemForm.controls['codigoTipoUnidadSin'].value,
                 nombre: this.itemForm.controls['nombre'].value.trim(),
                 descripcion: this.itemForm.controls['descripcion'].value,
+                tiempo: this.itemForm.controls['tiempo'].value,
                 precio: this.itemForm.controls['precio'].value,
-                imagenNombre: this.itemForm.controls['imagenNombre'].value,
-                imagenRuta: this.itemForm.controls['imagenRuta'].value,
                 categoria: categoria ?? '',
-                tipoServicio: '',
             };
 
             this.submited = true;
@@ -214,11 +209,11 @@ export class FormularioServicioComponent implements OnInit {
 
     cambioActividad(event: any) {
         if (!event.value) {
-            this.listaTiposServicioSinSeleccionado = [];
+            this.listaTiposProductoSinSeleccionado = [];
             return;
         }
 
-        this.listaTiposServicioSinSeleccionado = this.listaTiposProductoSin.filter((x) => x.codigoActividad == event.value);
+        this.listaTiposProductoSinSeleccionado = this.listaTiposProductoSin.filter((x) => x.codigoActividad == event.value);
         this.itemForm.updateValueAndValidity();
     }
 }

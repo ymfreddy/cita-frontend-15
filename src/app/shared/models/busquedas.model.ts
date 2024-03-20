@@ -27,11 +27,18 @@ export interface BusquedaCliente {
 
 export interface BusquedaCita {
     idEmpresa?: number;
+    idSucursal?: number;
     idUsuarioProfesional?: number;
-    estadosCita?: string;
+    codigoCliente?: string;
+    codigosEstadosCita?: string;
+    codigosTiposCita?: string;
+    fechaInicio?: string;
+    fechaFin?: string;
+
     resumen?: boolean;
     termino?: string;
     cantidadRegistros?: number;
+    soloNoPagados?:boolean;
 }
 
 export interface BusquedaServicio {
@@ -118,4 +125,30 @@ export interface BusquedaCuentaCliente {
     codigosEstadosCuenta: string;
     fechaInicio?: string;
     fechaFin?: string;
+}
+
+export interface BusquedaPaginadaProducto {
+    idEmpresa?: number;
+    idSucursal?: number;
+    idProducto?: number;
+    codigosTiposProducto?: string;
+    idsCategorias?: string;
+    pagina?: number;
+    cantidadItems?: number;
+    campoOrden?: string ;
+	tipoOrden?: number|1|-1;
+    filtro?: string ;
+    campoEspecifico?: string ;
+}
+
+export interface BusquedaProducto {
+    idEmpresa?: number;
+    idSucursal?: number;
+    codigoTipoProducto?: string;
+    idCategoria?: number;
+    codigoProducto?: string;
+    resumen?: boolean;
+    termino?: string;
+    cantidadRegistros?: number;
+    idsCategorias?: string;
 }
