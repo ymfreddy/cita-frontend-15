@@ -70,7 +70,7 @@
 
     </form>
 </p-panel>
-<p-panel header="CUENTAS" [toggleable]="true">
+<p-panel header="VENTAS" [toggleable]="true">
     <p-table #dt styleClass="p-datatable-sm" [value]="items" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['correlativo','numeroSucursal','fecha','codigoCliente','nombreCliente','descuentoAdicional','total','totalSujetoIva','estadoCuenta','diasCredito','tipoCuenta','saldo']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros" [rowHover]="true"
@@ -131,7 +131,10 @@
                 <td>{{item.tipoCuenta}}</td>
                 <td>{{item.estadoCuenta}}</td>
                 <td>{{item.numeroFactura}}</td>
-                <td><p-tag [value]="item.estadoFactura" [severity]="getSeverity(item.codigoEstadoFactura)"></p-tag></td>
+                <td *ngIf="item.estadoFactura"><p-tag [value]="item.estadoFactura" [severity]="getSeverity(item.codigoEstadoFactura)"></p-tag></td>
+                <td *ngIf="!item.estadoFactura">
+                    <p-tag [style]="{ 'background': 'grey'}" value="NO EMITIDO" ></p-tag>
+                </td>
                 <td>{{item.usuario}}</td>
                 <td style="width:5rem; min-width:5rem;">
                     <div class="flex">
@@ -139,8 +142,8 @@
                             (click)="opcionesCuenta(menuFactura, $event, item)"></button>
                         <button appendTo="body" pButton pRipple pTooltip="Más opciones"  tooltipPosition="top"   icon="pi pi-cog" class="p-button-rounded p-button-primary mr-2"
                             (click)="opcionesCuenta(menuCuenta, $event, item)"></button>
-                        <button appendTo="body" pButton pRipple pTooltip="Editar cuenta"  tooltipPosition="top"  icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
-                            (click)="editItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
+                        <!-- <button appendTo="body" pButton pRipple pTooltip="Editar cuenta"  tooltipPosition="top"  icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                            (click)="editItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button> -->
                         <button appendTo="body" pButton pRipple pTooltip="Eliminar cuenta"  tooltipPosition="top"  icon="pi pi-trash" class="p-button-rounded p-button-danger"
                             (click)="deleteItem(item)" [disabled]="!esEditable(item.codigoEstadoCuenta)"></button>
                     </div>

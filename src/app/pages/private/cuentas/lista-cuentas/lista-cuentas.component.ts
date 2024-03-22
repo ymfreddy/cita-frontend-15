@@ -32,6 +32,7 @@ import { GenerarFacturaComponent } from 'src/app/components/generar-factura/gene
 import { AnularFacturaComponent } from 'src/app/components/anular-factura/anular-factura.component';
 import { WhatsappFacturaComponent } from 'src/app/components/whatsapp-factura/whatsapp-factura.component';
 import { SfeService } from '../../../../shared/services/sfe.service';
+import { FormularioPagoCuentaComponent } from '../formulario-pago-cuenta/formulario-pago-cuenta.component';
 
 
 @Component({
@@ -179,6 +180,13 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             {
                 label: 'Opciones Factura',
                 items: [
+                    /*{
+                        label: 'Ver En Impuestos',
+                        icon: 'pi pi-link',
+                        command: () => {
+                            this.opcionFacturaUrl();
+                        },
+                    },*/
                     {
                         label: 'Descargar',
                         icon: 'pi pi-cloud-download',
@@ -360,21 +368,15 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
     }
 
     newItem() {
-        const ref = this.dialogService.open(FormularioCuentaComponent, {
-            header: 'Nuevo',
-            width: '90%',
+        const ref = this.dialogService.open(FormularioPagoCuentaComponent, {
+            header: 'Venta',
+            width: '95%',
             draggable: true,
-            resizable: false,
             maximizable: true,
-            data: { cuenta: null},
+            data: { idEmpresa: this.idEmpresa },
         });
-
         ref.onClose.subscribe((res) => {
-            if (res) {
-                this.loadData();
-                //this.items.unshift(res);
-                //this.items=this.items.slice();
-            }
+            this.loadData();
         });
     }
 
@@ -578,7 +580,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         console.log(this.cuentaSeleccionada);
         const ref = this.dialogService.open(GenerarFacturaComponent, {
             header: 'Emitir Factura',
-            width: '90%',
+            width: '400px',
             data: {cuenta : this.cuentaSeleccionada},
         });
         ref.onClose.subscribe((res) => {
@@ -599,7 +601,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
         }
         const ref = this.dialogService.open(AnularFacturaComponent, {
             header: 'Anular Factura',
-            width: '500px',
+            width: '400px',
             data: this.cuentaSeleccionada,
         });
         ref.onClose.subscribe((res) => {
@@ -622,8 +624,6 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             this.mensajeService.showWarning('La factura está anulada');
             return;
         }
-
-
         const factura: any = {
             ... this.cuentaSeleccionada!,
             codigoCliente: this.cuentaSeleccionada.codigoCliente,
@@ -643,6 +643,15 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             data: factura,
         });
         ref.onClose.subscribe((res) => {});
+    }
+
+    opcionFacturaUrl() {
+        if (!this.cuentaSeleccionada?.codigoEstadoFactura) {
+            this.mensajeService.showWarning('No existe factura');
+            return;
+        }
+
+        //window.open(this.facturaSeleccionada.url, '_blank');
     }
 
     opcionFacturaDescargar(imprimir:boolean) {
@@ -674,7 +683,7 @@ export class ListaCuentasComponent implements OnInit, OnDestroy {
             case 905:
                 return 'danger';
             default:
-                return '';
+                return 'info';
         }
     }
 }

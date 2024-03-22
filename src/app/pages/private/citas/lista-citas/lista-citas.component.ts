@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Table } from 'primeng/table';
-import { Cita } from 'src/app/shared/models/cita.model';
+import { Cita, CitaEstado } from 'src/app/shared/models/cita.model';
 import { CitasService } from 'src/app/shared/services/citas.service';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -16,7 +16,7 @@ import { DatePipe } from '@angular/common';
 import { adm } from 'src/app/shared/constants/adm';
 import { HelperService } from '../../../../shared/helpers/helper.service';
 import { FilesService } from 'src/app/shared/helpers/files.service';
-import { Usuario } from 'src/app/shared/models/usuario.model';
+import { Asistencia, Usuario, UsuarioResumen } from 'src/app/shared/models/usuario.model';
 import { UsuariosService } from 'src/app/shared/services/usuarios.service';
 import { Empresa } from 'src/app/shared/models/empresa.model';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
@@ -25,6 +25,7 @@ import { BusquedaCita, BusquedaPago, BusquedaUsuario } from 'src/app/shared/mode
 import { FormularioCitaComponent } from '../formulario-cita/formulario-cita.component';
 import { PagosService } from 'src/app/shared/services/pagos.service';
 import { SfeService } from '../../../../shared/services/sfe.service';
+import { AsistenciasService } from 'src/app/shared/services/asistencias.service';
 
 
 @Component({
@@ -39,10 +40,9 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
     busquedaMemoria?: BusquedaCita;
 
     items!: Cita[];
-    listaEstadosCita: any[] = [];
-    listaTiposCita: any[] = [];
+    listaEstados: CitaEstado[] = [];
     listaSucursales: Sucursal[] = [];
-    listaUsuarios: Usuario[] = [];
+    listaUsuarios: UsuarioResumen[] = [];
     itemDialog!: boolean;
     blockedPanel: boolean = false;
 
@@ -72,7 +72,8 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
         private empresasService: EmpresasService,
         private pagosService:PagosService,
         private fileService:FilesService,
-        private sfeService :SfeService
+        private sfeService :SfeService,
+        private asistenciaService: AsistenciasService
     ) {}
 
     ngOnInit(): void {
@@ -88,8 +89,8 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
 
         // cargar parametricas
         this.cargarEmpresas();
+        this.cargarProfesionales();
         this.cargarSucursales();
-        this.cargarUsuarios();
         this.cargarParametricas();
 
         // fn cargar usuarios
@@ -100,6 +101,7 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
             idEmpresa: this.idEmpresa,
             nitEmpresa: this.nitEmpresa,
             idSucursal: [{ value: this.busquedaMemoria?.idSucursal??this.sessionService.getSessionUserData().idSucursal, disabled: false}],
+            idUsuarioProfesional: [this.busquedaMemoria?.idUsuarioProfesional],
             codigosEstadosCita: [this.busquedaMemoria?.codigosEstadosCita ? this.busquedaMemoria?.codigosEstadosCita.split(",") : null],
             codigosTiposCita: [this.busquedaMemoria?.codigosTiposCita ? this.busquedaMemoria?.codigosTiposCita.split(",") : null],
             fechaInicio: [fechaInicio, Validators.required],
@@ -139,11 +141,13 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
         });
     }
 
-    cargarUsuarios(){
+    cargarProfesionales(){
         const busqueda: BusquedaUsuario = {
             idEmpresa: this.idEmpresa,
+            codigosTiposUsuario: adm.TIPO_USUARIO_PROFESIONAL,
             resumen: true,
         };
+
         this.usuarioService.get(busqueda).subscribe({
             next: (res) => {
                 this.listaUsuarios = res.content;
@@ -155,20 +159,11 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
     }
 
     cargarParametricas(){
-        /*this.parametricasService
-        .getParametricasByTipo(TipoParametrica.ESTADO_CITA)
-        .subscribe((data) => {
-            const parametricas = data.map((x: any) => {return { id: x.id.toString(), nombre: x.nombre }});
-            this.listaEstadosCita = parametricas;
-        });*/
-
-        this.parametricasService
-        .getParametricasByTipo(TipoParametrica.TIPO_CONSULTA)
-        .subscribe((data) => {
-            const parametricas = data.map((x: any) => {return { id: x.id.toString(), nombre: x.nombre }});
-            this.listaTiposCita = parametricas;
+        this.citasService.getEstados().subscribe((data) => {
+            this.listaEstados = data.content as unknown as CitaEstado[];
+            console.log(this.listaEstados);
         });
-    }
+   }
 
     esSuperAdm(){
         return this.sessionService.isSuperAdmin();
@@ -220,7 +215,6 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     this.sessionService.setBusquedaCita(criterios);
                     this.items = res.content;
-                    console.log(this.items);
                     this.blockedPanel = false;
                 },
                 error: (err) => {
@@ -235,16 +229,14 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
             .value as Date;
         const fechaFin = this.criteriosBusquedaForm.controls['fechaFin']
             .value as Date;
-
         const estados = this.criteriosBusquedaForm.controls['codigosEstadosCita'].value;
-        const tipos = this.criteriosBusquedaForm.controls['codigosTiposCita'].value;
 
         const criterios: BusquedaCita = {
             idEmpresa: this.criteriosBusquedaForm.controls['idEmpresa'].value,
             idSucursal: this.criteriosBusquedaForm.controls['idSucursal'].value,
+            idUsuarioProfesional: this.criteriosBusquedaForm.controls['idUsuarioProfesional'].value,
             fechaInicio: this.datepipe.transform(fechaInicio, 'dd/MM/yyyy') ?? '',
             fechaFin: this.datepipe.transform(fechaFin, 'dd/MM/yyyy') ?? '',
-            codigosTiposCita:(!tipos || tipos.length==0) ?'':tipos.join(','),
             codigosEstadosCita: (!estados || estados.length==0) ?'':estados.join(',')
         };
         return criterios;
@@ -270,27 +262,34 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
     }
 
     editItem(item: Cita) {
-        const ref = this.dialogService.open(FormularioCitaComponent, {
-            header: 'Actualizar',
-            width: '90%',
-            draggable: true,
-            resizable: false,
-            maximizable: true,
-            data: { cita: item},
-        });
-
-        ref.onClose.subscribe((res) => {
-            if (res) {
-                console.log(res);
-                //let objIndex = this.items.findIndex((obj => obj.id == res!.id));
-                //this.items[objIndex]=res;
-                this.loadData();
-            }
+        this.citasService.getDetail(item.id!).subscribe({
+            next: (res) => {
+                item.detalle = res.content;
+                const ref = this.dialogService.open(FormularioCitaComponent, {
+                    header: 'Editar',
+                    width: '90%',
+                    data: { idEmpresa: this.idEmpresa, item: item, listaUsuarios:this.listaUsuarios },
+                });
+                ref.onClose.subscribe((res) => {
+                    if (res) {
+                        this.loadData();
+                    }
+                });
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
+            },
         });
     }
 
-    esEditable(codigoEstado: String) {
-        return true;//codigoEstado === adm.ESTADO_CITA_ACTIVO || codigoEstado===adm.ESTADO_CITA_REVERTIDA;
+    esEditable(codigoEstadoCita: String, pagado:boolean) {
+        if (codigoEstadoCita==adm.CITA_ESTADO_CANCELADA) return false;
+        return !pagado;
+    }
+
+
+    esEliminable(pagado:boolean) {
+        return !pagado;
     }
 
     deleteItem(item: Cita) {
@@ -340,19 +339,6 @@ export class ListaCitasComponent implements OnInit, OnDestroy {
         this.criteriosBusquedaForm.controls['idSucursal'].setValue(null);
         this.criteriosBusquedaForm.controls['usuario'].setValue(null);
         this.cargarSucursales();
-        this.cargarUsuarios();
-    }
-
-    getSeverity(status: number) {
-        switch (status) {
-            case 908:
-                return 'success';
-            case 904:
-                return 'warning';
-            case 905:
-                return 'danger';
-            default:
-                return '';
-        }
+        this.cargarProfesionales();
     }
 }

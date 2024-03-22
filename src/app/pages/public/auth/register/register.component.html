@@ -1,28 +1,97 @@
-<p-blockUI [blocked]="submited"><h3 style="color: white;"> Espere...</h3></p-blockUI>
+<p-blockUI [blocked]="submited">
+    <h3 style="color: white;"> Espere...</h3>
+</p-blockUI>
 <div class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="grid justify-content-center p-2 lg:p-0" style="min-width:80%">
-        <div class="col-12 xl:col-5" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-            <div class="h-full w-full m-0 py-7 px-4" style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
+        <div class="col-12 xl:col-5"
+            style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="h-full w-full m-0 py-2 px-4"
+                style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
                 <div class="text-center mb-5">
                     <!-- <img src="assets/informacion/logos/logo.png" alt="logo" height="50" class="mb-3"> -->
                     <div class="text-900 text-3xl font-medium mb-3">Registro</div>
                 </div>
                 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
 
-                    <div class="card p-fluid">
-                        <div class="field p-label">
-                            <label>Email</label>
+                    <div class="p-fluid">
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">N° Documento</label>
+                            <div class="col-12 md:col-10">
+                                <input id="ci" formControlName="ci" type="text" maxlength="10" pInputText
+                                    onfocus="this.select();" pKeyFilter="int">
+                                <small class="p-error block" *ngIf="userForm.get('ci')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
                         </div>
-                        <div class="field">
-                            <input id="email" formControlName="email" type="text" maxlength="50" pInputText onfocus="this.select();">
-                            <small class="p-error block" *ngIf="userForm.get('email')?.hasError('required')">Dato requerido.</small>
-                            <small class="p-error block" *ngIf="userForm.get('email')?.hasError('email')">Email invalido.</small>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Nombres</label>
+                            <div class="col-12 md:col-10">
+                                <input id="nombres" formControlName="nombres" type="text" maxlength="25" pInputText
+                                    onfocus="this.select();">
+                                <small class="p-error block" *ngIf="userForm.get('nombres')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
                         </div>
-                        <div class="field p-label">
-                            <label>Password</label>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Apellidos</label>
+                            <div class="col-12 md:col-10">
+                                <input id="apellidos" formControlName="apellidos" type="text" maxlength="25" pInputText
+                                    onfocus="this.select();">
+                                <small class="p-error block"
+                                    *ngIf="userForm.get('apellidos')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
                         </div>
-                        <div class="field">
-                            <p-password formControlName="password1" [toggleMask]="true"  maxlength="30" minlength="8">
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Celular</label>
+                            <div class="col-12 md:col-10">
+                                <input id="celular" formControlName="celular" type="text" pInputText maxlength="8"
+                                    onfocus="this.select();" pKeyFilter="int" />
+                                <small class="p-error block" *ngIf="userForm.get('celular')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Ciudad</label>
+                            <div class="col-12 md:col-10">
+                                <p-dropdown [options]="ciudades" formControlName="ciudad"
+                                    optionLabel="ciudad" optionValue="ciudad"></p-dropdown>
+                                <small class="p-error block" *ngIf="userForm.get('ciudad')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Dirección</label>
+                            <div class="col-12 md:col-10">
+                                <input id="direccion" formControlName="direccion" type="text" maxlength="250" pInputText
+                                    onfocus="this.select();">
+                                <small class="p-error block"
+                                    *ngIf="userForm.get('direccion')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Email</label>
+                            <div class="col-12 md:col-10">
+                                <input id="email" formControlName="email" type="text" maxlength="50" pInputText
+                                    onfocus="this.select();">
+                                <small class="p-error block" *ngIf="userForm.get('email')?.hasError('required')">Dato
+                                    requerido.</small>
+                                <small class="p-error block" *ngIf="userForm.get('email')?.hasError('email')">Email
+                                    invalido.</small>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="field grid">
+                            <label class="col-12 md:col-2">Password</label>
+                            <div class="col-12 md:col-10">
+                                <p-password formControlName="password" [toggleMask]="true" maxlength="30" minlength="8">
                                     <ng-template pTemplate="header">
                                         <h6>Introduzca un password</h6>
                                     </ng-template>
@@ -35,8 +104,10 @@
                                             <li>Minimo 8 caracteres</li>
                                         </ul>
                                     </ng-template>
-                            </p-password>
-                            <small class="p-error block" *ngIf="userForm.get('password1')?.hasError('required')">Dato requerido.</small>
+                                </p-password>
+                                <small class="p-error block" *ngIf="userForm.get('password')?.hasError('required')">Dato
+                                    requerido.</small>
+                            </div>
                         </div>
                         <div class="field">
                             <div class="flex align-items-center justify-content-center mb-5">
@@ -47,9 +118,11 @@
                     </div>
 
                     <div class="flex justify-content-center">
-                        <button pButton pRipple label="Cancelar" class="p-button-secondary text-xl" (click)="onCancel()"></button>
+                        <button pButton pRipple label="Cancelar" class="p-button-secondary text-xl"
+                            (click)="onCancel()"></button>
                         &nbsp;&nbsp;&nbsp;
-                        <button pButton pRipple label="Registrar" class="p-button-primary text-xl" (click)="onRegister()"[disabled]="!userForm.valid || !habilitado"></button>
+                        <button pButton pRipple label="Registrar" class="p-button-primary text-xl"
+                            (click)="onRegister()" [disabled]="!userForm.valid || !habilitado"></button>
                     </div>
                 </form>
             </div>

@@ -19,8 +19,8 @@ export class CitasService {
   }
 
   get(criteriosSearch:BusquedaCita): Observable<any> {
-      console.log(criteriosSearch);
-    const queryString = this.helperService.jsonToQueryStringSinfiltro(criteriosSearch);
+    console.log(criteriosSearch);
+    const queryString = this.helperService.jsonToQueryString(criteriosSearch);
     const apiUrl = `${environment.api.adm}/citas/listar?${queryString}`;
     return this.httpClient.get<any>(apiUrl);
   }
@@ -47,6 +47,11 @@ export class CitasService {
 
   editDate(cita: Cita): Observable<any> {
     const apiUrl = `${environment.api.adm}/citas/actualizar-fecha`;
+    return this.httpClient.put<any>(apiUrl, cita);
+  }
+
+  editState(cita: Cita): Observable<any> {
+    const apiUrl = `${environment.api.adm}/citas/actualizar-estado`;
     return this.httpClient.put<any>(apiUrl, cita);
   }
 

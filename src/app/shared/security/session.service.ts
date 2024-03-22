@@ -115,6 +115,16 @@ export class SessionService {
         if (!valor) return null;
         return JSON.parse(sessionStorage.getItem('wx-cts-list') ?? '{}');
     }
+    // citas calendario
+     setBusquedaCitaCalendario(data: any): void {
+        sessionStorage.setItem('wx-cts-calendar', JSON.stringify(data));
+    }
+
+    getBusquedaCitaCalendario(): any {
+        const valor = sessionStorage.getItem('wx-cts-calendar');
+        if (!valor) return null;
+        return JSON.parse(sessionStorage.getItem('wx-cts-calendar') ?? '{}');
+    }
     // cuentas
     setBusquedaCuenta(data: any): void {
         sessionStorage.setItem('wx-cuenta-list', JSON.stringify(data));

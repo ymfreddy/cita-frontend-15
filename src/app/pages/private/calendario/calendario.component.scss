@@ -37,6 +37,24 @@
 :host ::ng-deep .p-datepicker table td {
     padding: 0rem;
 }
+:host ::ng-deep .p-datepicker table th {
+    padding: 0rem;
+}
+
+:host ::ng-deep .p-datepicker table th > span {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: x-small;
+}
+:host ::ng-deep .p-datepicker table td > span {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    transition: box-shadow 0.2s;
+    border: 1px solid transparent;
+    font-size: x-small;
+}
+
 :host ::ng-deep .p-datepicker .p-datepicker-header {
     padding: 0rem;
     color: #495057;
@@ -47,3 +65,25 @@
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
+
+:host ::ng-deep .p-datepicker-inline {
+    display: inline-block;
+    position: static;
+    overflow-x: hidden;
+}
+
+:host ::ng-deep .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+    color: #495057;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    font-weight: 600;
+    padding: 0rem;
+}
+
+:host ::ng-deep thead, tbody, tfoot, tr, td, th {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    text-align-last: center;
+}
+
+

@@ -126,13 +126,17 @@
             </div> -->
         </div>
         <!-- <p-divider type="dashed"><span class="p-tag">Servicio</span></p-divider> -->
-        <div *ngIf="!itemForm.get('id')?.value" class="p-fluid p-formgrid grid">
+        <div
+        *ngIf="!itemForm.get('id')?.value"
+        class="p-fluid p-formgrid grid">
             <!-- <p-toggleButton [(ngModel)]="multiplesServicios" onLabel="Un Servicio" offLabel="No"></p-toggleButton> -->
             <div class="field col-12 md:col-2">
                 Multiples Servicios&nbsp;<input type="checkbox" formControlName="multiplesServicios">
             </div>
         </div>
-        <div *ngIf="!itemForm.get('multiplesServicios')?.value" class="p-fluid p-formgrid grid">
+        <div
+        *ngIf="!itemForm.get('multiplesServicios')?.value"
+        class="p-fluid p-formgrid grid">
             <div class="field col-12 md:col-3">
                 <label>4. Servicio</label>
                 <p-dropdown appendTo="body" formControlName="idProducto" id="idProducto" [autofocus]="true"
@@ -141,8 +145,9 @@
                 </p-dropdown>
             </div>
         </div>
-
-        <div *ngIf="itemForm.get('multiplesServicios')?.value" class="p-fluid p-formgrid grid">
+        <div
+        *ngIf="itemForm.get('multiplesServicios')?.value"
+        class="p-fluid p-formgrid grid">
             <div class="field col-12 md:col-12">
                 <label>4. Servicios</label>
                 <p-autoComplete appendTo="body" formControlName="servicio" #servicio styleClass="w-full"
@@ -207,7 +212,6 @@
                 </p-table>
             </div>
         </div>
-
 
         <p-divider type="dashed"></p-divider>
         <div class="flex justify-content-end flex-wrap">

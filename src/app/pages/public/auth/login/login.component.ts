@@ -116,7 +116,12 @@ export class LoginComponent {
                                     email: resSession.content.usuario.email,
                                     telefono: resSession.content.usuario.telefono,
                                     codigoGenero: resSession.content.usuario.codigoGenero,
-                                    codigoCiudad: resSession.content.usuario.codigoCiudad
+                                    codigoCiudad: resSession.content.usuario.codigoCiudad,
+                                    impresionRollo: resSession.content.opcionesEmpresa.impresionRollo,
+                                    facturacion: resSession.content.opcionesEmpresa.facturacion,
+                                    notificacionEmail: resSession.content.opcionesEmpresa.notificacionEmail,
+                                    notificacionWhatsapp: resSession.content.opcionesEmpresa.notificacionWhatsapp,
+                                    reservaInternet: resSession.content.opcionesEmpresa.reservaInternet,
                                 };
 
                                 this.sessionService.setSessionUserData(

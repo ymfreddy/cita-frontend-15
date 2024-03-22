@@ -63,12 +63,13 @@ import { WhatsappFacturaComponent } from './components/whatsapp-factura/whatsapp
 import { ListaProductosComponent } from './pages/private/productos/lista-productos/lista-productos.component';
 import { FormularioProductoComponent } from './pages/private/productos/formulario-producto/formulario-producto.component';
 import { FormularioPagoCuentaComponent } from './pages/private/cuentas/formulario-pago-cuenta/formulario-pago-cuenta.component';
+import { CitaInformacionComponent } from './components/cita-informacion/cita-informacion.component';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent, ListaEmpresasComponent, BloqueoComponent, FormatoFechaHoraPipe,
         UpperCaseInputDirective, AllowNumbersOnlyDirective, FormatoDecimalPipe,
         FormularioEmpresaComponent, ListaUsuariosComponent, FormularioUsuarioComponent, CambioPasswordComponent, MenuPrincipalComponent, PreguntasComponent, RecursosComponent, CalendarioComponent, ListaClientesComponent, FormularioClienteComponent, ListaCitasComponent, FormularioCitaComponent, FormularioCategoriaComponent, FormularioServicioComponent, ListaServiciosComponent, ListaCategoriasComponent, ReservasComponent, AsignarAsistenciaComponent, FormularioConsultaComponent, ListaConsultasComponent, AtencionConsultaComponent,  FormularioPuntoComponent, ListaPuntosComponent, FormularioTurnoAperturaComponent, FormularioTurnoCierreComponent, ListaTurnosComponent, ListaCuentasComponent,
-        selectorPuntoVentaComponent, FormularioSucursalComponent, ListaSucursalesComponent, FormularioCuentaComponent, CuentaDetalleComponent, FormularioPagoComponent, PagosDetalleComponent, GenerarFacturaComponent, AnularFacturaComponent, WhatsappFacturaComponent, ListaProductosComponent, FormularioProductoComponent, FormularioPagoCuentaComponent
+        selectorPuntoVentaComponent, FormularioSucursalComponent, ListaSucursalesComponent, FormularioCuentaComponent, CuentaDetalleComponent, FormularioPagoComponent, PagosDetalleComponent, GenerarFacturaComponent, AnularFacturaComponent, WhatsappFacturaComponent, ListaProductosComponent, FormularioProductoComponent, FormularioPagoCuentaComponent, CitaInformacionComponent
     ],
     imports: [
         BrowserModule,

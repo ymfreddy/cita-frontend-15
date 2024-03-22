@@ -25,7 +25,7 @@
                 <small class="p-error block" *ngIf="criteriosBusquedaForm.get('fechaFin')?.hasError('required')">
                     Fecha inválida.</small>
             </div>
-            <div class="field col-12 md:col-2">
+            <div class="field col-12 md:col-3">
                 <label>Sucursal</label>
                 <p-dropdown appendTo="body" formControlName="idSucursal" id="idSucursal" [options]="listaSucursales"
                     optionLabel="direccion" optionValue="id" [showClear]="true" placeholder="TODOS">
@@ -35,29 +35,32 @@
                         </div>
                     </ng-template></p-dropdown>
             </div>
-            <div class="field col-12 md:col-2">
-                <label>Usuario</label>
-                <p-dropdown appendTo="body" formControlName="usuario" id="usuario" [options]="listaUsuarios"
-                    optionLabel="username" optionValue="username" [showClear]="true" placeholder="TODOS">
+            <div class="field col-12 md:col-3">
+                <label>Profesional</label>
+                <p-dropdown appendTo="body" formControlName="idUsuarioProfesional" id="idUsuarioProfesional" [options]="listaUsuarios"
+                    optionLabel="nombreCompleto" optionValue="id" [showClear]="true"  placeholder="TODOS">
                 </p-dropdown>
             </div>
             <div class="field col-12 md:col-2">
                 <label>Estado Cita</label>
-                <p-multiSelect appendTo="body" id="codigosEstadosCita" [showHeader]="false" [options]="listaEstadosCita"
+                <p-multiSelect appendTo="body" id="codigosEstadosCita" [showHeader]="false" [options]="listaEstados"
                     formControlName="codigosEstadosCita" defaultLabel="TODOS" [showClear]="true" optionLabel="nombre"
-                    optionValue="id">
+                    optionValue="codigo">
+                    <ng-template let-state pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                            <div>{{ state.nombre }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-state pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="state">
+                            <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                            <div>{{ state.nombre }}</div>
+                        </div>
+                    </ng-template>
+
                 </p-multiSelect>
             </div>
-            <!-- <div class="field col-12 md:col-2">
-                    <label>Tipo Cita</label>
-                            <p-multiSelect appendTo="body" id="codigosTiposCita"
-                            [showHeader]="false"
-                            [options]="listaTiposCita" formControlName="codigosTiposCita"
-                            defaultLabel="TODOS"
-                            [showClear]="true"
-                            optionLabel="nombre" optionValue="id">
-                            </p-multiSelect>
-                </div> -->
         </div>
         <p-divider type="dashed"></p-divider>
         <div class="flex justify-content-end flex-wrap">
@@ -89,7 +92,7 @@
 
         <ng-template pTemplate="header">
             <tr>
-                <!-- <th>N°</th> -->
+                <th>N°</th>
                 <th>N° Cita</th>
                 <th>Sucursal</th>
                 <th>Fecha</th>
@@ -98,13 +101,14 @@
                 <th>Código Cliente</th>
                 <th>Cliente</th>
                 <th>Profesional</th>
+                <th>Servicio</th>
                 <th>Estado</th>
                 <th>Operación</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-i="rowIndex" let-item>
             <tr>
-                <!-- <td><b>{{ i + 1 }}</b></td> -->
+                <td><b>{{ i + 1 }}</b></td>
                 <td>{{item.correlativo }}</td>
                 <td>{{item.numeroSucursal }}</td>
                 <td>{{item.fecha | date : "dd/MM/yyyy" }}</td>
@@ -113,15 +117,23 @@
                 <td>{{item.codigoCliente}}</td>
                 <td>{{item.cliente}}</td>
                 <td>{{item.profesional}}</td>
-                <td>{{item.estado}}</td>
+                <td>{{item.producto}}</td>
+                <td>
+                    <p-tag [style]="{ 'background': item.color}">
+                        <div class="flex align-items-center gap-2" style="color:black;">
+                            <i *ngIf="item.pagado" class="pi pi-tag"></i>
+                            <span class="text-base">{{ item.estadoCita }}</span>
+                        </div>
+                    </p-tag>
+                </td>
                 <td style="width:5rem; min-width:5rem;">
                     <div class="flex">
                         <button appendTo="body" pButton pRipple pTooltip="Editar cita" tooltipPosition="top"
                             icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2" (click)="editItem(item)"
-                            [disabled]="!esEditable(item.codigoEstadoCita)"></button>
+                            [disabled]="!esEditable(item.codigoEstadoCita, item.pagado)"></button>
                         <button appendTo="body" pButton pRipple pTooltip="Eliminar cita" tooltipPosition="top"
                             icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteItem(item)"
-                            [disabled]="!esEditable(item.codigoEstadoCita)"></button>
+                            [disabled]="!esEliminable(item.pagado)"></button>
                     </div>
                 </td>
             </tr>

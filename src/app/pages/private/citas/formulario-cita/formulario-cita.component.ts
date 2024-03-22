@@ -1,7 +1,6 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
     FormBuilder,
-    FormControl,
     FormGroup,
     Validators,
 } from '@angular/forms';
@@ -18,17 +17,13 @@ import { ClientesService } from 'src/app/shared/services/clientes.service';
 import { FormularioClienteComponent } from '../../clientes/formulario-cliente/formulario-cliente.component';
 import { Cliente } from 'src/app/shared/models/cliente.model';
 import { AutoComplete } from 'primeng/autocomplete';
-import { ParametricasService } from 'src/app/shared/services/parametricas.service';
-import { TipoParametrica } from 'src/app/shared/enums/tipo-parametrica.model';
-import { Parametrica } from 'src/app/shared/models/parametrica.model';
 import { adm } from 'src/app/shared/constants/adm';
 import { Servicio } from 'src/app/shared/models/servicio.model';
 import { HelperService } from 'src/app/shared/helpers/helper.service';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { ServiciosService } from 'src/app/shared/services/servicios.service';
-import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-import { Usuario } from 'src/app/shared/models/usuario.model';
+import { UsuarioResumen } from 'src/app/shared/models/usuario.model';
 import { UsuariosService } from 'src/app/shared/services/usuarios.service';
 import { ConfirmationService } from 'primeng/api';
 moment.locale("es");
@@ -39,7 +34,7 @@ moment.locale("es");
     styleUrls: ['./formulario-cita.component.scss'],
     providers: [DialogService],
 })
-export class FormularioCitaComponent implements OnInit , AfterContentChecked {
+export class FormularioCitaComponent implements OnInit, AfterContentChecked   {
     @ViewChild('clienteTemporal') elmC?: AutoComplete;
     @ViewChild('servicio') elmP?: AutoComplete;
     item?: Cita;
@@ -50,7 +45,7 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
     listaEstados: CitaEstado[] = [];
     idEmpresa!: number;
     listaClientesFiltrados: Cliente[] = [];
-    listaUsuarios: Usuario[] = [];
+    listaUsuarios: UsuarioResumen[] = [];
 
     listaServicios: Servicio[] = [];
     listaServiciosFiltrados: Servicio[] = [];
@@ -65,12 +60,10 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
         private citaservice: CitasService,
         private clienteService: ClientesService,
         private dialogService: DialogService,
-        private parametricasService: ParametricasService,
         private changeDetector: ChangeDetectorRef,
         private helperService: HelperService,
         private sessionService: SessionService,
         private servicioService: ServiciosService,
-        private usuarioService: UsuariosService,
         private confirmationService:ConfirmationService
     ) {
     }
@@ -78,9 +71,9 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
     ngOnInit(): void {
         this.idEmpresa = this.config.data.idEmpresa;
         this.item = this.config.data.item;
+        this.listaUsuarios = this.config.data.listaUsuarios;
         this.detalle = this.item?.detalle ?? [];
 
-        this.cargarUsuarios();
         this.cargarParametricas();
         this.cargarServicios();
 
@@ -122,23 +115,6 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
         });
     }
 
-    cargarUsuarios(){
-        const busqueda: BusquedaUsuario = {
-            idEmpresa: this.idEmpresa,
-            codigoTipoUsuario: adm.TIPO_USUARIO_PROFESIONAL,
-            resumen: true,
-        };
-        this.usuarioService.get(busqueda).subscribe({
-            next: (res) => {
-                console.log(res);
-                this.listaUsuarios = res.content;
-            },
-            error: (err) => {
-                this.mensajeService.showError(err.error.message);
-            },
-        });
-    }
-
     cargarServicios(){
         const criteriosBusqueda: BusquedaServicio = {
             idEmpresa: this.sessionService.getSessionEmpresaId(),
@@ -164,6 +140,7 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
     cargarParametricas(){
         this.citaservice.getEstados().subscribe((data) => {
             this.listaEstados = data.content as unknown as CitaEstado[];
+            this.listaEstados = this.listaEstados.filter(x=>x.codigo!==adm.CITA_ESTADO_CANCELADA);
             console.log(this.listaEstados);
         });
     }
@@ -543,8 +520,7 @@ export class FormularioCitaComponent implements OnInit , AfterContentChecked {
         }
     }
 
-
     ngAfterContentChecked(): void {
         this.changeDetector.detectChanges();
-      }
+    }
 }

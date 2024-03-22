@@ -22,10 +22,19 @@ export interface Usuario {
   empresaSfeNit: number;
 }
 
-export interface UsuarioClienteRegistro {
-    //nombre: string;
-    //paterno: string;
-    //ci: number;
+export interface UsuarioResumen {
+    id: number;
+    nombreCompleto: string;
+    username: string;
+}
+
+export interface RegistroEmpresaOnline {
+    nombres: string;
+    apellidos: string;
+    ci: number;
+    celular: number;
+    ciudad: string;
+    direccion: string;
     email: string;
     password: string;
   }
@@ -62,7 +71,14 @@ export interface UsuarioClienteRegistro {
     telefono: string;
     codigoGenero: string;
     codigoCiudad: string;
+
+    impresionRollo: boolean;
+    facturacion: boolean;
+    notificacionEmail: boolean;
+    notificacionWhatsapp: boolean;
+    reservaInternet: boolean;
 }
+
 
 
 export interface UsuarioAsignacionAsistencia {

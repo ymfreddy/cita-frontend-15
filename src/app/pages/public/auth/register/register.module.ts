@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { BlockUIModule } from 'primeng/blockui';
 import {CaptchaModule} from 'primeng/captcha';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { KeyFilterModule } from 'primeng/keyfilter';
         ReactiveFormsModule,
         BlockUIModule,
         CaptchaModule,
-        KeyFilterModule
+        KeyFilterModule,
+        DropdownModule
     ],
     declarations: [RegisterComponent]
 })

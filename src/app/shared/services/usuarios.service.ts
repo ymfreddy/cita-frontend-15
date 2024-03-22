@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HelperService } from '../helpers/helper.service';
 import { BusquedaUsuario } from '../models/busquedas.model';
-import { Usuario, UsuarioClienteRegistro } from '../models/usuario.model';
+import { Usuario } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +24,10 @@ export class UsuariosService {
     return this.httpClient.post<any>(apiUrl, usuario);
   }
 
-  addClientUser(usuario: UsuarioClienteRegistro): Observable<any> {
+  /*addClientUser(usuario: UsuarioClienteRegistro): Observable<any> {
     const apiUrl = `${environment.api.adm}/usuarios/usuarios-clientes`;
     return this.httpClient.post<any>(apiUrl, usuario);
-  }
+  }*/
 
   edit(usuario: Usuario): Observable<any> {
     const apiUrl = `${environment.api.adm}/usuarios`;

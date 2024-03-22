@@ -1,6 +1,6 @@
 export interface BusquedaUsuario {
     idEmpresa?: number;
-    codigoTipoUsuario?: string;
+    codigosTiposUsuario?: string;
     username?: string;
     resumen?: boolean;
 }
@@ -39,6 +39,9 @@ export interface BusquedaCita {
     termino?: string;
     cantidadRegistros?: number;
     soloNoPagados?:boolean;
+
+    campoOrden?:string;
+    tipoOrden?:number;
 }
 
 export interface BusquedaServicio {

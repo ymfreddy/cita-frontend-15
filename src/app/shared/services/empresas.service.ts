@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { RegistroEmpresaOnline } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,10 @@ export class EmpresasService {
   delete(empresa: Empresa): Observable<any> {
     const apiUrl = `${environment.api.adm}/empresas/${empresa.id}`;
     return this.httpClient.delete<any>(apiUrl);
+  }
+
+  addOnline(empresa: RegistroEmpresaOnline): Observable<any> {
+    const apiUrl = `${environment.api.adm}/empresas/registro-online`;
+    return this.httpClient.post<any>(apiUrl, empresa);
   }
 }

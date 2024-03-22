@@ -36,6 +36,7 @@ import {
 import { ServicioResumen } from 'src/app/shared/models/servicio.model';
 import { Cita, CitaDetalle } from 'src/app/shared/models/cita.model';
 import { CitasService } from 'src/app/shared/services/citas.service';
+import { GenerarFacturaComponent } from 'src/app/components/generar-factura/generar-factura.component';
 
 @Component({
     selector: 'app-formulario-pago-cuenta',
@@ -406,6 +407,8 @@ export class FormularioPagoCuentaComponent {
             soloNoPagados: true,
             cantidadRegistros: 20,
             termino: query.trim(),
+            campoOrden: 'inicio',
+            //tipoOrden: -1 // descendente
         };
         this.buscarCita(criteriosBusqueda);
     }
@@ -955,8 +958,21 @@ export class FormularioPagoCuentaComponent {
                 this.submited = true;
                 this.cuentaService.registrarFinalizar(finalizar).subscribe({
                     next: (res) => {
+                        console.log(res.content);
                         this.mensajeService.showSuccess(res.message);
                         this.dialogRef.close(res.content);
+                        // verificar si tiene facturacio habilitada
+                        if (this.sessionService.getSessionUserData().facturacion){
+                            const ref = this.dialogService.open(GenerarFacturaComponent, {
+                                header: 'Emitir Factura',
+                                width: '400px',
+                                data: {cuenta : res.content},
+                            });
+                            ref.onClose.subscribe((res2) => {
+                                //this.dialogRef.close(res.content);
+                            });
+                        }
+
                     },
                     error: (err) => {
                         this.mensajeService.showError(err.error.message);

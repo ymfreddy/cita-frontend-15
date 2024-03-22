@@ -343,7 +343,6 @@ export class AtencionConsultaComponent {
         this.cuentasService.get(criterios)
             .subscribe({
                 next: (res) => {
-                    this.sessionService.setBusquedaCuenta(criterios);
                     this.listaCuenta = res.content;
                     console.log(this.listaCuenta);
                     this.submited = false;

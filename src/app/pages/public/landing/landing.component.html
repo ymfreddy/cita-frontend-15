@@ -44,7 +44,8 @@
                         Una aplicación de reservas sencilla, flexible y potente para tu negocio.
                     </h3>
                     <div class="pt-2">
-                        <a href="" class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2">Registrate</a>
+                        <a (click)="router.navigate(['/auth/register'])" class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
+                            style="cursor: pointer;">Registrate</a>
                     </div>
                 </div>
                 <!-- <div class="col-lg-4 text-center text-lg-start">
@@ -196,24 +197,30 @@
                     <div class="text-center">
                         <span class="text-5xl font-bold mr-2 text-900">BS 0</span>
                         <br>
-                        <a class="btn btn-outline-primary px-3">
-                            Solicitar
-                        </a>
+                        <a (click)="router.navigate(['/auth/register'])" class="btn btn-outline-primary px-3"
+                            style="cursor: pointer;">Registrate</a>
                     </div>
                     <p-divider class="w-full bg-surface-200"></p-divider>
 
                     <ul class="my-3 list-none p-0 flex text-900 flex-column">
                         <li>
                             <i class="pi pi-fw pi-check text-xl mr-2"></i>
-                            <span class="text-l line-height-3">caracteristica1</span>
+                            <span class="text-l line-height-3">Gestión de Clientes, Servicios, Productos, Citas y Ventas</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3"><b>Calendario para programación (2 semanas)</b></span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">1 Sucursal</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">1 Profesional</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">50 Productos/Servicios</span><br>
                         </li>
                     </ul>
-
                 </div>
                 <div class="col-xl-3 col-lg-3">
                     <h3 class="text-900 text-center">Básico</h3>
                     <div class="text-center">
-                        <span class="text-5xl font-bold mr-2 text-900">BS 0</span>
+                        <span class="text-5xl font-bold mr-2 text-900">BS 50</span>
                         <br>
                         <a class="btn btn-outline-primary px-3">
                             Solicitar
@@ -223,14 +230,24 @@
                     <ul class="my-3 list-none p-0 flex text-900 flex-column">
                         <li>
                             <i class="pi pi-fw pi-check text-xl mr-2"></i>
-                            <span class="text-l line-height-3">caracteristica1</span>
+                            <span class="text-l line-height-3">Módulos Plan Gratis + Modulo Reportes</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3"><b>Calendario para programación (Ilimitado)</b></span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">Notificaciones por email</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">1 Sucursal</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">1 Profesional, 1 Asistente</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">100 Productos/Servicios</span><br>
                         </li>
                     </ul>
                 </div>
                 <div class="col-xl-3 col-lg-3">
-                    <h3 class="text-900 text-center">Standar</h3>
+                    <h3 class="text-900 text-center">Profesional</h3>
                     <div class="text-center">
-                        <span class="text-5xl font-bold mr-2 text-900">BS 0</span>
+                        <span class="text-5xl font-bold mr-2 text-900">BS 100</span>
                         <br>
                         <a class="btn btn-outline-primary px-3">
                             Solicitar
@@ -240,14 +257,26 @@
                     <ul class="my-3 list-none p-0 flex text-900 flex-column">
                         <li>
                             <i class="pi pi-fw pi-check text-xl mr-2"></i>
-                            <span class="text-l line-height-3">caracteristica1</span>
+                            <span class="text-l line-height-3">Módulos Plan Básico</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3"><b>Calendario para programación (Ilimitado)</b></span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">Notificaciones por email</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">Programación de citas online</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">2 Sucursal</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">3 Profesionales, 2 Asistentes</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">200 Productos/Servicios</span><br>
                         </li>
                     </ul>
                 </div>
                 <div class="col-xl-3 col-lg-3">
-                    <h3 class="text-900 text-center">Empresarial</h3>
+                    <h3 class="text-900 text-center">Premiun</h3>
                     <div class="text-center">
-                        <span class="text-5xl font-bold mr-2 text-900">BS 0</span>
+                        <span class="text-5xl font-bold mr-2 text-900">BS 150</span>
                         <br>
                         <a class="btn btn-outline-primary px-3">
                             Solicitar
@@ -257,11 +286,60 @@
                     <ul class="my-3 list-none p-0 flex text-900 flex-column">
                         <li>
                             <i class="pi pi-fw pi-check text-xl mr-2"></i>
-                            <span class="text-l line-height-3">caracteristica1</span>
+                            <span class="text-l line-height-3">Módulos Plan Profesional + Inventarios, Ventas a Crédito</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3"><b>Calendario para programación (Ilimitado)</b></span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">Notificaciones por email</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">Programación de citas online</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">3 Sucursal</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">6 Profesionales, 3 Asistentes</span><br>
+                            <i class="pi pi-fw pi-check text-xl mr-2"></i>
+                            <span class="text-l line-height-3">300 Productos/Servicios</span><br>
                         </li>
                     </ul>
                 </div>
             </div>
+            <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+                <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Funciones Con Costo Adicional</h5>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div
+                        class="service-item bg-cuadro rounded d-flex flex-column align-items-center justify-content-center text-center">
+                        <div class="service-icon">
+                            <i class="pi pi-whatsapp text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Recordatorios por Whatsapp</h4>
+                        <p class="m-0">Para enviar notificaciones/notificaciones por whatsapp</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div
+                        class="service-item bg-cuadro rounded d-flex flex-column align-items-center justify-content-center text-center">
+                        <div class="service-icon">
+                            <i class="pi pi-whatsapp text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Reserva de Citas por whatsapp</h4>
+                        <p class="m-0">Que tus clientes programen sus citas directamente desde su celular</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div
+                        class="service-item bg-cuadro rounded d-flex flex-column align-items-center justify-content-center text-center">
+                        <div class="service-icon">
+                            <i class="pi pi-file text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Facturación Electrónica</h4>
+                        <p class="m-0">Emite facturas electrónicas directamente desde el sistema</p>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     </div>
     <!-- Pricing Plan End
@@ -274,7 +352,8 @@
                 <h1 class="display-4 mb-4 text-white">Empieza Gratis</h1>
                 <h5 class="text-white fw-normal">Comienza a utilizar nuestro software gratis, solo por tiempo limitado!
                 </h5>
-                <a href="" class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2">Registrate</a>
+                <a (click)="router.navigate(['/auth/register'])" class="btn btn-outline-light rounded-pill py-md-3 px-md-5 mx-2"
+                            style="cursor: pointer;">Registrate</a>
             </div>
             <!-- <div class="mx-auto" style="width: 100%; max-width: 600px;">
                 <div class="input-group">

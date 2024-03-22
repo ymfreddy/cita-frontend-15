@@ -1,14 +1,36 @@
+<p-blockUI [blocked]="blockedPanel"> <app-bloqueo></app-bloqueo></p-blockUI>
 <div class="p-fluid p-formgrid grid">
     <div class="field col-12 md:col-2">
+
+        <div class="field">
+            <p-button icon="pi pi-shopping-cart" (click)="nuevaVenta()" label="Nueva Venta" styleClass="p-button-info"></p-button>
+        </div>
+        <br>
         <div class="field">
             <label>PROFESIONALES</label>
-            <p-listbox [options]="listaProfesionales" (onChange)="listboxChange($event)"  [(ngModel)]="usuarioProfesional" optionLabel="profesional" ></p-listbox>
+            <p-dropdown appendTo="body"
+            [options]="listaUsuarios"
+            (onChange)="cambioUsuario($event)"
+            [(ngModel)]="idUsuarioProfesional"
+            optionValue="id"
+            optionLabel="nombreCompleto"
+            [filter]="true"
+            ></p-dropdown>
         </div>
         <div class="field">
-            <p-button icon="pi pi-check" (click)="nuevaVenta()" label="Nueva Venta" styleClass="p-button-text"></p-button>
+            <label>CITAS</label>
+            <p-dropdown appendTo="body"
+            [options]="listaTiposCita"
+            (onChange)="cambioTipoCita($event)"
+            [(ngModel)]="codigosTipoCita"
+            optionValue="codigo"
+            optionLabel="nombre"
+            ></p-dropdown>
+
         </div>
         <div class="field">
-            <p-calendar class="max-w-full" [(ngModel)]="date" [inline]="true" ></p-calendar>
+            <label>CALENDARIO</label>
+            <p-calendar [(ngModel)]="date" [inline]="true" ></p-calendar>
         </div>
     </div>
     <div class="field col-12 md:col-10">
@@ -16,7 +38,7 @@
             <ng-template #eventContent let-arg >
                 <!-- <label *ngIf="arg.event.extendedProps.pagado===true" class="signo">$</label> -->
                 <span>
-                    {{ arg.event.title }} - {{ arg.event.pagado }}
+                    {{ arg.event.title }}
                     <br>{{ arg.timeText }}
                 </span>
             </ng-template>
@@ -35,6 +57,30 @@
                 <label class="col-12 md:col-3"><b>N° Cita:</b></label>
                 <div class="col-12 md:col-9">
                     {{this.citaSeleccionada.event.extendedProps['correlativo']}}
+                </div>
+            </div>
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Estado:</b></label>
+                <div class="col-12 md:col-9">
+                    <p-dropdown appendTo="body" [(ngModel)]="this.codigoEstadoCitaSeleccionado" id="codigoEstadoCitaSeleccionado" [autofocus]="true"
+                    [disabled]="!esEditable(this.citaSeleccionada.event.extendedProps['codigoEstadoCita'], this.citaSeleccionada.event.extendedProps['pagado'])"
+                    (onChange)="cambioEstadoCita($event)"
+                    [options]="listaEstados" optionLabel="nombre" optionValue="codigo"
+                    placeholder="Seleccione una opción"
+                    >
+                    <ng-template let-state pTemplate="item">
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                            <div>{{ state.nombre }}</div>
+                        </div>
+                    </ng-template>
+                    <ng-template let-state pTemplate="selectedItem">
+                        <div class="flex align-items-center gap-2" *ngIf="state">
+                            <i class="pi pi-circle-fill" [style]="{color: state.color}"></i>
+                            <div>{{ state.nombre }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
                 </div>
             </div>
             <div class="field grid">
@@ -79,17 +125,22 @@
                     {{this.citaSeleccionada.event.extendedProps['edadCliente']? (this.citaSeleccionada.event.extendedProps['edadCliente']+ ' AÑOS'): ''}}
                 </div>
             </div>
+
+            <div class="field grid">
+                <label class="col-12 md:col-3"><b>Nota:</b></label>
+                <div class="col-12 md:col-9">
+                    {{this.citaSeleccionada.event.extendedProps['nota']}}
+                </div>
+            </div>
     </div>
-    <!-- <div class="flex py-2 justify-content-center">
-        <p-dropdown appendTo="body" [options]="cities" [(ngModel)]="selectedCity" placeholder="Select a City" optionLabel="name"></p-dropdown>
-    </div> -->
     <ng-template pTemplate="footer">
         <div class="flex justify-content-between flex-wrap card-container purple-container">
             <div class="flex align-items-center justify-content-center">
-                <p-button [disabled]="this.citaSeleccionada.event.extendedProps['pagado']" icon="pi pi-money-bill" (onClick)="verDetalleCita = false; pagarCita();" label="Pagar" styleClass="p-button-text"></p-button>
+                <p-button [disabled]="!esEditable(this.citaSeleccionada.event.extendedProps['codigoEstadoCita'], this.citaSeleccionada.event.extendedProps['pagado'])" icon="pi pi-money-bill" (onClick)="verDetalleCita = false; pagarCita();" label="Pagar" styleClass="p-button-info"></p-button>
             </div>
             <div class="flex align-items-center justify-content-center">
-                <p-button icon="pi pi-eye" (onClick)="verDetalleCita = false; editarCita()" label="Ver" styleClass="p-button-text"></p-button>
+                <p-button [disabled]="!esEditable(this.citaSeleccionada.event.extendedProps['codigoEstadoCita'], this.citaSeleccionada.event.extendedProps['pagado'])" icon="pi pi-trash" (onClick)="verDetalleCita = false; cancelarCita()" label="Cancelar" styleClass="p-button-secondary"></p-button>
+                <p-button [disabled]="!esEditable(this.citaSeleccionada.event.extendedProps['codigoEstadoCita'], this.citaSeleccionada.event.extendedProps['pagado'])" icon="pi pi-eye" (onClick)="verDetalleCita = false; editarCita()" label="Ver Cita" styleClass="p-button-primary"></p-button>
             </div>
         </div>
     </ng-template>

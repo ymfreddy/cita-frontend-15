@@ -11,17 +11,16 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import { BusquedaCita } from 'src/app/shared/models/busquedas.model';
+import { BusquedaCita, BusquedaUsuario } from 'src/app/shared/models/busquedas.model';
 import { SessionService } from 'src/app/shared/security/session.service';
 import { CitasService } from 'src/app/shared/services/citas.service';
 import { MensajeService } from 'src/app/shared/helpers/mensaje.service';
-import { Cita } from 'src/app/shared/models/cita.model';
+import { Cita, CitaEstado } from 'src/app/shared/models/cita.model';
 import { DatePipe } from '@angular/common';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Router } from '@angular/router';
 import { EmpresasService } from 'src/app/shared/services/empresas.service';
-import { Empresa } from 'src/app/shared/models/empresa.model';
-import { Asistencia } from 'src/app/shared/models/usuario.model';
+import { Asistencia, Usuario, UsuarioResumen } from 'src/app/shared/models/usuario.model';
 import { AsistenciasService } from 'src/app/shared/services/asistencias.service';
 import { adm } from 'src/app/shared/constants/adm';
 import { FormularioCitaComponent } from '../citas/formulario-cita/formulario-cita.component';
@@ -36,19 +35,21 @@ import { FormularioPagoCuentaComponent } from '../cuentas/formulario-pago-cuenta
 })
 export class CalendarioComponent implements OnInit {
     date!: Date[];
-    listaEmpresas: Empresa[] = [];
     idEmpresa!: number;
+    idUsuarioProfesional?:number;
+    codigosTipoCita?:string;
 
-    listaProfesionales: Asistencia[] = [];
-    usuarioProfesional!: any;
-
+    listaTiposCita: any[] = [{codigo:adm.LISTA_CITA_ESTADO_ACTIVAS, nombre:'ACTIVAS'},{codigo:adm.CITA_ESTADO_CANCELADA, nombre:'CANCELADAS'}];
+    listaUsuarios: UsuarioResumen[] = [];
     listaCitas: EventInput[] = [];
     citaSeleccionada!:EventClickArg;
-
+    listaEstados: CitaEstado[] = [];
+    codigoEstadoCitaSeleccionado: any;
     today = this.datepipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss');
     currentEvents: EventApi[] = [];
     verDetalleCita = false;
     calendarVisible = true;
+    blockedPanel: boolean = false;
     calendarOptions: CalendarOptions = {
         timeZone: 'America/La_Paz',
         plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
@@ -90,7 +91,7 @@ export class CalendarioComponent implements OnInit {
             start: Date.parse('2024-02-27T15:00:00'),
             end: Date.parse('2024-03-10T24:00:00')
         },*/
-        select: this.handleDateSelect.bind(this),
+        select: this.nuevaCita.bind(this),
         eventClick: this.handleEventClick.bind(this),
         eventsSet: this.handleEvents.bind(this),
         locales: [{ code: 'es' }], // <==== HERE =====
@@ -123,30 +124,48 @@ export class CalendarioComponent implements OnInit {
         if (!this.sessionService.verifyUrl(this.router.url)) {
             this.router.navigate(['/auth/access']);
         }
-        if (this.sessionService.getBusquedaCita() != null) {
-            this.busquedaMemoria = this.sessionService.getBusquedaCita();
+        if (this.sessionService.getBusquedaCitaCalendario() != null) {
+            this.busquedaMemoria = this.sessionService.getBusquedaCitaCalendario();
         }
 
+        this.cargarParametricas();
         this.idEmpresa = this.busquedaMemoria?.idEmpresa ?? this.sessionService.getSessionEmpresaId();
-        /*if (this.esSuperAdm()){
-            this.empresasService.get().subscribe({
-                next: (res) => {
-                    this.listaEmpresas = res.content;
-                },
-                error: (err) => {
-                    this.mensajeService.showError(err.error.message);
-                },
-            });
-        }*/
+        this.codigosTipoCita = this.busquedaMemoria?.codigosEstadosCita ?? this.listaTiposCita[0].codigo;
+        this.cargarProfesionales();
+    }
 
-        this.asistenciaService.getByIdUsuarioAsistente(this.sessionService.getSessionUserData().id).subscribe({
-            next: (res) => {
-                this.listaProfesionales = res.content;
-            },
-            error: (err) => {this.mensajeService.showError(err.error.message);},
+    cargarParametricas(){
+        this.citasService.getEstados().subscribe((data) => {
+            this.listaEstados = data.content as unknown as CitaEstado[];
+            this.listaEstados = this.listaEstados.filter(x=>x.codigo!==adm.CITA_ESTADO_CANCELADA);
+            console.log(this.listaEstados);
         });
+    }
 
-
+    cargarProfesionales(){
+        if(this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_PROFESIONAL
+               || this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_ADMIN
+               || this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_SUPERADMIN){
+                const usuario: UsuarioResumen = {
+                    id: this.sessionService.getSessionUserData().id,
+                    username: this.sessionService.getSessionUserData().username,
+                    nombreCompleto: this.sessionService.getSessionUserData().nombreCompleto
+                }
+                this.listaUsuarios.push(usuario);
+            }else{
+                this.asistenciaService.getByIdUsuarioAsistente(this.sessionService.getSessionUserData().id).subscribe({
+                    next: (res) => {
+                        const usuariosResumen: UsuarioResumen[] = res.content.map((x: Asistencia) => {
+                            return {
+                                id: x.idUsuarioProfesional,
+                                nombreCompleto: x.profesional
+                            };
+                        });
+                        this.listaUsuarios = usuariosResumen;
+                    },
+                    error: (err) => {this.mensajeService.showError(err.error.message);},
+                });
+            }
     }
 
     ngAfterViewInit(): void {
@@ -154,12 +173,15 @@ export class CalendarioComponent implements OnInit {
             if(this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_PROFESIONAL
                || this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_ADMIN
                || this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_SUPERADMIN){
-                this.cargarEventos(this.sessionService.getSessionUserData().id);
+                this.cargarEventos(this.sessionService.getSessionUserData().id, this.codigosTipoCita!);
             }
-            else if (this.sessionService.getSessionUserData().codigoTipoUsuario===adm.TIPO_USUARIO_PROFESIONAL && this.busquedaMemoria) {
-                this.cargarEventos(this.busquedaMemoria.idUsuarioProfesional!);
-                let objIndex = this.listaProfesionales.findIndex((obj => obj.idUsuarioProfesional == this.busquedaMemoria!.idUsuarioProfesional));
-                this.usuarioProfesional = this.listaProfesionales[objIndex];            }
+            else{
+                if (this.listaUsuarios.length==0) this.mensajeService.showWarning('No existe usuarios asignados al asistente');
+                else{
+                    this.idUsuarioProfesional = this.busquedaMemoria?.idUsuarioProfesional ?? this.listaUsuarios[0].id;
+                    this.cargarEventos(this.idUsuarioProfesional, this.codigosTipoCita!);
+                }
+            }
         }, 500);
     }
 
@@ -167,55 +189,51 @@ export class CalendarioComponent implements OnInit {
         return this.sessionService.isSuperAdmin();
     }
 
-    cambioEmpresa(event: any) {
-        if (!event.value) {
-            this.listaCitas = [];
-            return;
-        }
-        const empresaAux = this.listaEmpresas.find(x=>x.id===event.value)!;
-        this.idEmpresa = empresaAux.id;
-    }
-
     handleChangeEvent(changeInfo: EventChangeArg) {
-        console.log(changeInfo);
-        this.confirmationService.confirm({
-            message: 'Estás seguro que deseas modificar la reserva?',
-            header: 'Confirmación',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                const cita: Cita = {
-                    id: +changeInfo.event.id,
-                    inicio: changeInfo.event.startStr,
-                    fin: changeInfo.event.endStr,
-                };
-                this.citasService.editDate(cita).subscribe({
-                    next: (res) => {},
-                    error: (err) => {
-                        this.mensajeService.showError(err.error.message);
-                        changeInfo.revert();
-                    },
-                });
-            },
-            reject:() =>{
-                changeInfo.revert();
-            }
-        });
-
-
+        if(!this.verDetalleCita){
+            console.log(changeInfo);
+            this.confirmationService.confirm({
+                message: 'Estás seguro que deseas modificar la cita?',
+                header: 'Confirmación',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    const cita: Cita = {
+                        id: +changeInfo.event.id,
+                        inicio: changeInfo.event.startStr,
+                        fin: changeInfo.event.endStr,
+                    };
+                    this.citasService.editDate(cita).subscribe({
+                        next: (res) => {},
+                        error: (err) => {
+                            this.mensajeService.showError(err.error.message);
+                            changeInfo.revert();
+                        },
+                    });
+                },
+                reject:() =>{
+                    changeInfo.revert();
+                }
+            });
+        }
     }
 
-    cargarEventos(idUsuario: number) {
+    esEditable(codigoEstadoCita:string, pagado: boolean){
+        if (codigoEstadoCita==adm.CITA_ESTADO_CANCELADA) return false;
+        return !pagado;
+    }
+
+    cargarEventos(idUsuario: number, codigosTipoCita:string) {
+        this.blockedPanel = true;
         const criterios: BusquedaCita = {
-            idEmpresa: this.idEmpresa,
+            idEmpresa: this.sessionService.getSessionUserData().idEmpresa,
             idSucursal: this.sessionService.getSessionUserData().idSucursal,
             idUsuarioProfesional: idUsuario,
-            codigosEstadosCita:  adm.CITA_ESTADO_INASISTENCIA+','+ adm.CITA_ESTADO_CONFIRMADA+','+adm.CITA_ESTADO_RESERVA+','+adm.CITA_ESTADO_EN_ESPERA+','+adm.CITA_ESTADO_INICIADA,
+            codigosEstadosCita:  codigosTipoCita
             //resumen: true,
         };
         this.citasService.get(criterios).subscribe({
             next: (res) => {
                 console.log(res.content);
-                //this.listaCitas = res.content.map();
                 const newdata = res.content.map((x: any) => {
                     return {
                         id: x.id,
@@ -223,7 +241,7 @@ export class CalendarioComponent implements OnInit {
                         start: x.inicio,
                         end: x.fin,
                         backgroundColor: x.color,
-                        editable:!x.pagado,
+                        editable: this.esEditable(x.codigoEstadoCita, x.pagado),
                         extendedProps: {
                             pagado :x.pagado,
                             correlativo: x.correlativo,
@@ -239,11 +257,12 @@ export class CalendarioComponent implements OnInit {
                 });
 
                 this.listaCitas = newdata;
-
                 this.calendarOptions.events = this.listaCitas;
-                this.sessionService.setBusquedaCita(criterios);
+                this.sessionService.setBusquedaCitaCalendario(criterios);
+                this.blockedPanel = false;
             },
             error: (err) => {
+                this.blockedPanel = false;
                 this.mensajeService.showError(err.error.message);
             },
         });
@@ -267,19 +286,71 @@ export class CalendarioComponent implements OnInit {
         calendarOptions.weekends = !calendarOptions.weekends;
     }
 
-    handleDateSelect(selectInfo: DateSelectArg) {
-        console.log(this.usuarioProfesional);
-        const TipoUsuario=this.sessionService.getSessionUserData().codigoTipoUsuario;
+
+
+    handleEventClick(clickInfo: EventClickArg) {
+        console.log(clickInfo.event.id);
+        console.log(this.listaCitas);
+        const seleccionado = this.listaCitas.find(x=>x.id==clickInfo.event.id);
+        console.log(seleccionado);
+        if (seleccionado){
+            this.citaSeleccionada = clickInfo;
+            this.verDetalleCita=true;
+            this.codigoEstadoCitaSeleccionado = this.citaSeleccionada.event.extendedProps['codigoEstadoCita'];
+        }
+    }
+
+    handleEvents(events: EventApi[]) {
+        this.currentEvents = events;
+        this.changeDetector.detectChanges();
+    }
+
+    handleDateClick(arg: any) {
+        console.log(arg);
+    }
+
+    cambioUsuario(event:any) {
+        console.log(event.value);
+        this.cargarEventos(event.value, this.codigosTipoCita!);
+    }
+
+    cambioTipoCita(event:any) {
+        console.log(event.value);
+        this.cargarEventos(this.idUsuarioProfesional!, event.value);
+    }
+
+    cambioEstadoCita(event:any) {
+        console.log(event);
+        const cita: Cita = {
+            id: +this.citaSeleccionada.event.id,
+            codigoEstadoCita: event.value,
+            inicio: '',
+            fin: ''
+        };
+        this.citasService.editState(cita).subscribe({
+            next: (res) => {
+                this.mensajeService.showSuccess(res.message);
+                this.citaSeleccionada.event.setExtendedProp( 'codigoEstadoCita', res.content.codigoEstadoCita )
+                this.citaSeleccionada.event.setExtendedProp( 'estadoCita', res.content.estadoCita )
+                this.citaSeleccionada.event.setProp( 'backgroundColor', res.content.color )
+            },
+            error: (err) => {
+                this.mensajeService.showError(err.error.message);
+            },
+        });
+    }
+
+    nuevaCita(selectInfo: DateSelectArg) {
         const item: Cita = {
             idEmpresa: this.idEmpresa,
-            idUsuarioProfesional: TipoUsuario===adm.TIPO_USUARIO_ASISTENTE ? this.usuarioProfesional.idUsuarioProfesional: this.sessionService.getSessionUserData().id,
+            idUsuarioProfesional: this.idUsuarioProfesional,
             inicio: selectInfo.startStr,
             fin: selectInfo.endStr,
         };
         const ref = this.dialogService.open(FormularioCitaComponent, {
             header: 'Nuevo',
             width: '90%',
-            data: { idEmpresa: this.idEmpresa, item: item },
+            data: { idEmpresa: this.idEmpresa, item: item, listaUsuarios:this.listaUsuarios },
         });
         ref.onClose.subscribe((res) => {
             if (res) {
@@ -295,7 +366,7 @@ export class CalendarioComponent implements OnInit {
                         end: cita.fin,
                         backgroundColor: cita.color,
                         allDay: false,
-                        editable:!cita.pagado,
+                        editable: this.esEditable(cita.codigoEstadoCita!, cita.pagado!),
                         extendedProps: {
                             pagado :cita.pagado,
                             correlativo: cita.correlativo,
@@ -316,31 +387,6 @@ export class CalendarioComponent implements OnInit {
         });
     }
 
-    handleEventClick(clickInfo: EventClickArg) {
-        console.log(clickInfo.event.id);
-        console.log(this.listaCitas);
-        const seleccionado = this.listaCitas.find(x=>x.id==clickInfo.event.id);
-        console.log(seleccionado);
-        if (seleccionado){
-            this.citaSeleccionada = clickInfo;
-            this.verDetalleCita=true;
-        }
-    }
-
-    handleEvents(events: EventApi[]) {
-        this.currentEvents = events;
-        this.changeDetector.detectChanges();
-    }
-
-    handleDateClick(arg: any) {
-        console.log(arg);
-    }
-
-    listboxChange(event:any) {
-        console.log(event.value);
-        this.cargarEventos(event.value.idUsuarioProfesional);
-    }
-
     editarCita(){
         this.citasService.getById(+this.citaSeleccionada.event.id).subscribe({
             next: (res) => {
@@ -348,17 +394,42 @@ export class CalendarioComponent implements OnInit {
                 const ref = this.dialogService.open(FormularioCitaComponent, {
                     header: 'Editar',
                     width: '90%',
-                    data: { idEmpresa: this.idEmpresa, item: item },
+                    data: { idEmpresa: this.idEmpresa, item: item, listaUsuarios:this.listaUsuarios },
                 });
                 ref.onClose.subscribe((res) => {
                     if (res) {
                         console.log(res);
-                        this.actualizarCita(this.citaSeleccionada, res);
+                        this.actualizarEvento(this.citaSeleccionada, res);
                     }
                 });
             },
             error: (err) => {
                 this.mensajeService.showError(err.error.message);
+            },
+        });
+    }
+
+    cancelarCita(){
+        this.confirmationService.confirm({
+            message: 'Estás seguro que deseas cancelar la cita de '+this.citaSeleccionada.event.title +'?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                const cita: Cita = {
+                    id: +this.citaSeleccionada.event.id,
+                    codigoEstadoCita: adm.CITA_ESTADO_CANCELADA,
+                    inicio: '',
+                    fin: ''
+                };
+                this.citasService.editState(cita).subscribe({
+                    next: (res) => {
+                        this.mensajeService.showSuccess(res.message);
+                        this.citaSeleccionada.event.remove();
+                    },
+                    error: (err) => {
+                        this.mensajeService.showError(err.error.message);
+                    },
+                });
             },
         });
     }
@@ -377,7 +448,7 @@ export class CalendarioComponent implements OnInit {
                 this.citasService.getById(+this.citaSeleccionada.event.id).subscribe({
                     next: (res) => {
                         console.log(res);
-                        this.actualizarCita(this.citaSeleccionada, res.content);
+                        this.actualizarEvento(this.citaSeleccionada, res.content);
                     },
                     error: (err) => {
                         this.mensajeService.showError(err.error.message);
@@ -387,7 +458,7 @@ export class CalendarioComponent implements OnInit {
         });
     }
 
-    actualizarCita(clickInfo: EventClickArg, cita:Cita) {
+    actualizarEvento(clickInfo: EventClickArg, cita:Cita) {
         clickInfo.event.remove();
         //se añade el actualziado
         const calendarApi = clickInfo.view.calendar;
@@ -399,7 +470,7 @@ export class CalendarioComponent implements OnInit {
                             end: cita.fin,
                             backgroundColor: cita.color,
                             allDay: false,
-                            editable:!cita.pagado,
+                            editable: this.esEditable(cita.codigoEstadoCita!, cita.pagado!),
                             extendedProps: {
                                 pagado :cita.pagado,
                                 correlativo: cita.correlativo,

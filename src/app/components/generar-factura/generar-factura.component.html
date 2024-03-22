@@ -20,7 +20,7 @@
         </div>
 
         <div class="p-fluid p-formgrid grid">
-            <div class="field col-12 md:col-2">
+            <div class="field col-12 md:col-12">
                 <label>Codigo Cliente</label><b class="text-rojo">*</b>
                 <p-autoComplete formControlName="clienteTemporal" #clienteTemporal id="clienteTemporal" [suggestions]="listaClientesFiltrados"
                     (completeMethod)="filtrarCliente($event)" [showEmptyMessage]="true" [maxlength]="25"
@@ -39,7 +39,7 @@
                 <!-- <small class="p-error block" *ngIf="itemForm.get('clienteTemporal')?.hasError('required')">
                     Dato requerido.</small> -->
             </div>
-            <div class="field col-12 md:col-4">
+            <div class="field col-12 md:col-12">
                 <label>Razon Social</label>
                 <div class="p-inputgroup">
                     <input type="text"  formControlName="razonSocial" pInputText maxlength="500"
@@ -49,7 +49,7 @@
                         tabindex="-1"></p-button> -->
                 </div>
             </div>
-            <div class="field col-12 md:col-3">
+            <div class="field col-12 md:col-12">
                 <label>Email</label>
                 <div class="p-inputgroup">
                     <input formControlName="email" type="text" pInputText id="email" maxlength="50" tabindex="-1" />

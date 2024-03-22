@@ -13,7 +13,7 @@
                 </div>
                 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
                     <div class="w-full md:w-10 mx-auto">
-                        <label for="username1" class="block text-900 text-xl font-medium mb-2">Usuario</label>
+                        <label for="username1" class="block text-900 text-xl font-medium mb-2">Usuario o Email</label>
                         <input id="username1" formControlName="username" type="text" placeholder="usuario" maxlength="50" pInputText
                             class="w-full mb-3" style="padding:1rem;">
                             <!-- <small class="p-error block" *ngIf="userForm.get('username')?.hasError('required')">Dato requerido.</small> -->
